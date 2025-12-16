@@ -3,18 +3,18 @@
         Gestión de Cursos
     </x-slot>
 
-    <!-- Header Actions -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-2xl);">
+    <!-- Hero Header -->
+    <div style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center;">
         <div>
-            <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                <i class="fas fa-book"></i> Cursos del Establecimiento
+            <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
+                <i class="fas fa-graduation-cap"></i> Cursos
             </h2>
-            <p style="color: var(--gray-600); margin: 0;">
+            <p style="font-size: 1rem; opacity: 0.95; margin: 0;">
                 Administra todos los cursos de enseñanza básica y media
             </p>
         </div>
-        <button class="btn btn-primary">
-            <span>➕</span>
+        <button class="btn btn-primary" style="background: white; color: var(--theme-dark); flex-shrink: 0;">
+            <span><i class="fas fa-plus"></i></span>
             <span>Nuevo Curso</span>
         </button>
     </div>

@@ -20,7 +20,7 @@
                 <i class="fas fa-book"></i>
             </div>
             <div class="stat-value">12</div>
-            <div class="stat-label">Cursos Activos</div>
+            <div class="stat-label">CURSOS ACTIVOS</div>
         </div>
 
         <div class="stat-card fade-in" style="animation-delay: 0.2s;">
@@ -28,7 +28,7 @@
                 <i class="fas fa-users"></i>
             </div>
             <div class="stat-value">248</div>
-            <div class="stat-label">Estudiantes</div>
+            <div class="stat-label">ESTUDIANTES</div>
         </div>
 
         <div class="stat-card fade-in" style="animation-delay: 0.3s;">
@@ -36,7 +36,7 @@
                 <i class="fas fa-check"></i>
             </div>
             <div class="stat-value">94%</div>
-            <div class="stat-label">Asistencia Promedio</div>
+            <div class="stat-label">ASISTENCIA PROMEDIO</div>
         </div>
 
         <div class="stat-card fade-in" style="animation-delay: 0.4s;">
@@ -44,7 +44,7 @@
                 <i class="fas fa-clipboard"></i>
             </div>
             <div class="stat-value">8.5</div>
-            <div class="stat-label">Promedio General</div>
+            <div class="stat-label">PROMEDIO GENERAL</div>
         </div>
     </div>
 
@@ -56,16 +56,16 @@
         <div class="card-body">
             <div class="grid grid-cols-3">
                 <a href="#" class="btn btn-primary" style="text-decoration: none;">
-                    <span><i class="fas fa-book"></i></span>
-                    <span>Crear Curso</span>
+                    <span><i class="fas fa-book" style="color: white;"></i></span>
+                    <span style="color: white;">Crear Curso</span>
                 </a>
                 <a href="#" class="btn btn-secondary" style="text-decoration: none;">
                     <span><i class="fas fa-users"></i></span>
                     <span>Añadir Estudiante</span>
                 </a>
                 <a href="#" class="btn btn-accent" style="text-decoration: none;">
-                    <span><i class="fas fa-check"></i></span>
-                    <span>Pasar Asistencia</span>
+                    <span><i class="fas fa-check" style="color: white;"></i></span>
+                    <span style="color: white;">Pasar Asistencia</span>
                 </a>
                 <a href="#" class="btn btn-outline" style="text-decoration: none;">
                     <span><i class="fas fa-clipboard"></i></span>
@@ -87,12 +87,12 @@
         <!-- Recent Activity -->
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">📋 Actividad Reciente</h3>
+                <h3 class="card-title"><i class="fas fa-history"></i> Actividad Reciente</h3>
             </div>
             <div class="card-body">
                 <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
                     <div style="display: flex; gap: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div style="width: 40px; height: 40px; background: var(--theme-color), var(--theme-color)); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
+                        <div style="width: 40px; height: 40px; background: var(--theme-color); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
                             <i class="fas fa-book"></i>
                         </div>
                         <div style="flex: 1;">
@@ -106,7 +106,7 @@
                     </div>
 
                     <div style="display: flex; gap: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div style="width: 40px; height: 40px; background: var(--theme-color), var(--theme-color)); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
+                        <div style="width: 40px; height: 40px; background: var(--theme-color); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
                             <i class="fas fa-check"></i>
                         </div>
                         <div style="flex: 1;">
@@ -120,7 +120,7 @@
                     </div>
 
                     <div style="display: flex; gap: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div style="width: 40px; height: 40px; background: var(--theme-color), #059669); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
+                        <div style="width: 40px; height: 40px; background: var(--theme-color); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
                             <i class="fas fa-clipboard"></i>
                         </div>
                         <div style="flex: 1;">
@@ -134,7 +134,7 @@
                     </div>
 
                     <div style="display: flex; gap: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div style="width: 40px; height: 40px; background: var(--theme-color), var(--theme-dark)); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
+                        <div style="width: 40px; height: 40px; background: var(--theme-color); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
                             <i class="fas fa-users"></i>
                         </div>
                         <div style="flex: 1;">
@@ -153,7 +153,7 @@
         <!-- Upcoming Tasks -->
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">📅 Próximas Tareas</h3>
+                <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Próximas Tareas</h3>
             </div>
             <div class="card-body">
                 <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">

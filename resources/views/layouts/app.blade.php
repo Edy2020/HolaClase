@@ -17,6 +17,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <link rel="stylesheet" href="{{ asset('css/themes.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -27,7 +28,9 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a href="{{ route('dashboard') }}" class="sidebar-logo">
-                    <div class="sidebar-logo-icon">HC</div>
+                    <div class="sidebar-logo-icon">
+                        <img src="{{ asset('hc_icon.png') }}" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
                     <span class="sidebar-logo-text">HolaClase!</span>
                 </a>
                 <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()">
@@ -90,7 +93,9 @@
         <aside class="mobile-sidebar" id="mobile-sidebar">
             <div class="sidebar-header">
                 <a href="{{ route('dashboard') }}" class="sidebar-logo">
-                    <div class="sidebar-logo-icon">HC</div>
+                    <div class="sidebar-logo-icon">
+                        <img src="{{ asset('hc_icon.png') }}" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
                     <span class="sidebar-logo-text">HolaClase</span>
                 </a>
                 <button class="sidebar-toggle-btn" onclick="closeMobileSidebar()">
@@ -243,9 +248,9 @@
             </main>
 
             <!-- Footer -->
-            <footer class="app-footer">
+            <!-- <footer class="app-footer">
                 <p>&copy; {{ date('Y') }} HolaClase. Sistema de Gestión Educativa. Todos los derechos reservados.</p>
-            </footer>
+            </footer> -->
         </div>
     </div>
 

@@ -22,6 +22,7 @@
                 autofocus 
                 autocomplete="username"
                 placeholder="tu@email.com"
+                style="border-radius: 50px;"
             >
             @error('email')
                 <div class="form-error">{{ $message }}</div>
@@ -31,15 +32,27 @@
         <!-- Password -->
         <div class="form-group">
             <label for="password" class="form-label">Contraseña</label>
-            <input 
-                id="password" 
-                class="form-input" 
-                type="password" 
-                name="password" 
-                required 
-                autocomplete="current-password"
-                placeholder="••••••••"
-            >
+            <div style="position: relative;">
+                <input 
+                    id="password" 
+                    class="form-input" 
+                    type="password" 
+                    name="password" 
+                    required 
+                    autocomplete="current-password"
+                    placeholder="••••••••"
+                    style="border-radius: 50px; padding-right: 50px;"
+                >
+                <button 
+                    type="button" 
+                    onclick="togglePassword()" 
+                    style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--gray-500); cursor: pointer; padding: 8px; font-size: 1.125rem; transition: color 0.2s;"
+                    onmouseover="this.style.color='var(--theme-color)'" 
+                    onmouseout="this.style.color='var(--gray-500)'"
+                >
+                    <i class="fas fa-eye" id="toggleIcon"></i>
+                </button>
+            </div>
             @error('password')
                 <div class="form-error">{{ $message }}</div>
             @enderror
@@ -59,7 +72,7 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
-            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: var(--spacing-md) var(--spacing-xl); border-radius: 50px;">
                 Iniciar Sesión
             </button>
 
@@ -79,4 +92,21 @@
             @endif
         </div>
     </form>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </x-guest-layout>

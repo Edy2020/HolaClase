@@ -10,9 +10,13 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -21,7 +25,11 @@
     <div class="guest-container">
         <div class="guest-card fade-in">
             <div class="guest-header">
-                <div class="guest-logo">HC</div>
+                <a href="{{ url('/') }}" style="text-decoration: none;">
+                    <div class="guest-logo">
+                        <img src="{{ asset('hc_icon.png') }}" alt="HolaClase" style="width: 90%; height: 90%; object-fit: contain;">
+                    </div>
+                </a>
                 <h1 class="guest-title">HolaClase</h1>
                 <p class="guest-subtitle">Sistema de Gestión Educativa</p>
             </div>

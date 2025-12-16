@@ -9,214 +9,88 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800" rel="stylesheet" />
     
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
-    
-    <style>
-        .hero-section {
-            min-height: 100vh;
-            background: var(--theme-color) 0%, var(--secondary-700) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: var(--spacing-2xl);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>');
-            background-size: 50px 50px;
-        }
-        
-        .hero-content {
-            max-width: 1200px;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .hero-title {
-            font-size: 4rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: var(--spacing-lg);
-            line-height: 1.1;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.5rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: var(--spacing-2xl);
-            font-weight: 400;
-        }
-        
-        .hero-buttons {
-            display: flex;
-            gap: var(--spacing-lg);
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .hero-btn {
-            padding: var(--spacing-lg) var(--spacing-2xl);
-            font-size: 1.125rem;
-            font-weight: 700;
-            border-radius: var(--radius-lg);
-            text-decoration: none;
-            transition: all var(--transition-base);
-            display: inline-flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-        }
-        
-        .hero-btn-primary {
-            background: white;
-            color: var(--theme-dark);
-            box-shadow: var(--shadow-xl);
-        }
-        
-        .hero-btn-primary:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 30px 40px -10px rgba(0, 0, 0, 0.3);
-        }
-        
-        .hero-btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid white;
-            backdrop-filter: blur(10px);
-        }
-        
-        .hero-btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-4px);
-        }
-        
-        .features-section {
-            padding: var(--spacing-3xl) var(--spacing-2xl);
-            background: white;
-        }
-        
-        .features-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--gray-900);
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .section-subtitle {
-            text-align: center;
-            font-size: 1.125rem;
-            color: var(--gray-600);
-            margin-bottom: var(--spacing-3xl);
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--spacing-2xl);
-        }
-        
-        .feature-card {
-            background: white;
-            border-radius: var(--radius-xl);
-            padding: var(--spacing-2xl);
-            box-shadow: var(--shadow-md);
-            transition: all var(--transition-base);
-            border: 2px solid var(--gray-100);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
-            border-color: var(--primary-200);
-        }
-        
-        .feature-icon {
-            width: 70px;
-            height: 70px;
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin-bottom: var(--spacing-lg);
-            background: var(--theme-color), var(--secondary-100));
-        }
-        
-        .feature-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: var(--spacing-sm);
-        }
-        
-        .feature-description {
-            color: var(--gray-600);
-            line-height: 1.6;
-        }
-        
-        .cta-section {
-            padding: var(--spacing-3xl) var(--spacing-2xl);
-            background: var(--theme-color) 0%, var(--gray-800) 100%);
-            text-align: center;
-        }
-        
-        .cta-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: var(--spacing-lg);
-        }
-        
-        .cta-subtitle {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: var(--spacing-2xl);
-        }
-        
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.125rem;
-            }
-            
-            .hero-buttons {
-                flex-direction: column;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/themes.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/welcome.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{{ url('/') }}" class="navbar-logo">
+                <div class="navbar-logo-icon">
+                    <img src="{{ asset('hc_icon.png') }}" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <span class="navbar-logo-text">HolaClase</span>
+            </a>
+            <div class="navbar-links">
+                <a href="#features" class="navbar-link">Características</a>
+                <a href="#testimonials" class="navbar-link">Testimonios</a>
+                @auth
+                    <a href="{{ route('dashboard') }}" class="navbar-btn">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="navbar-btn-outline">Iniciar Sesión</a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="navbar-btn">Crear Cuenta</a>
+                    @endif
+                @endauth
+            </div>
+            <button class="mobile-menu-btn-welcome" onclick="openWelcomeSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div class="welcome-mobile-overlay" id="welcomeOverlay" onclick="closeWelcomeSidebar()"></div>
+
+    <!-- Mobile Sidebar -->
+    <aside class="welcome-mobile-sidebar" id="welcomeSidebar">
+        <div class="welcome-sidebar-header">
+            <span class="welcome-sidebar-title">
+                <i class="fas fa-bars"></i>
+                Menú
+            </span>
+            <button class="welcome-sidebar-close" onclick="closeWelcomeSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="welcome-sidebar-links">
+            @auth
+                <a href="{{ route('dashboard') }}" class="welcome-sidebar-link primary">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            @else
+                <a href="{{ route('login') }}" class="welcome-sidebar-link">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Iniciar Sesión</span>
+                </a>
+                @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="welcome-sidebar-link primary">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Crear Cuenta</span>
+                    </a>
+                @endif
+            @endauth
+        </div>
+    </aside>
+
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-content fade-in">
+            <div class="hero-logo">
+                <img src="{{ asset('hc_icon.png') }}" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
             <h1 class="hero-title">Bienvenido a HolaClase</h1>
             <p class="hero-subtitle">
-                El sistema de gestión educativa que simplifica la administración de cursos, estudiantes y calificaciones
+                El sistema de gestión educativa moderno que simplifica la administración de cursos, estudiantes, asistencia y calificaciones
             </p>
             <div class="hero-buttons">
                 @auth
@@ -224,23 +98,41 @@
                         <span>Ir al Dashboard</span>
                         <span>→</span>
                     </a>
-                @else
-                    <a href="{{ route('login') }}" class="hero-btn hero-btn-primary">
-                        <span>Iniciar Sesión</span>
-                        <span>→</span>
-                    </a>
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="hero-btn hero-btn-secondary">
-                            <span>Crear Cuenta</span>
-                        </a>
-                    @endif
                 @endauth
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="scroll-indicator" onclick="document.querySelector('.stats-section').scrollIntoView({behavior: 'smooth'});">
+                <span class="scroll-indicator-text">Descubre más</span>
+                <i class="fas fa-chevron-down scroll-indicator-icon"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-box fade-in" style="animation-delay: 0.1s;">
+                <div class="stat-number">248+</div>
+                <div class="stat-label">Estudiantes Activos</div>
+            </div>
+            <div class="stat-box fade-in" style="animation-delay: 0.2s;">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Profesores</div>
+            </div>
+            <div class="stat-box fade-in" style="animation-delay: 0.3s;">
+                <div class="stat-number">24+</div>
+                <div class="stat-label">Asignaturas</div>
+            </div>
+            <div class="stat-box fade-in" style="animation-delay: 0.4s;">
+                <div class="stat-number">94%</div>
+                <div class="stat-label">Asistencia Promedio</div>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section class="features-section">
+    <section class="features-section" id="features">
         <div class="features-container">
             <h2 class="section-title">Características Principales</h2>
             <p class="section-subtitle">
@@ -249,7 +141,7 @@
             
             <div class="features-grid">
                 <div class="feature-card slide-in-right" style="animation-delay: 0.1s;">
-                    <div class="feature-icon"><i class="fas fa-book"></i></div>
+                    <div class="feature-icon"><i class="fas fa-graduation-cap"></i></div>
                     <h3 class="feature-title">Gestión de Cursos</h3>
                     <p class="feature-description">
                         Crea y administra cursos fácilmente. Organiza contenidos, asigna profesores y mantén todo bajo control.
@@ -265,7 +157,7 @@
                 </div>
                 
                 <div class="feature-card slide-in-right" style="animation-delay: 0.3s;">
-                    <div class="feature-icon"><i class="fas fa-check"></i></div>
+                    <div class="feature-icon"><i class="fas fa-calendar-check"></i></div>
                     <h3 class="feature-title">Asistencia Digital</h3>
                     <p class="feature-description">
                         Pasa lista de forma rápida y eficiente. Genera reportes automáticos de asistencia por curso.
@@ -273,7 +165,7 @@
                 </div>
                 
                 <div class="feature-card slide-in-right" style="animation-delay: 0.4s;">
-                    <div class="feature-icon"><i class="fas fa-clipboard"></i></div>
+                    <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
                     <h3 class="feature-title">Calificaciones</h3>
                     <p class="feature-description">
                         Registra y calcula calificaciones automáticamente. Genera boletines y reportes académicos.
@@ -289,11 +181,62 @@
                 </div>
                 
                 <div class="feature-card slide-in-right" style="animation-delay: 0.6s;">
-                    <div class="feature-icon">🔒</div>
+                    <div class="feature-icon"><i class="fas fa-lock"></i></div>
                     <h3 class="feature-title">Seguro y Confiable</h3>
                     <p class="feature-description">
                         Tus datos están protegidos con las mejores prácticas de seguridad y encriptación.
                     </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section" id="testimonials">
+        <div class="features-container">
+            <h2 class="section-title">Lo que dicen nuestros usuarios</h2>
+            <p class="section-subtitle">
+                Instituciones educativas que confían en HolaClase
+            </p>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card fade-in" style="animation-delay: 0.1s;">
+                    <p class="testimonial-quote">
+                        "HolaClase ha transformado completamente la forma en que gestionamos nuestra institución. La interfaz es intuitiva y las funcionalidades son exactamente lo que necesitábamos."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">MG</div>
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">María González</div>
+                            <div class="testimonial-role">Directora, Colegio San José</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in" style="animation-delay: 0.2s;">
+                    <p class="testimonial-quote">
+                        "El sistema de asistencia y calificaciones nos ha ahorrado horas de trabajo administrativo. Ahora podemos enfocarnos más en la enseñanza."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">CR</div>
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">Carlos Ruiz</div>
+                            <div class="testimonial-role">Profesor de Matemáticas</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in" style="animation-delay: 0.3s;">
+                    <p class="testimonial-quote">
+                        "La facilidad para generar reportes y estadísticas nos permite tomar decisiones informadas sobre el rendimiento académico de nuestros estudiantes."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">LP</div>
+                        <div class="testimonial-info">
+                            <div class="testimonial-name">Laura Pérez</div>
+                            <div class="testimonial-role">Coordinadora Académica</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -324,8 +267,110 @@
     </section>
 
     <!-- Footer -->
-    <footer style="background: var(--gray-900); color: white; padding: var(--spacing-2xl); text-align: center;">
-        <p style="margin: 0;">&copy; {{ date('Y') }} HolaClase. Sistema de Gestión Educativa. Todos los derechos reservados.</p>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <!-- About Section -->
+                <div>
+                    <div class="navbar-logo" style="margin-bottom: var(--spacing-md);">
+                        <div class="navbar-logo-icon">
+                            <img src="{{ asset('hc_icon.png') }}" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
+                        </div>
+                        <span class="navbar-logo-text" style="color: white;">HolaClase</span>
+                    </div>
+                    <p class="footer-description">
+                        El sistema de gestión educativa moderno que simplifica la administración de cursos, estudiantes y calificaciones.
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" class="footer-social-link" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="footer-social-link" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="footer-social-link" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="footer-social-link" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="footer-section-title">Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li class="footer-link"><a href="#features">Características</a></li>
+                        <li class="footer-link"><a href="#testimonials">Testimonios</a></li>
+                        <li class="footer-link"><a href="{{ route('login') }}">Iniciar Sesión</a></li>
+                        @if (Route::has('register'))
+                            <li class="footer-link"><a href="{{ route('register') }}">Crear Cuenta</a></li>
+                        @endif
+                    </ul>
+                </div>
+
+                <!-- Resources -->
+                <div>
+                    <h3 class="footer-section-title">Recursos</h3>
+                    <ul class="footer-links">
+                        <li class="footer-link"><a href="#">Documentación</a></li>
+                        <li class="footer-link"><a href="#">Guías de Usuario</a></li>
+                        <li class="footer-link"><a href="#">Soporte Técnico</a></li>
+                        <li class="footer-link"><a href="#">Preguntas Frecuentes</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h3 class="footer-section-title">Contacto</h3>
+                    <ul class="footer-links">
+                        <li class="footer-link">
+                            <i class="fas fa-envelope" style="margin-right: var(--spacing-xs);"></i>
+                            <a href="mailto:info@holaclase.edu">info@holaclase.edu</a>
+                        </li>
+                        <li class="footer-link">
+                            <i class="fas fa-phone" style="margin-right: var(--spacing-xs);"></i>
+                            <a href="tel:+56912345678">+56 9 1234 5678</a>
+                        </li>
+                        <li class="footer-link">
+                            <i class="fas fa-map-marker-alt" style="margin-right: var(--spacing-xs);"></i>
+                            <span style="color: rgba(255, 255, 255, 0.7);">Santiago, Chile</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p class="footer-text">&copy; {{ date('Y') }} HolaClase. Sistema de Gestión Educativa. Todos los derechos reservados.</p>
+            </div>
+        </div>
     </footer>
+
+    <script>
+        function openWelcomeSidebar() {
+            document.getElementById('welcomeSidebar').classList.add('open');
+            document.getElementById('welcomeOverlay').classList.add('show');
+        }
+
+        function closeWelcomeSidebar() {
+            document.getElementById('welcomeSidebar').classList.remove('open');
+            document.getElementById('welcomeOverlay').classList.remove('show');
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

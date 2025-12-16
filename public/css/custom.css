@@ -168,7 +168,7 @@ body {
 }
 
 .dark-mode .card-header {
-    background: var(--bg-tertiary);
+    background: transparent;
     border-color: var(--border-color);
     color: var(--text-primary);
 }
@@ -1119,8 +1119,8 @@ p {
 .sidebar-logo-icon {
     width: 40px;
     height: 40px;
-    background: var(--theme-color);
-    border-radius: var(--radius-md);
+    background: transparent;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1128,12 +1128,14 @@ p {
     font-weight: 800;
     font-size: 1.25rem;
     flex-shrink: 0;
+    padding: 0;
 }
 
 .sidebar-logo-text {
     font-size: 1.25rem;
-    font-weight: 800;
+    font-weight: 400;
     white-space: nowrap;
+    font-family: 'Pacifico', cursive;
 }
 
 .sidebar-toggle-btn {
@@ -1429,6 +1431,50 @@ p {
 
 .grid-cols-4 {
     grid-template-columns: repeat(4, 1fr);
+}
+
+/* Responsive Grid - Mobile */
+@media (max-width: 1024px) {
+    .grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: var(--spacing-sm) !important;
+    }
+
+    .grid-cols-3 {
+        grid-template-columns: repeat(1, 1fr) !important;
+        gap: var(--spacing-sm) !important;
+    }
+
+    .stat-card {
+        padding: var(--spacing-md) !important;
+    }
+
+    .stat-value {
+        font-size: 1.75rem !important;
+    }
+
+    .stat-label {
+        font-size: 0.7rem !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        text-transform: capitalize !important;
+        line-height: 1.2 !important;
+        max-width: 100px !important;
+    }
+
+    .stat-icon {
+        width: 45px !important;
+        height: 45px !important;
+        font-size: 1.25rem !important;
+        top: var(--spacing-md) !important;
+        right: var(--spacing-md) !important;
+    }
+
+    .btn {
+        padding: var(--spacing-md) var(--spacing-lg) !important;
+        font-size: 0.875rem !important;
+        width: 100% !important;
+    }
 }
 
 /* ============================================
@@ -1782,10 +1828,10 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     background: var(--theme-color);
-    border-radius: var(--radius-xl);
+    border-radius: 50%;
     color: white;
     font-size: 2.5rem;
     font-weight: 800;
@@ -1806,9 +1852,10 @@ body {
 
 .guest-title {
     font-size: 1.75rem;
-    font-weight: 800;
+    font-weight: 400;
     color: var(--gray-900);
     margin-bottom: var(--spacing-sm);
+    font-family: 'Pacifico', cursive;
 }
 
 .guest-subtitle {

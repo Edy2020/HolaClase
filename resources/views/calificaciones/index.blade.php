@@ -3,12 +3,12 @@
         Gestión de Calificaciones
     </x-slot>
 
-    <!-- Header -->
-    <div style="margin-bottom: var(--spacing-2xl);">
-        <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-            <i class="fas fa-clipboard"></i> Gestión de Calificaciones
+    <!-- Hero Header -->
+    <div style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg);">
+        <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
+            <i class="fas fa-chart-line"></i> Gestión de Calificaciones
         </h2>
-        <p style="color: var(--gray-600); margin: 0;">
+        <p style="font-size: 1rem; opacity: 0.95; margin: 0;">
             Registra y administra las calificaciones de tus estudiantes
         </p>
     </div>
