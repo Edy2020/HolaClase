@@ -5,7 +5,7 @@
 
     <!-- Welcome Card -->
     <div style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg);">
-        <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
+        <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
             ¡Bienvenido, {{ Auth::user()->name }}! <i class="fas fa-hand-wave"></i>
         </h2>
         <p style="font-size: 1rem; opacity: 0.95; margin: 0;">

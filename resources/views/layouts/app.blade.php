@@ -28,7 +28,7 @@
             <div class="sidebar-header">
                 <a href="{{ route('dashboard') }}" class="sidebar-logo">
                     <div class="sidebar-logo-icon">HC</div>
-                    <span class="sidebar-logo-text">HolaClase</span>
+                    <span class="sidebar-logo-text">HolaClase!</span>
                 </a>
                 <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()">
                     <i class="fas fa-bars"></i>
@@ -146,6 +146,47 @@
             </nav>
         </aside>
 
+        <!-- Mobile User Sidebar Overlay -->
+        <div class="mobile-user-sidebar-overlay" id="mobile-user-overlay" onclick="closeMobileUserSidebar()"></div>
+
+        <!-- Mobile User Sidebar -->
+        <aside class="mobile-user-sidebar" id="mobile-user-sidebar">
+            <div class="mobile-user-sidebar-header">
+                <div class="mobile-user-sidebar-info">
+                    <div class="mobile-user-sidebar-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="mobile-user-sidebar-details">
+                        <div class="mobile-user-sidebar-name">{{ Auth::user()->name }}</div>
+                        <div class="mobile-user-sidebar-email">{{ Auth::user()->email }}</div>
+                    </div>
+                </div>
+                <button class="sidebar-toggle-btn" onclick="closeMobileUserSidebar()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <nav class="mobile-user-nav">
+                <ul>
+                    <li>
+                        <a href="{{ route('profile.edit') }}" class="mobile-user-nav-link">
+                            <span class="mobile-user-nav-icon"><i class="fas fa-user-cog"></i></span>
+                            <span>Editar Perfil</span>
+                        </a>
+                    </li>
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                            @csrf
+                            <button type="submit" class="mobile-user-nav-link logout-btn">
+                                <span class="mobile-user-nav-icon"><i class="fas fa-sign-out-alt"></i></span>
+                                <span>Cerrar Sesión</span>
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
         <!-- Fixed Navbar -->
         <nav class="app-navbar">
             <div class="navbar-left">
@@ -157,27 +198,39 @@
 
             <div class="navbar-right">
                 <!-- User Icon Button -->
-                <button class="user-icon-btn" onclick="toggleUserMenu()">
+                <button class="user-icon-btn" onclick="toggleUserMenu()" id="user-icon-btn">
                     <i class="fas fa-user"></i>
                 </button>
 
-                <!-- User Dropdown Menu -->
-                <div id="user-menu" style="display: none; position: absolute; right: var(--spacing-md); top: 60px; background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); min-width: 200px; z-index: 50;">
-                    <div style="padding: var(--spacing-md); border-bottom: 1px solid var(--gray-200);">
-                        <div style="font-weight: 600; color: var(--gray-900);">{{ Auth::user()->name }}</div>
-                        <div style="font-size: 0.875rem; color: var(--gray-600);">{{ Auth::user()->email }}</div>
+                <!-- User Dropdown Menu (Desktop) -->
+                <div id="user-menu" class="user-dropdown-menu">
+                    <div class="user-dropdown-header">
+                        <div class="user-dropdown-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-dropdown-info">
+                            <div class="user-dropdown-name">{{ Auth::user()->name }}</div>
+                            <div class="user-dropdown-email">{{ Auth::user()->email }}</div>
+                        </div>
                     </div>
-                    <div style="padding: var(--spacing-sm);">
-                        <a href="{{ route('profile.edit') }}" style="display: block; padding: var(--spacing-sm) var(--spacing-md); color: var(--gray-700); text-decoration: none; border-radius: var(--radius-sm); transition: background var(--transition-fast);" onmouseover="this.style.background='var(--gray-100)'" onmouseout="this.style.background='transparent'">
-                            <i class="fas fa-cog"></i> Perfil
+                    <div class="user-dropdown-divider"></div>
+                    <nav class="user-dropdown-nav">
+                        <a href="{{ route('profile.edit') }}" class="user-dropdown-link">
+                            <span class="user-dropdown-link-icon">
+                                <i class="fas fa-user-cog"></i>
+                            </span>
+                            <span class="user-dropdown-link-text">Perfil</span>
                         </a>
-                        <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                        <form method="POST" action="{{ route('logout') }}" class="user-dropdown-form">
                             @csrf
-                            <button type="submit" style="width: 100%; text-align: left; padding: var(--spacing-sm) var(--spacing-md); color: var(--error); background: transparent; border: none; cursor: pointer; border-radius: var(--radius-sm); transition: background var(--transition-fast); font-family: inherit; font-size: inherit;" onmouseover="this.style.background='var(--gray-100)'" onmouseout="this.style.background='transparent'">
-                                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                            <button type="submit" class="user-dropdown-link user-dropdown-logout">
+                                <span class="user-dropdown-link-icon">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </span>
+                                <span class="user-dropdown-link-text">Cerrar Sesión</span>
                             </button>
                         </form>
-                    </div>
+                    </nav>
                 </div>
             </div>
         </nav>
@@ -251,19 +304,41 @@
 
         // User menu toggle
         function toggleUserMenu() {
-            const menu = document.getElementById('user-menu');
-            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+            // Check if mobile
+            if (window.innerWidth <= 768) {
+                openMobileUserSidebar();
+            } else {
+                const menu = document.getElementById('user-menu');
+                menu.classList.toggle('show');
+            }
         }
 
         // Close menu when clicking outside
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('user-menu');
-            const button = event.target.closest('button');
+            const button = document.getElementById('user-icon-btn');
             
-            if (!button && menu && menu.style.display === 'block') {
-                menu.style.display = 'none';
+            // Check if click is outside both menu and button
+            if (!menu.contains(event.target) && !button.contains(event.target)) {
+                menu.classList.remove('show');
             }
         });
+
+        // Mobile User Sidebar functionality
+        const mobileUserSidebar = document.getElementById('mobile-user-sidebar');
+        const mobileUserOverlay = document.getElementById('mobile-user-overlay');
+
+        function openMobileUserSidebar() {
+            mobileUserSidebar.classList.add('open');
+            mobileUserOverlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileUserSidebar() {
+            mobileUserSidebar.classList.remove('open');
+            mobileUserOverlay.classList.remove('show');
+            document.body.style.overflow = '';
+        }
 
         // Initialize theme on page load
         const savedTheme = localStorage.getItem('theme') || 'purple';
