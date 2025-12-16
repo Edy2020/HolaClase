@@ -23,20 +23,23 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar -->
+        <!-- Desktop Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a href="{{ route('dashboard') }}" class="sidebar-logo">
                     <div class="sidebar-logo-icon">HC</div>
-                    <span>HolaClase</span>
+                    <span class="sidebar-logo-text">HolaClase</span>
                 </a>
+                <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
 
             <nav>
                 <ul class="sidebar-nav">
                     <li class="sidebar-nav-item">
                         <a href="{{ route('dashboard') }}" class="sidebar-nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                            <span class="sidebar-nav-icon"><i class="fas fa-chart-bar"></i></span>
+                            <span class="sidebar-nav-icon"><i class="fas fa-home"></i></span>
                             <span>Dashboard</span>
                         </a>
                     </li>
@@ -54,19 +57,82 @@
                     </li>
                     <li class="sidebar-nav-item">
                         <a href="{{ route('teachers.index') }}" class="sidebar-nav-link {{ request()->routeIs('teachers.*') ? 'active' : '' }}">
-                            <span class="sidebar-nav-icon"><i class="fas fa-school"></i></span>
+                            <span class="sidebar-nav-icon"><i class="fas fa-chalkboard-teacher"></i></span>
                             <span>Profesores</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
                         <a href="{{ route('attendance.index') }}" class="sidebar-nav-link {{ request()->routeIs('attendance.*') ? 'active' : '' }}">
-                            <span class="sidebar-nav-icon"><i class="fas fa-check"></i></span>
+                            <span class="sidebar-nav-icon"><i class="fas fa-calendar-check"></i></span>
                             <span>Asistencia</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
                         <a href="{{ route('grades.index') }}" class="sidebar-nav-link {{ request()->routeIs('grades.*') ? 'active' : '' }}">
-                            <span class="sidebar-nav-icon"><i class="fas fa-clipboard"></i></span>
+                            <span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span>
+                            <span>Calificaciones</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="{{ route('settings.index') }}" class="sidebar-nav-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
+                            <span class="sidebar-nav-icon"><i class="fas fa-cog"></i></span>
+                            <span>Configuración</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Mobile Sidebar Overlay -->
+        <div class="mobile-sidebar-overlay" id="mobile-overlay" onclick="closeMobileSidebar()"></div>
+
+        <!-- Mobile Sidebar -->
+        <aside class="mobile-sidebar" id="mobile-sidebar">
+            <div class="sidebar-header">
+                <a href="{{ route('dashboard') }}" class="sidebar-logo">
+                    <div class="sidebar-logo-icon">HC</div>
+                    <span class="sidebar-logo-text">HolaClase</span>
+                </a>
+                <button class="sidebar-toggle-btn" onclick="closeMobileSidebar()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <nav>
+                <ul class="sidebar-nav">
+                    <li class="sidebar-nav-item">
+                        <a href="{{ route('dashboard') }}" class="sidebar-nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                            <span class="sidebar-nav-icon"><i class="fas fa-home"></i></span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="{{ route('courses.index') }}" class="sidebar-nav-link {{ request()->routeIs('courses.*') ? 'active' : '' }}">
+                            <span class="sidebar-nav-icon"><i class="fas fa-graduation-cap"></i></span>
+                            <span>Cursos</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="{{ route('subjects.index') }}" class="sidebar-nav-link {{ request()->routeIs('subjects.*') ? 'active' : '' }}">
+                            <span class="sidebar-nav-icon"><i class="fas fa-book"></i></span>
+                            <span>Asignaturas</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="{{ route('teachers.index') }}" class="sidebar-nav-link {{ request()->routeIs('teachers.*') ? 'active' : '' }}">
+                            <span class="sidebar-nav-icon"><i class="fas fa-chalkboard-teacher"></i></span>
+                            <span>Profesores</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="{{ route('attendance.index') }}" class="sidebar-nav-link {{ request()->routeIs('attendance.*') ? 'active' : '' }}">
+                            <span class="sidebar-nav-icon"><i class="fas fa-calendar-check"></i></span>
+                            <span>Asistencia</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="{{ route('grades.index') }}" class="sidebar-nav-link {{ request()->routeIs('grades.*') ? 'active' : '' }}">
+                            <span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span>
                             <span>Calificaciones</span>
                         </a>
                     </li>
@@ -83,36 +149,34 @@
         <!-- Fixed Navbar -->
         <nav class="app-navbar">
             <div class="navbar-left">
-                <button class="btn btn-ghost-light btn-sm" id="sidebar-toggle">
-                    ☰
+                <button class="mobile-menu-btn" onclick="openMobileSidebar()">
+                    <i class="fas fa-bars"></i>
                 </button>
                 <h1 class="navbar-title">{{ $header ?? 'Dashboard' }}</h1>
             </div>
 
             <div class="navbar-right">
-                <!-- User Dropdown -->
-                <div style="position: relative;">
-                    <button class="btn btn-ghost-light btn-sm" onclick="toggleUserMenu()">
-                        <span>{{ Auth::user()->name }}</span>
-                        <span>▼</span>
-                    </button>
+                <!-- User Icon Button -->
+                <button class="user-icon-btn" onclick="toggleUserMenu()">
+                    <i class="fas fa-user"></i>
+                </button>
 
-                    <div id="user-menu" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.5rem; background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); min-width: 200px; z-index: 50;">
-                        <div style="padding: var(--spacing-md); border-bottom: 1px solid var(--gray-200);">
-                            <div style="font-weight: 600; color: var(--gray-900);">{{ Auth::user()->name }}</div>
-                            <div style="font-size: 0.875rem; color: var(--gray-600);">{{ Auth::user()->email }}</div>
-                        </div>
-                        <div style="padding: var(--spacing-sm);">
-                            <a href="{{ route('profile.edit') }}" style="display: block; padding: var(--spacing-sm) var(--spacing-md); color: var(--gray-700); text-decoration: none; border-radius: var(--radius-sm); transition: background var(--transition-fast);" onmouseover="this.style.background='var(--gray-100)'" onmouseout="this.style.background='transparent'">
-                                <i class="fas fa-cog"></i> Perfil
-                            </a>
-                            <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-                                @csrf
-                                <button type="submit" style="width: 100%; text-align: left; padding: var(--spacing-sm) var(--spacing-md); color: var(--error); background: transparent; border: none; cursor: pointer; border-radius: var(--radius-sm); transition: background var(--transition-fast); font-family: inherit; font-size: inherit;" onmouseover="this.style.background='var(--gray-100)'" onmouseout="this.style.background='transparent'">
-                                    🚪 Cerrar Sesión
-                                </button>
-                            </form>
-                        </div>
+                <!-- User Dropdown Menu -->
+                <div id="user-menu" style="display: none; position: absolute; right: var(--spacing-md); top: 60px; background: white; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); min-width: 200px; z-index: 50;">
+                    <div style="padding: var(--spacing-md); border-bottom: 1px solid var(--gray-200);">
+                        <div style="font-weight: 600; color: var(--gray-900);">{{ Auth::user()->name }}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-600);">{{ Auth::user()->email }}</div>
+                    </div>
+                    <div style="padding: var(--spacing-sm);">
+                        <a href="{{ route('profile.edit') }}" style="display: block; padding: var(--spacing-sm) var(--spacing-md); color: var(--gray-700); text-decoration: none; border-radius: var(--radius-sm); transition: background var(--transition-fast);" onmouseover="this.style.background='var(--gray-100)'" onmouseout="this.style.background='transparent'">
+                            <i class="fas fa-cog"></i> Perfil
+                        </a>
+                        <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                            @csrf
+                            <button type="submit" style="width: 100%; text-align: left; padding: var(--spacing-sm) var(--spacing-md); color: var(--error); background: transparent; border: none; cursor: pointer; border-radius: var(--radius-sm); transition: background var(--transition-fast); font-family: inherit; font-size: inherit;" onmouseover="this.style.background='var(--gray-100)'" onmouseout="this.style.background='transparent'">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -133,62 +197,76 @@
     </div>
 
     <script>
-        // Toggle user menu
+        // Desktop Sidebar toggle functionality
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        
+        // Load saved sidebar state
+        let sidebarOpen = localStorage.getItem('sidebarOpen') !== 'false';
+
+        function toggleSidebar() {
+            sidebarOpen = !sidebarOpen;
+            sidebar.classList.toggle('collapsed');
+            // Save state to localStorage
+            localStorage.setItem('sidebarOpen', sidebarOpen);
+        }
+
+        // Apply saved state on load
+        if (!sidebarOpen) {
+            sidebar.classList.add('collapsed');
+        }
+
+        // Mobile Sidebar functionality
+        const mobileSidebar = document.getElementById('mobile-sidebar');
+        const mobileOverlay = document.getElementById('mobile-overlay');
+
+        function openMobileSidebar() {
+            mobileSidebar.classList.add('open');
+            mobileOverlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileSidebar() {
+            mobileSidebar.classList.remove('open');
+            mobileOverlay.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // Responsive behavior
+        function checkMobile() {
+            if (window.innerWidth <= 1024) {
+                sidebar.classList.add('collapsed');
+                sidebarOpen = false;
+                localStorage.setItem('sidebarOpen', false);
+            } else if (localStorage.getItem('sidebarOpen') !== 'false') {
+                sidebar.classList.remove('collapsed');
+                sidebarOpen = true;
+                // Close mobile sidebar if open
+                closeMobileSidebar();
+            }
+        }
+
+        window.addEventListener('resize', checkMobile);
+        checkMobile();
+
+        // User menu toggle
         function toggleUserMenu() {
             const menu = document.getElementById('user-menu');
             menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
         }
 
-        // Close user menu when clicking outside
+        // Close menu when clicking outside
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('user-menu');
             const button = event.target.closest('button');
             
-            if (!button || button.getAttribute('onclick') !== 'toggleUserMenu()') {
+            if (!button && menu && menu.style.display === 'block') {
                 menu.style.display = 'none';
             }
         });
 
-        // Sidebar toggle functionality
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('mainContent');
-        let sidebarOpen = true;
-        
-        sidebarToggle.addEventListener('click', function() {
-            sidebarOpen = !sidebarOpen;
-            
-            if (sidebarOpen) {
-                sidebar.style.transform = 'translateX(0)';
-                sidebar.classList.remove('collapsed');
-                mainContent.classList.add('with-sidebar');
-            } else {
-                sidebar.style.transform = 'translateX(-100%)';
-                sidebar.classList.add('collapsed');
-                mainContent.classList.remove('with-sidebar');
-            }
-        });
-        
-        // Responsive behavior
-        function checkMobile() {
-            if (window.innerWidth <= 1024) {
-                sidebar.style.transform = 'translateX(-100%)';
-                sidebar.classList.add('collapsed');
-                mainContent.classList.remove('with-sidebar');
-                sidebarOpen = false;
-            } else {
-                sidebar.style.transform = 'translateX(0)';
-                sidebar.classList.remove('collapsed');
-                mainContent.classList.add('with-sidebar');
-                sidebarOpen = true;
-            }
-        }
-        
-        window.addEventListener('resize', checkMobile);
-        checkMobile();
-        
         // Load saved theme
-        const savedTheme = localStorage.getItem('holaclase_theme');
+        const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             document.documentElement.setAttribute('data-theme', savedTheme);
         }
