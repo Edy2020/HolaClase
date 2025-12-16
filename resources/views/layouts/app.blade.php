@@ -265,18 +265,24 @@
             }
         });
 
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme');
+        // Initialize theme on page load
+        const savedTheme = localStorage.getItem('theme') || 'purple';
         if (savedTheme) {
             document.documentElement.setAttribute('data-theme', savedTheme);
             
-            // If custom theme, load and apply custom colors
+            // Apply custom color if custom theme is selected
             if (savedTheme === 'custom') {
                 const customColor = localStorage.getItem('customColor');
                 if (customColor) {
                     applyCustomColor(customColor);
                 }
             }
+        }
+
+        // Initialize dark mode on page load
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+        if (isDarkMode) {
+            document.documentElement.classList.add('dark-mode');
         }
 
         function applyCustomColor(baseColor) {

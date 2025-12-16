@@ -1,13 +1,13 @@
 ﻿<x-app-layout>
     <x-slot name="header">
-        Configuración del Sistema
+        Configuración
     </x-slot>
 
-    <div style="max-width: 1200px;">
+    <div style="min-height: calc(100vh - 200px);">
         <!-- Header -->
-        <div style="margin-bottom: var(--spacing-2xl);">
+        <div class="page-header" style="margin-bottom: var(--spacing-2xl);">
             <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                <i class="fas fa-cog"></i> Configuración del Sistema
+                <i class="fas fa-cog"></i> Configuración
             </h2>
             <p style="color: var(--gray-600); margin: 0;">
                 Personaliza la apariencia y comportamiento de HolaClase
@@ -15,12 +15,27 @@
         </div>
 
         <!-- Theme Selection -->
-        <div class="card mb-xl">
-            <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-palette"></i> Tema del Sistema</h3>
-            </div>
-            <div class="card-body">
-                <p style="color: var(--gray-600); margin-bottom: var(--spacing-xl);">
+    <div class="card mb-xl">
+        <div class="card-body">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                    <div>
+                        <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin: 0; display: flex; align-items: center; gap: var(--spacing-sm);">
+                            <i class="fas fa-palette"></i>
+                            Tema
+                        </h3>
+                    </div>
+                    
+                    <!-- Dark Mode Toggle -->
+                    <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                        <i class="fas fa-moon" style="color: var(--gray-600); font-size: 0.875rem;"></i>
+                        <label class="dark-mode-switch">
+                            <input type="checkbox" id="dark-mode-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <p style="font-size: 0.9375rem; color: var(--gray-600); margin-bottom: var(--spacing-lg);">
                     Selecciona el tema de colores que prefieras para personalizar la interfaz del sistema
                 </p>
 
@@ -156,115 +171,9 @@
                 </div>
             </div>
         </div>
-
-        <!-- Other Settings -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-wrench"></i> Otras Configuraciones</h3>
-            </div>
-            <div class="card-body">
-                <div style="display: flex; flex-direction: column; gap: var(--spacing-xl);">
-                    <!-- Notifications -->
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div>
-                            <h4 style="font-weight: 600; color: var(--gray-900); margin: 0 0 var(--spacing-xs) 0;">Notificaciones</h4>
-                            <p style="font-size: 0.875rem; color: var(--gray-600); margin: 0;">Recibir notificaciones del sistema</p>
-                        </div>
-                        <label style="position: relative; display: inline-block; width: 60px; height: 34px;">
-                            <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
-                            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--theme-color); transition: .4s; border-radius: 34px;"></span>
-                        </label>
-                    </div>
-
-                    <!-- Language -->
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div>
-                            <h4 style="font-weight: 600; color: var(--gray-900); margin: 0 0 var(--spacing-xs) 0;">Idioma</h4>
-                            <p style="font-size: 0.875rem; color: var(--gray-600); margin: 0;">Idioma de la interfaz</p>
-                        </div>
-                        <select class="form-select" style="width: 200px;">
-                            <option selected>Español</option>
-                            <option>English</option>
-                            <option>Português</option>
-                        </select>
-                    </div>
-
-                    <!-- Timezone -->
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div>
-                            <h4 style="font-weight: 600; color: var(--gray-900); margin: 0 0 var(--spacing-xs) 0;">Zona Horaria</h4>
-                            <p style="font-size: 0.875rem; color: var(--gray-600); margin: 0;">Configuración de hora local</p>
-                        </div>
-                        <select class="form-select" style="width: 200px;">
-                            <option selected>Santiago (GMT-3)</option>
-                            <option>Buenos Aires (GMT-3)</option>
-                            <option>Lima (GMT-5)</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <style>
-        .grid {
-            display: grid;
-            gap: var(--spacing-lg);
-        }
-
-        .grid-cols-3 {
-            grid-template-columns: repeat(3, 1fr);
-        }
-
-        .theme-card {
-            background: white;
-            border: 2px solid var(--gray-200);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-lg);
-            cursor: pointer;
-            transition: all var(--transition-base);
-        }
-
-        .theme-card:hover {
-            border-color: var(--gray-300);
-            box-shadow: var(--shadow-md);
-        }
-
-        .theme-card.selected {
-            border-width: 3px;
-            border-color: var(--theme-color);
-            box-shadow: var(--shadow-lg);
-        }
-
-        @media (max-width: 768px) {
-            .grid-cols-3 {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Custom Hue Slider Styling */
-        #hue-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: white;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        #hue-slider::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: white;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/configuracion.css') }}">
 
     <script>
         // Theme selection
@@ -572,6 +481,33 @@
                 if (currentTheme === 'custom') {
                     applyCustomColorToSystem(savedCustomColor);
                 }
+            }
+
+            // Load dark mode state
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (darkModeToggle) {
+                darkModeToggle.checked = isDarkMode;
+                if (isDarkMode) {
+                    document.documentElement.classList.add('dark-mode');
+                }
+            }
+        });
+
+        // Dark mode toggle handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            if (darkModeToggle) {
+                darkModeToggle.addEventListener('change', function() {
+                    const isDarkMode = this.checked;
+                    localStorage.setItem('darkMode', isDarkMode);
+                    
+                    if (isDarkMode) {
+                        document.documentElement.classList.add('dark-mode');
+                    } else {
+                        document.documentElement.classList.remove('dark-mode');
+                    }
+                });
             }
         });
     </script>
