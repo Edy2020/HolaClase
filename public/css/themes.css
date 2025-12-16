@@ -42,10 +42,10 @@
     --theme-darker: #991b1b;
 }
 
-/* Theme: Ámbar */
-[data-theme="amber"] {
-    --theme-color: #d97706;
-    --theme-light: #f59e0b;
-    --theme-dark: #b45309;
-    --theme-darker: #92400e;
+/* Theme: Personalizado */
+[data-theme="custom"] {
+    --theme-color: var(--custom-color, #7e22ce);
+    --theme-light: var(--custom-light, #9333ea);
+    --theme-dark: var(--custom-dark, #6b21a8);
+    --theme-darker: var(--custom-darker, #581c87);
 }

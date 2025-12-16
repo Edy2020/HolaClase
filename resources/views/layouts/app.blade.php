@@ -269,6 +269,43 @@
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            // If custom theme, load and apply custom colors
+            if (savedTheme === 'custom') {
+                const customColor = localStorage.getItem('customColor');
+                if (customColor) {
+                    applyCustomColor(customColor);
+                }
+            }
+        }
+
+        function applyCustomColor(baseColor) {
+            // Generate color variations
+            const variations = generateColorVariations(baseColor);
+            
+            // Apply custom colors
+            document.documentElement.style.setProperty('--custom-color', baseColor);
+            document.documentElement.style.setProperty('--custom-light', variations.light);
+            document.documentElement.style.setProperty('--custom-dark', variations.dark);
+            document.documentElement.style.setProperty('--custom-darker', variations.darker);
+        }
+
+        function generateColorVariations(hexColor) {
+            // Convert hex to RGB
+            const r = parseInt(hexColor.substr(1, 2), 16);
+            const g = parseInt(hexColor.substr(3, 2), 16);
+            const b = parseInt(hexColor.substr(5, 2), 16);
+            
+            // Generate lighter version (increase brightness by 15%)
+            const light = `#${Math.min(255, Math.round(r * 1.15)).toString(16).padStart(2, '0')}${Math.min(255, Math.round(g * 1.15)).toString(16).padStart(2, '0')}${Math.min(255, Math.round(b * 1.15)).toString(16).padStart(2, '0')}`;
+            
+            // Generate darker version (decrease brightness by 15%)
+            const dark = `#${Math.round(r * 0.85).toString(16).padStart(2, '0')}${Math.round(g * 0.85).toString(16).padStart(2, '0')}${Math.round(b * 0.85).toString(16).padStart(2, '0')}`;
+            
+            // Generate even darker version (decrease brightness by 30%)
+            const darker = `#${Math.round(r * 0.7).toString(16).padStart(2, '0')}${Math.round(g * 0.7).toString(16).padStart(2, '0')}${Math.round(b * 0.7).toString(16).padStart(2, '0')}`;
+            
+            return { light, dark, darker };
         }
     </script>
 </body>
