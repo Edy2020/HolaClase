@@ -1,0 +1,33 @@
+/* ============================================
+   Theme Variables - Single Color System
+   ============================================ */
+
+/* Default Theme - Gris Oscuro */
+:root {
+    --theme-color: #52525b;
+}
+
+/* Theme: Azul Oscuro */
+[data-theme="blue"] {
+    --theme-color: #0284c7;
+}
+
+/* Theme: Verde Oscuro */
+[data-theme="green"] {
+    --theme-color: #16a34a;
+}
+
+/* Theme: Morado Oscuro */
+[data-theme="purple"] {
+    --theme-color: #9333ea;
+}
+
+/* Theme: Rojo Oscuro */
+[data-theme="red"] {
+    --theme-color: #dc2626;
+}
+
+/* Theme: Naranja Oscuro */
+[data-theme="orange"] {
+    --theme-color: #ea580c;
+}
