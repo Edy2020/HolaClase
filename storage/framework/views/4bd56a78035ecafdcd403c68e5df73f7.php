@@ -1,11 +1,11 @@
 ﻿<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-    <title>{{ config('app.name', 'HolaClase') }}</title>
+    <title><?php echo e(config('app.name', 'HolaClase')); ?></title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -15,21 +15,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/themes.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/custom.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/themes.css')); ?>">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 </head>
 <body>
     <div class="app-container">
         <!-- Desktop Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <a href="{{ route('dashboard') }}" class="sidebar-logo">
+                <a href="<?php echo e(route('dashboard')); ?>" class="sidebar-logo">
                     <div class="sidebar-logo-icon">
-                        <img src="{{ asset('hc_icon.png') }}" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
+                        <img src="<?php echo e(asset('hc_icon.png')); ?>" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
                     </div>
                     <span class="sidebar-logo-text">HolaClase!</span>
                 </a>
@@ -41,43 +41,43 @@
             <nav>
                 <ul class="sidebar-nav">
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('dashboard') }}" class="sidebar-nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('dashboard')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-home"></i></span>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('courses.index') }}" class="sidebar-nav-link {{ request()->routeIs('courses.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('courses.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('courses.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-graduation-cap"></i></span>
                             <span>Cursos</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('subjects.index') }}" class="sidebar-nav-link {{ request()->routeIs('subjects.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('subjects.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('subjects.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-book"></i></span>
                             <span>Asignaturas</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('teachers.index') }}" class="sidebar-nav-link {{ request()->routeIs('teachers.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('teachers.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('teachers.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-chalkboard-teacher"></i></span>
                             <span>Profesores</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('attendance.index') }}" class="sidebar-nav-link {{ request()->routeIs('attendance.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('attendance.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('attendance.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-calendar-check"></i></span>
                             <span>Asistencia</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('grades.index') }}" class="sidebar-nav-link {{ request()->routeIs('grades.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('grades.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('grades.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span>
                             <span>Notas</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('settings.index') }}" class="sidebar-nav-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('settings.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('settings.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-cog"></i></span>
                             <span>Configuración</span>
                         </a>
@@ -92,9 +92,9 @@
         <!-- Mobile Sidebar -->
         <aside class="mobile-sidebar" id="mobile-sidebar">
             <div class="sidebar-header">
-                <a href="{{ route('dashboard') }}" class="sidebar-logo">
+                <a href="<?php echo e(route('dashboard')); ?>" class="sidebar-logo">
                     <div class="sidebar-logo-icon">
-                        <img src="{{ asset('hc_icon.png') }}" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
+                        <img src="<?php echo e(asset('hc_icon.png')); ?>" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
                     </div>
                     <span class="sidebar-logo-text">HolaClase</span>
                 </a>
@@ -106,43 +106,43 @@
             <nav>
                 <ul class="sidebar-nav">
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('dashboard') }}" class="sidebar-nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('dashboard')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-home"></i></span>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('courses.index') }}" class="sidebar-nav-link {{ request()->routeIs('courses.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('courses.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('courses.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-graduation-cap"></i></span>
                             <span>Cursos</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('subjects.index') }}" class="sidebar-nav-link {{ request()->routeIs('subjects.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('subjects.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('subjects.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-book"></i></span>
                             <span>Asignaturas</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('teachers.index') }}" class="sidebar-nav-link {{ request()->routeIs('teachers.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('teachers.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('teachers.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-chalkboard-teacher"></i></span>
                             <span>Profesores</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('attendance.index') }}" class="sidebar-nav-link {{ request()->routeIs('attendance.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('attendance.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('attendance.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-calendar-check"></i></span>
                             <span>Asistencia</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('grades.index') }}" class="sidebar-nav-link {{ request()->routeIs('grades.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('grades.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('grades.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span>
                             <span>Notas</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('settings.index') }}" class="sidebar-nav-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('settings.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('settings.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-cog"></i></span>
                             <span>Configuración</span>
                         </a>
@@ -162,8 +162,8 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="mobile-user-sidebar-details">
-                        <div class="mobile-user-sidebar-name">{{ Auth::user()->name }}</div>
-                        <div class="mobile-user-sidebar-email">{{ Auth::user()->email }}</div>
+                        <div class="mobile-user-sidebar-name"><?php echo e(Auth::user()->name); ?></div>
+                        <div class="mobile-user-sidebar-email"><?php echo e(Auth::user()->email); ?></div>
                     </div>
                 </div>
                 <button class="sidebar-toggle-btn" onclick="closeMobileUserSidebar()">
@@ -174,14 +174,14 @@
             <nav class="mobile-user-nav">
                 <ul>
                     <li>
-                        <a href="{{ route('profile.edit') }}" class="mobile-user-nav-link">
+                        <a href="<?php echo e(route('profile.edit')); ?>" class="mobile-user-nav-link">
                             <span class="mobile-user-nav-icon"><i class="fas fa-user-cog"></i></span>
                             <span>Editar Perfil</span>
                         </a>
                     </li>
                     <li>
-                        <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-                            @csrf
+                        <form method="POST" action="<?php echo e(route('logout')); ?>" style="margin: 0;">
+                            <?php echo csrf_field(); ?>
                             <button type="submit" class="mobile-user-nav-link logout-btn">
                                 <span class="mobile-user-nav-icon"><i class="fas fa-sign-out-alt"></i></span>
                                 <span>Cerrar Sesión</span>
@@ -198,7 +198,7 @@
                 <button class="mobile-menu-btn" onclick="openMobileSidebar()">
                     <i class="fas fa-bars"></i>
                 </button>
-                <h1 class="navbar-title">{{ $header ?? 'Dashboard' }}</h1>
+                <h1 class="navbar-title"><?php echo e($header ?? 'Dashboard'); ?></h1>
             </div>
 
             <div class="navbar-right">
@@ -214,20 +214,20 @@
                             <i class="fas fa-user"></i>
                         </div>
                         <div class="user-dropdown-info">
-                            <div class="user-dropdown-name">{{ Auth::user()->name }}</div>
-                            <div class="user-dropdown-email">{{ Auth::user()->email }}</div>
+                            <div class="user-dropdown-name"><?php echo e(Auth::user()->name); ?></div>
+                            <div class="user-dropdown-email"><?php echo e(Auth::user()->email); ?></div>
                         </div>
                     </div>
                     <div class="user-dropdown-divider"></div>
                     <nav class="user-dropdown-nav">
-                        <a href="{{ route('profile.edit') }}" class="user-dropdown-link">
+                        <a href="<?php echo e(route('profile.edit')); ?>" class="user-dropdown-link">
                             <span class="user-dropdown-link-icon">
                                 <i class="fas fa-user-cog"></i>
                             </span>
                             <span class="user-dropdown-link-text">Perfil</span>
                         </a>
-                        <form method="POST" action="{{ route('logout') }}" class="user-dropdown-form">
-                            @csrf
+                        <form method="POST" action="<?php echo e(route('logout')); ?>" class="user-dropdown-form">
+                            <?php echo csrf_field(); ?>
                             <button type="submit" class="user-dropdown-link user-dropdown-logout">
                                 <span class="user-dropdown-link-icon">
                                     <i class="fas fa-sign-out-alt"></i>
@@ -244,12 +244,13 @@
         <div class="main-content with-sidebar" id="mainContent">
             <!-- Page Content -->
             <main class="content-wrapper fade-in">
-                {{ $slot }}
+                <?php echo e($slot); ?>
+
             </main>
 
             <!-- Footer -->
             <!-- <footer class="app-footer">
-                <p>&copy; {{ date('Y') }} HolaClase. Sistema de Gestión Educativa. Todos los derechos reservados.</p>
+                <p>&copy; <?php echo e(date('Y')); ?> HolaClase. Sistema de Gestión Educativa. Todos los derechos reservados.</p>
             </footer> -->
         </div>
     </div>
@@ -396,3 +397,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH C:\Users\Edy\Downloads\laragon-portable\www\HolaClase\resources\views/layouts/app.blade.php ENDPATH**/ ?>

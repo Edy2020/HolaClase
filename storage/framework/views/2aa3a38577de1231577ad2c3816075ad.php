@@ -1,12 +1,21 @@
-﻿<x-app-layout>
-    <x-slot name="header">
+﻿<?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
+<?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('app-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+     <?php $__env->slot('header', null, []); ?> 
         Dashboard
-    </x-slot>
+     <?php $__env->endSlot(); ?>
 
     <!-- Welcome Card -->
     <div style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg);">
         <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
-            ¡Bienvenido, {{ Auth::user()->name }}! <i class="fas fa-hand-wave"></i>
+            ¡Bienvenido, <?php echo e(Auth::user()->name); ?>! <i class="fas fa-hand-wave"></i>
         </h2>
         <p style="font-size: 1rem; opacity: 0.95; margin: 0;">
             Aquí tienes un resumen de tu actividad y accesos rápidos a las funciones principales
@@ -208,4 +217,14 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $attributes = $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php /**PATH C:\Users\Edy\Downloads\laragon-portable\www\HolaClase\resources\views/dashboard.blade.php ENDPATH**/ ?>

@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'HolaClase') }} - Sistema de Gestión Educativa</title>
+    <title><?php echo e(config('app.name', 'HolaClase')); ?> - Sistema de Gestión Educativa</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -13,32 +13,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/themes.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/welcome.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/custom.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/themes.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/welcome.css')); ?>">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="{{ url('/') }}" class="navbar-logo">
+            <a href="<?php echo e(url('/')); ?>" class="navbar-logo">
                 <div class="navbar-logo-icon">
-                    <img src="{{ asset('hc_icon.png') }}" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
+                    <img src="<?php echo e(asset('hc_icon.png')); ?>" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
                 <span class="navbar-logo-text">HolaClase</span>
             </a>
             <div class="navbar-links">
                 <a href="#features" class="navbar-link">Características</a>
                 <a href="#testimonials" class="navbar-link">Testimonios</a>
-                @auth
-                    <a href="{{ route('dashboard') }}" class="navbar-btn">Dashboard</a>
-                @else
-                    <a href="{{ route('login') }}" class="navbar-btn-outline">Iniciar Sesión</a>
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="navbar-btn">Crear Cuenta</a>
-                    @endif
-                @endauth
+                <?php if(auth()->guard()->check()): ?>
+                    <a href="<?php echo e(route('dashboard')); ?>" class="navbar-btn">Dashboard</a>
+                <?php else: ?>
+                    <a href="<?php echo e(route('login')); ?>" class="navbar-btn-outline">Iniciar Sesión</a>
+                    <?php if(Route::has('register')): ?>
+                        <a href="<?php echo e(route('register')); ?>" class="navbar-btn">Crear Cuenta</a>
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
             <button class="mobile-menu-btn-welcome" onclick="openWelcomeSidebar()">
                 <i class="fas fa-bars"></i>
@@ -62,23 +62,23 @@
         </div>
         
         <div class="welcome-sidebar-links">
-            @auth
-                <a href="{{ route('dashboard') }}" class="welcome-sidebar-link primary">
+            <?php if(auth()->guard()->check()): ?>
+                <a href="<?php echo e(route('dashboard')); ?>" class="welcome-sidebar-link primary">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
-            @else
-                <a href="{{ route('login') }}" class="welcome-sidebar-link">
+            <?php else: ?>
+                <a href="<?php echo e(route('login')); ?>" class="welcome-sidebar-link">
                     <i class="fas fa-sign-in-alt"></i>
                     <span>Iniciar Sesión</span>
                 </a>
-                @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="welcome-sidebar-link primary">
+                <?php if(Route::has('register')): ?>
+                    <a href="<?php echo e(route('register')); ?>" class="welcome-sidebar-link primary">
                         <i class="fas fa-user-plus"></i>
                         <span>Crear Cuenta</span>
                     </a>
-                @endif
-            @endauth
+                <?php endif; ?>
+            <?php endif; ?>
         </div>
     </aside>
 
@@ -86,19 +86,19 @@
     <section class="hero-section">
         <div class="hero-content fade-in">
             <div class="hero-logo">
-                <img src="{{ asset('hc_icon.png') }}" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="<?php echo e(asset('hc_icon.png')); ?>" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
             <h1 class="hero-title">Bienvenido a HolaClase</h1>
             <p class="hero-subtitle">
                 El sistema de gestión educativa moderno que simplifica la administración de cursos, estudiantes, asistencia y notas
             </p>
             <div class="hero-buttons">
-                @auth
-                    <a href="{{ route('dashboard') }}" class="hero-btn hero-btn-primary">
+                <?php if(auth()->guard()->check()): ?>
+                    <a href="<?php echo e(route('dashboard')); ?>" class="hero-btn hero-btn-primary">
                         <span>Ir al Dashboard</span>
                         <span>→</span>
                     </a>
-                @endauth
+                <?php endif; ?>
             </div>
 
             <!-- Scroll Indicator -->
@@ -249,20 +249,20 @@
             Únete a HolaClase y transforma la gestión de tu institución educativa
         </p>
         <div style="display: flex; gap: var(--spacing-lg); justify-content: center; flex-wrap: wrap;">
-            @auth
-                <a href="{{ route('dashboard') }}" class="hero-btn hero-btn-primary">
+            <?php if(auth()->guard()->check()): ?>
+                <a href="<?php echo e(route('dashboard')); ?>" class="hero-btn hero-btn-primary">
                     <span>Ir al Dashboard</span>
                     <span>→</span>
                 </a>
-            @else
-                <a href="{{ route('register') }}" class="hero-btn hero-btn-primary">
+            <?php else: ?>
+                <a href="<?php echo e(route('register')); ?>" class="hero-btn hero-btn-primary">
                     <span>Crear Cuenta Gratis</span>
                     <span>→</span>
                 </a>
-                <a href="{{ route('login') }}" class="hero-btn hero-btn-secondary">
+                <a href="<?php echo e(route('login')); ?>" class="hero-btn hero-btn-secondary">
                     <span>Iniciar Sesión</span>
                 </a>
-            @endauth
+            <?php endif; ?>
         </div>
     </section>
 
@@ -274,7 +274,7 @@
                 <div>
                     <div class="navbar-logo" style="margin-bottom: var(--spacing-md);">
                         <div class="navbar-logo-icon">
-                            <img src="{{ asset('hc_icon.png') }}" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
+                            <img src="<?php echo e(asset('hc_icon.png')); ?>" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
                         </div>
                         <span class="navbar-logo-text" style="color: white;">HolaClase</span>
                     </div>
@@ -303,10 +303,10 @@
                     <ul class="footer-links">
                         <li class="footer-link"><a href="#features">Características</a></li>
                         <li class="footer-link"><a href="#testimonials">Testimonios</a></li>
-                        <li class="footer-link"><a href="{{ route('login') }}">Iniciar Sesión</a></li>
-                        @if (Route::has('register'))
-                            <li class="footer-link"><a href="{{ route('register') }}">Crear Cuenta</a></li>
-                        @endif
+                        <li class="footer-link"><a href="<?php echo e(route('login')); ?>">Iniciar Sesión</a></li>
+                        <?php if(Route::has('register')): ?>
+                            <li class="footer-link"><a href="<?php echo e(route('register')); ?>">Crear Cuenta</a></li>
+                        <?php endif; ?>
                     </ul>
                 </div>
 
@@ -342,7 +342,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p class="footer-text">&copy; {{ date('Y') }} HolaClase. Sistema de Gestión Educativa. Todos los derechos reservados.</p>
+                <p class="footer-text">&copy; <?php echo e(date('Y')); ?> HolaClase. Sistema de Gestión Educativa. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
@@ -374,3 +374,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH C:\Users\Edy\Downloads\laragon-portable\www\HolaClase\resources\views/welcome.blade.php ENDPATH**/ ?>

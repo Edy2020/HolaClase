@@ -38,8 +38,8 @@ Route::middleware('auth')->group(function () {
         return view('asistencia.index');
     })->name('attendance.index');
     
-    Route::get('/calificaciones', function () {
-        return view('calificaciones.index');
+    Route::get('/notas', function () {
+        return view('notas.index');
     })->name('grades.index');
     
     // Settings Routes

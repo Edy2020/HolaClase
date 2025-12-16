@@ -1,15 +1,15 @@
 ﻿<x-app-layout>
     <x-slot name="header">
-        Gestión de Calificaciones
+        Gestión de Notas
     </x-slot>
 
     <!-- Hero Header -->
     <div style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg);">
         <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
-            <i class="fas fa-chart-line"></i> Gestión de Calificaciones
+            <i class="fas fa-chart-line"></i> Gestión de Notas
         </h2>
         <p style="font-size: 1rem; opacity: 0.95; margin: 0;">
-            Registra y administra las calificaciones de tus estudiantes
+            Registra y administra las notas de tus estudiantes
         </p>
     </div>
 
@@ -391,7 +391,7 @@
         <div style="display: flex; gap: var(--spacing-md);">
             <button class="btn btn-ghost">Cancelar</button>
             <button class="btn btn-primary">
-                <i class="fas fa-save"></i> Guardar Calificaciones
+                <i class="fas fa-save"></i> Guardar Notas
             </button>
         </div>
     </div>
