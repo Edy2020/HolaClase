@@ -25,8 +25,19 @@
                 </p>
 
                 <div class="grid grid-cols-3">
-                    <!-- Tema Gris Oscuro (Default) -->
-                    <div class="theme-card active" data-theme="gray" onclick="selectTheme('gray')">
+                    <!-- Tema Morado Oscuro (Default) -->
+                    <div class="theme-card active" data-theme="purple" onclick="selectTheme('purple')">
+                        <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
+                            <div style="width: 50px; height: 50px; border-radius: var(--radius-lg); background: #7e22ce; box-shadow: var(--shadow-md);"></div>
+                            <div>
+                                <h4 style="font-weight: 700; color: var(--gray-900); margin: 0 0 var(--spacing-xs) 0;">Morado Oscuro</h4>
+                                <p style="font-size: 0.875rem; color: var(--gray-600); margin: 0;">Creativo y moderno</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tema Gris Oscuro -->
+                    <div class="theme-card" data-theme="gray" onclick="selectTheme('gray')">
                         <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
                             <div style="width: 50px; height: 50px; border-radius: var(--radius-lg); background: #52525b; box-shadow: var(--shadow-md);"></div>
                             <div>
@@ -47,45 +58,34 @@
                         </div>
                     </div>
 
-                    <!-- Tema Verde Oscuro -->
+                    <!-- Tema Verde Esmeralda -->
                     <div class="theme-card" data-theme="green" onclick="selectTheme('green')">
                         <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
-                            <div style="width: 50px; height: 50px; border-radius: var(--radius-lg); background: #16a34a; box-shadow: var(--shadow-md);"></div>
+                            <div style="width: 50px; height: 50px; border-radius: var(--radius-lg); background: #059669; box-shadow: var(--shadow-md);"></div>
                             <div>
-                                <h4 style="font-weight: 700; color: var(--gray-900); margin: 0 0 var(--spacing-xs) 0;">Verde Oscuro</h4>
+                                <h4 style="font-weight: 700; color: var(--gray-900); margin: 0 0 var(--spacing-xs) 0;">Verde Esmeralda</h4>
                                 <p style="font-size: 0.875rem; color: var(--gray-600); margin: 0;">Natural y equilibrado</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tema Morado Oscuro -->
-                    <div class="theme-card" data-theme="purple" onclick="selectTheme('purple')">
-                        <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
-                            <div style="width: 50px; height: 50px; border-radius: var(--radius-lg); background: #9333ea; box-shadow: var(--shadow-md);"></div>
-                            <div>
-                                <h4 style="font-weight: 700; color: var(--gray-900); margin: 0 0 var(--spacing-xs) 0;">Morado Oscuro</h4>
-                                <p style="font-size: 0.875rem; color: var(--gray-600); margin: 0;">Creativo y moderno</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tema Rojo Oscuro -->
-                    <div class="theme-card" data-theme="red" onclick="selectTheme('red')">
+                    <!-- Tema Carmesí -->
+                    <div class="theme-card" data-theme="crimson" onclick="selectTheme('crimson')">
                         <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
                             <div style="width: 50px; height: 50px; border-radius: var(--radius-lg); background: #dc2626; box-shadow: var(--shadow-md);"></div>
                             <div>
-                                <h4 style="font-weight: 700; color: var(--gray-900); margin: 0 0 var(--spacing-xs) 0;">Rojo Oscuro</h4>
+                                <h4 style="font-weight: 700; color: var(--gray-900); margin: 0 0 var(--spacing-xs) 0;">Carmesí</h4>
                                 <p style="font-size: 0.875rem; color: var(--gray-600); margin: 0;">Potente y audaz</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tema Naranja Oscuro -->
-                    <div class="theme-card" data-theme="orange" onclick="selectTheme('orange')">
+                    <!-- Tema Ámbar -->
+                    <div class="theme-card" data-theme="amber" onclick="selectTheme('amber')">
                         <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
-                            <div style="width: 50px; height: 50px; border-radius: var(--radius-lg); background: #ea580c; box-shadow: var(--shadow-md);"></div>
+                            <div style="width: 50px; height: 50px; border-radius: var(--radius-lg); background: #d97706; box-shadow: var(--shadow-md);"></div>
                             <div>
-                                <h4 style="font-weight: 700; color: var(--gray-900); margin: 0 0 var(--spacing-xs) 0;">Naranja Oscuro</h4>
+                                <h4 style="font-weight: 700; color: var(--gray-900); margin: 0 0 var(--spacing-xs) 0;">Ámbar</h4>
                                 <p style="font-size: 0.875rem; color: var(--gray-600); margin: 0;">Energético y cálido</p>
                             </div>
                         </div>
@@ -179,7 +179,7 @@
     </style>
 
     <script>
-        let selectedTheme = 'gray';
+        let selectedTheme = 'purple';
 
         function selectTheme(theme) {
             selectedTheme = theme;
@@ -197,7 +197,7 @@
         }
 
         function resetTheme() {
-            selectTheme('gray');
+            selectTheme('purple');
         }
 
         function applyTheme(theme) {

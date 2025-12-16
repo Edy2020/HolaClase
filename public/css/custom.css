@@ -3,19 +3,19 @@
    ============================================ */
 
 /* Importar Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ============================================
    Variables CSS
    ============================================ */
 :root {
-    /* Color del Tema (Un solo color principal) */
-    --theme-color: #52525b;
+    /* Color del Tema (Morado Oscuro Sólido) */
+    --theme-color: #7e22ce;
 
-    /* Variaciones generadas automáticamente del color del tema */
-    --theme-light: #71717a;
-    --theme-dark: #3f3f46;
-    --theme-darker: #27272a;
+    /* Variaciones del color morado */
+    --theme-light: #9333ea;
+    --theme-dark: #6b21a8;
+    --theme-darker: #581c87;
 
     /* Colores Neutros */
     --gray-50: #f9fafb;

@@ -2,32 +2,50 @@
    Theme Variables - Single Color System
    ============================================ */
 
-/* Default Theme - Gris Oscuro */
+/* Default Theme - Morado Oscuro */
 :root {
+    --theme-color: #7e22ce;
+    --theme-light: #9333ea;
+    --theme-dark: #6b21a8;
+    --theme-darker: #581c87;
+}
+
+/* Theme: Gris Oscuro */
+[data-theme="gray"] {
     --theme-color: #52525b;
+    --theme-light: #71717a;
+    --theme-dark: #3f3f46;
+    --theme-darker: #27272a;
 }
 
 /* Theme: Azul Oscuro */
 [data-theme="blue"] {
     --theme-color: #0284c7;
+    --theme-light: #0ea5e9;
+    --theme-dark: #0369a1;
+    --theme-darker: #075985;
 }
 
-/* Theme: Verde Oscuro */
+/* Theme: Verde Esmeralda */
 [data-theme="green"] {
-    --theme-color: #16a34a;
+    --theme-color: #059669;
+    --theme-light: #10b981;
+    --theme-dark: #047857;
+    --theme-darker: #065f46;
 }
 
-/* Theme: Morado Oscuro */
-[data-theme="purple"] {
-    --theme-color: #9333ea;
-}
-
-/* Theme: Rojo Oscuro */
-[data-theme="red"] {
+/* Theme: Carmesí */
+[data-theme="crimson"] {
     --theme-color: #dc2626;
+    --theme-light: #ef4444;
+    --theme-dark: #b91c1c;
+    --theme-darker: #991b1b;
 }
 
-/* Theme: Naranja Oscuro */
-[data-theme="orange"] {
-    --theme-color: #ea580c;
+/* Theme: Ámbar */
+[data-theme="amber"] {
+    --theme-color: #d97706;
+    --theme-light: #f59e0b;
+    --theme-dark: #b45309;
+    --theme-darker: #92400e;
 }
