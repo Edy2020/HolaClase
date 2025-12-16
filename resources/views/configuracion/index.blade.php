@@ -87,14 +87,65 @@
                             <div style="flex: 1;">
                                 <h4 style="font-weight: 700; color: var(--gray-900); margin: 0 0 var(--spacing-xs) 0;">Personalizado</h4>
                                 <p style="font-size: 0.875rem; color: var(--gray-600); margin: 0 0 var(--spacing-sm) 0;">Elige tu propio color</p>
-                                <label for="custom-color-picker" style="display: inline-block; padding: var(--spacing-xs) var(--spacing-md); background: var(--gray-100); border: 1px solid var(--gray-300); border-radius: var(--radius-md); color: var(--gray-700); font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all var(--transition-fast);" onmouseover="this.style.background='var(--gray-200)'" onmouseout="this.style.background='var(--gray-100)'">
+                                <button type="button" onclick="openCustomColorPicker(event)" style="display: inline-block; padding: var(--spacing-xs) var(--spacing-md); background: var(--gray-100); border: 1px solid var(--gray-300); border-radius: var(--radius-md); color: var(--gray-700); font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all var(--transition-fast);" onmouseover="this.style.background='var(--gray-200)'" onmouseout="this.style.background='var(--gray-100)'">
                                     <i class="fas fa-palette"></i> Seleccionar Color
-                                </label>
-                                <input type="color" id="custom-color-picker" value="#7e22ce" 
-                                       style="position: absolute; opacity: 0; width: 0; height: 0;"
-                                       onchange="updateCustomColor(this.value)"
-                                       onclick="event.stopPropagation()">
+                                </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Color Picker Modal -->
+                <div id="custom-color-picker-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: transparent; z-index: 1000; align-items: center; justify-content: center; pointer-events: none;">
+                    <div onclick="event.stopPropagation()" style="background: white; border-radius: var(--radius-lg); padding: var(--spacing-lg); max-width: 380px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.05); pointer-events: auto; border: 1px solid var(--gray-200);">
+                        <!-- Header -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                            <h3 style="margin: 0; font-weight: 700; color: var(--gray-900); font-size: 1.125rem;">Elige tu Color</h3>
+                            <button onclick="closeCustomColorPicker()" style="width: 28px; height: 28px; border-radius: 50%; background: transparent; border: none; color: var(--gray-600); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background var(--transition-fast);" onmouseover="this.style.background='var(--gray-100)'" onmouseout="this.style.background='transparent'">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <!-- Color Preview -->
+                        <div style="margin-bottom: var(--spacing-md);">
+                            <div id="color-preview-box" style="width: 100%; height: 50px; border-radius: var(--radius-md); background: #7e22ce; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200);"></div>
+                        </div>
+
+                        <!-- Saturation/Lightness Box -->
+                        <div style="margin-bottom: var(--spacing-md);">
+                            <div id="saturation-lightness-box" style="position: relative; width: 100%; height: 160px; border-radius: var(--radius-md); background: linear-gradient(to right, white, hsl(270, 100%, 50%)); cursor: crosshair; border: 1px solid var(--gray-200);">
+                                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, transparent, black); border-radius: var(--radius-md);"></div>
+                                <div id="sl-selector" style="position: absolute; width: 14px; height: 14px; border: 2px solid white; border-radius: 50%; box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2); transform: translate(-50%, -50%); pointer-events: none; left: 50%; top: 50%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Hue Slider -->
+                        <div style="margin-bottom: var(--spacing-md);">
+                            <input type="range" id="hue-slider" min="0" max="360" value="270" style="width: 100%; height: 16px; border-radius: var(--radius-md); background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000); -webkit-appearance: none; appearance: none; cursor: pointer;">
+                        </div>
+
+                        <!-- Hex Input -->
+                        <div style="margin-bottom: var(--spacing-md);">
+                            <label style="display: block; font-size: 0.8125rem; font-weight: 500; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Código Hexadecimal</label>
+                            <input type="text" id="hex-input" value="#7e22ce" maxlength="7" style="width: 100%; padding: var(--spacing-xs) var(--spacing-sm); border: 1px solid var(--gray-300); border-radius: var(--radius-md); font-family: monospace; font-size: 0.875rem;">
+                        </div>
+
+                        <!-- Preset Colors -->
+                        <div style="margin-bottom: var(--spacing-md);">
+                            <label style="display: block; font-size: 0.8125rem; font-weight: 500; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Colores Sugeridos</label>
+                            <div id="preset-colors" style="display: grid; grid-template-columns: repeat(8, 1fr); gap: var(--spacing-xs);">
+                                <!-- Preset colors will be added via JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: var(--spacing-sm);">
+                            <button onclick="closeCustomColorPicker()" class="btn btn-secondary" style="flex: 1; padding: var(--spacing-xs) var(--spacing-sm); font-size: 0.875rem;">
+                                Cancelar
+                            </button>
+                            <button onclick="applyCustomColorFromPicker()" class="btn btn-primary" style="flex: 1; padding: var(--spacing-xs) var(--spacing-sm); font-size: 0.875rem;">
+                                <i class="fas fa-check"></i> Aplicar
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -190,6 +241,29 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Custom Hue Slider Styling */
+        #hue-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        #hue-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
+        }
     </style>
 
     <script>
@@ -229,11 +303,224 @@
             }
         }
 
-        function updateCustomColor(color) {
+        // Custom Color Picker State
+        let pickerState = {
+            hue: 270,
+            saturation: 100,
+            lightness: 39,
+            tempColor: '#7e22ce'
+        };
+
+        const presetColors = [
+            '#7e22ce', '#52525b', '#0284c7', '#059669', '#dc2626', '#ea580c',
+            '#ca8a04', '#65a30d', '#0891b2', '#7c3aed', '#db2777', '#e11d48',
+            '#f97316', '#eab308', '#84cc16', '#10b981'
+        ];
+
+        function openCustomColorPicker(event) {
+            event.stopPropagation();
+            const modal = document.getElementById('custom-color-picker-modal');
+            modal.style.display = 'flex';
+            
+            // Load current color
+            const currentColor = localStorage.getItem('customColor') || '#7e22ce';
+            pickerState.tempColor = currentColor;
+            
+            // Convert hex to HSL and update picker
+            const hsl = hexToHSL(currentColor);
+            pickerState.hue = hsl.h;
+            pickerState.saturation = hsl.s;
+            pickerState.lightness = hsl.l;
+            
+            updatePickerUI();
+            initializePresetColors();
+        }
+
+        function closeCustomColorPicker() {
+            const modal = document.getElementById('custom-color-picker-modal');
+            modal.style.display = 'none';
+        }
+
+        function applyCustomColorFromPicker() {
+            const color = pickerState.tempColor;
             localStorage.setItem('customColor', color);
             applyCustomColorToSystem(color);
             updateColorPreview(color);
             selectTheme('custom');
+            closeCustomColorPicker();
+        }
+
+        function updatePickerUI() {
+            const color = hslToHex(pickerState.hue, pickerState.saturation, pickerState.lightness);
+            pickerState.tempColor = color;
+            
+            // Update preview
+            document.getElementById('color-preview-box').style.background = color;
+            
+            // Update hex input
+            document.getElementById('hex-input').value = color;
+            
+            // Update hue slider
+            document.getElementById('hue-slider').value = pickerState.hue;
+            
+            // Update saturation/lightness box background
+            const slBox = document.getElementById('saturation-lightness-box');
+            slBox.style.background = `linear-gradient(to right, white, hsl(${pickerState.hue}, 100%, 50%))`;
+            
+            // Update selector position
+            const selector = document.getElementById('sl-selector');
+            selector.style.left = `${pickerState.saturation}%`;
+            selector.style.top = `${100 - pickerState.lightness}%`;
+        }
+
+        function initializePresetColors() {
+            const container = document.getElementById('preset-colors');
+            container.innerHTML = '';
+            
+            presetColors.forEach(color => {
+                const colorBox = document.createElement('div');
+                colorBox.style.cssText = `
+                    width: 100%;
+                    padding-bottom: 100%;
+                    background: ${color};
+                    border-radius: var(--radius-md);
+                    cursor: pointer;
+                    border: 2px solid var(--gray-200);
+                    transition: all var(--transition-fast);
+                `;
+                colorBox.onmouseover = () => colorBox.style.transform = 'scale(1.1)';
+                colorBox.onmouseout = () => colorBox.style.transform = 'scale(1)';
+                colorBox.onclick = () => selectPresetColor(color);
+                container.appendChild(colorBox);
+            });
+        }
+
+        function selectPresetColor(color) {
+            const hsl = hexToHSL(color);
+            pickerState.hue = hsl.h;
+            pickerState.saturation = hsl.s;
+            pickerState.lightness = hsl.l;
+            updatePickerUI();
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hue slider
+            const hueSlider = document.getElementById('hue-slider');
+            if (hueSlider) {
+                hueSlider.addEventListener('input', function(e) {
+                    pickerState.hue = parseInt(e.target.value);
+                    updatePickerUI();
+                });
+            }
+            
+            // Saturation/Lightness box
+            const slBox = document.getElementById('saturation-lightness-box');
+            if (slBox) {
+                slBox.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    pickerState.saturation = Math.round((x / rect.width) * 100);
+                    pickerState.lightness = Math.round(100 - (y / rect.height) * 100);
+                    
+                    updatePickerUI();
+                });
+            }
+            
+            // Hex input
+            const hexInput = document.getElementById('hex-input');
+            if (hexInput) {
+                hexInput.addEventListener('input', function(e) {
+                    let value = e.target.value;
+                    if (!value.startsWith('#')) {
+                        value = '#' + value;
+                    }
+                    
+                    if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+                        const hsl = hexToHSL(value);
+                        pickerState.hue = hsl.h;
+                        pickerState.saturation = hsl.s;
+                        pickerState.lightness = hsl.l;
+                        updatePickerUI();
+                    }
+                });
+            }
+            
+            // Close modal on outside click
+            const modal = document.getElementById('custom-color-picker-modal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeCustomColorPicker();
+                    }
+                });
+            }
+        });
+
+        // Color Conversion Functions
+        function hslToHex(h, s, l) {
+            s /= 100;
+            l /= 100;
+            
+            const c = (1 - Math.abs(2 * l - 1)) * s;
+            const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+            const m = l - c / 2;
+            
+            let r = 0, g = 0, b = 0;
+            
+            if (0 <= h && h < 60) {
+                r = c; g = x; b = 0;
+            } else if (60 <= h && h < 120) {
+                r = x; g = c; b = 0;
+            } else if (120 <= h && h < 180) {
+                r = 0; g = c; b = x;
+            } else if (180 <= h && h < 240) {
+                r = 0; g = x; b = c;
+            } else if (240 <= h && h < 300) {
+                r = x; g = 0; b = c;
+            } else if (300 <= h && h < 360) {
+                r = c; g = 0; b = x;
+            }
+            
+            r = Math.round((r + m) * 255);
+            g = Math.round((g + m) * 255);
+            b = Math.round((b + m) * 255);
+            
+            return '#' + [r, g, b].map(x => {
+                const hex = x.toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            }).join('');
+        }
+
+        function hexToHSL(hex) {
+            const r = parseInt(hex.slice(1, 3), 16) / 255;
+            const g = parseInt(hex.slice(3, 5), 16) / 255;
+            const b = parseInt(hex.slice(5, 7), 16) / 255;
+            
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                
+                switch (max) {
+                    case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+                    case g: h = ((b - r) / d + 2) / 6; break;
+                    case b: h = ((r - g) / d + 4) / 6; break;
+                }
+            }
+            
+            return {
+                h: Math.round(h * 360),
+                s: Math.round(s * 100),
+                l: Math.round(l * 100)
+            };
         }
 
         function updateColorPreview(color) {
@@ -276,17 +563,16 @@
         document.addEventListener('DOMContentLoaded', function() {
             const savedTheme = localStorage.getItem('theme') || 'purple';
             selectTheme(savedTheme);
-        });
-
-        // Load saved custom color on page load
-        const savedCustomColor = localStorage.getItem('customColor');
-        if (savedCustomColor) {
-            document.getElementById('custom-color-picker').value = savedCustomColor;
-            updateColorPreview(savedCustomColor);
-            const currentTheme = localStorage.getItem('theme');
-            if (currentTheme === 'custom') {
-                applyCustomColorToSystem(savedCustomColor);
+            
+            // Load saved custom color
+            const savedCustomColor = localStorage.getItem('customColor');
+            if (savedCustomColor) {
+                updateColorPreview(savedCustomColor);
+                const currentTheme = localStorage.getItem('theme');
+                if (currentTheme === 'custom') {
+                    applyCustomColorToSystem(savedCustomColor);
+                }
             }
-        }
+        });
     </script>
 </x-app-layout>
