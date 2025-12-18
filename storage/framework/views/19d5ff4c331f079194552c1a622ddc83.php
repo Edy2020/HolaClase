@@ -13,7 +13,8 @@
      <?php $__env->endSlot(); ?>
 
     <!-- Hero Header -->
-    <div style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center;">
+    <div
+        style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center;">
         <div>
             <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
                 <i class="fas fa-chalkboard-teacher"></i> Profesores
@@ -22,351 +23,215 @@
                 Administra el personal docente de la institución
             </p>
         </div>
-        <button class="btn btn-primary" style="background: white; color: var(--theme-dark); flex-shrink: 0;">
-            <span><i class="fas fa-plus"></i></span>
-            <span>Nuevo Profesor</span>
-        </button>
-    </div>
-
-    <!-- Search and Filters -->
-    <div class="card mb-xl">
-        <div class="card-body">
-            <div class="grid grid-cols-4">
-                <div class="form-group mb-0">
-                    <input 
-                        type="text" 
-                        class="form-input" 
-                        placeholder="🔍 Buscar profesores..."
-                    >
-                </div>
-                <div class="form-group mb-0">
-                    <select class="form-select">
-                        <option>Todas las especialidades</option>
-                        <option>Matemáticas</option>
-                        <option>Ciencias</option>
-                        <option>Humanidades</option>
-                        <option>Artes</option>
-                    </select>
-                </div>
-                <div class="form-group mb-0">
-                    <select class="form-select">
-                        <option>Todos los estados</option>
-                        <option>Activo</option>
-                        <option>Inactivo</option>
-                        <option>Licencia</option>
-                    </select>
-                </div>
-                <div class="form-group mb-0">
-                    <button class="btn btn-outline" style="width: 100%;">
-                        <i class="fas fa-chart-bar"></i> Exportar
-                    </button>
-                </div>
+        <div style="display: flex; gap: var(--spacing-md); align-items: center;">
+            <!-- View Toggle -->
+            <div style="display: flex; gap: var(--spacing-xs); background: rgba(255,255,255,0.1); padding: var(--spacing-xs); border-radius: var(--radius-md);">
+                <button id="gridViewBtn" class="btn btn-sm" 
+                    style="background: white; color: var(--theme-dark); border: none; padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--radius-md);">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button id="listViewBtn" class="btn btn-sm" 
+                    style="background: transparent; color: white; border: none; padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--radius-md);">
+                    <i class="fas fa-list"></i>
+                </button>
             </div>
+            <a href="<?php echo e(route('teachers.create')); ?>" class="btn btn-primary"
+                style="background: white; color: var(--theme-dark); flex-shrink: 0;">
+                <span><i class="fas fa-plus"></i></span>
+                <span>Nuevo Profesor</span>
+            </a>
         </div>
     </div>
+    
+    <!-- Teachers Grid View -->
+    <div id="gridView" class="grid grid-cols-3">
+        <?php $__empty_1 = true; $__currentLoopData = $profesores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $profesor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <!-- Teacher Card -->
+            <div class="card">
+                <div style="text-align: center; margin-bottom: var(--spacing-lg);">
+                    <div
+                        style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-lg); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
+                        <?php echo e(substr($profesor->nombre, 0, 1) . substr($profesor->apellido, 0, 1)); ?>
 
-    <!-- Statistics -->
-    <div class="grid grid-cols-4 mb-xl">
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-school"></i>
+                    </div>
+                    <h3
+                        style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
+                        <?php echo e($profesor->nombre); ?> <?php echo e($profesor->apellido); ?>
+
+                    </h3>
+                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-xs);">
+                        <?php echo e($profesor->rut); ?>
+
+                    </p>
+                    <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
+                        <?php echo e($profesor->email); ?>
+
+                    </p>
+                </div>
+
+                <div
+                    style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
+                        <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
+                        <span
+                            style="font-weight: 600; color: var(--gray-900);"><?php echo e($profesor->especialidad ?? 'N/A'); ?></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
+                        <span style="color: var(--gray-600); font-size: 0.875rem;">Teléfono:</span>
+                        <span style="font-weight: 600;"><?php echo e($profesor->telefono ?? 'N/A'); ?></span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: var(--spacing-sm);">
+                    <a href="<?php echo e(route('teachers.edit', $profesor)); ?>" class="btn btn-primary btn-sm" style="color: white; flex: 1;">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <form action="<?php echo e(route('teachers.destroy', $profesor)); ?>" method="POST"
+                        onsubmit="return confirm('¿Estás seguro de querer eliminar este profesor?');"
+                        style="flex: 1;">
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('DELETE'); ?>
+                        <button type="submit" class="btn btn-outline btn-sm"
+                            style="width: 100%; color: #ef4444; border-color: #ef4444;">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div class="stat-value">15</div>
-            <div class="stat-label">Total Profesores</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-check"></i>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+            <div class="col-span-3 text-center py-12">
+                <div style="margin-bottom: var(--spacing-md); font-size: 3rem; color: var(--gray-300);">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--gray-700);">No hay profesores registrados</h3>
+                <p style="color: var(--gray-500);">Comienza agregando un nuevo profesor al sistema.</p>
             </div>
-            <div class="stat-value">13</div>
-            <div class="stat-label">Activos</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-book"></i>
-            </div>
-            <div class="stat-value">24</div>
-            <div class="stat-label">Asignaturas Asignadas</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-star"></i>
-            </div>
-            <div class="stat-value">4.7</div>
-            <div class="stat-label">Calificación Promedio</div>
-        </div>
+        <?php endif; ?>
     </div>
 
-    <!-- Teachers Grid -->
-    <div class="grid grid-cols-3">
-        <!-- Teacher Card 1 -->
-        <div class="card">
-            <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                <div style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-full); background: var(--theme-color), var(--theme-color)); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
-                    CR
-                </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                    Dr. Carlos Ruiz
-                </h3>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
-                    carlos.ruiz@holaclase.edu
-                </p>
-                <span class="badge badge-success">Activo</span>
-            </div>
-            
-            <div style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
-                    <span style="font-weight: 600; color: var(--gray-900);">Matemáticas</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Asignaturas:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">3</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Estudiantes:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">85</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Calificación:</span>
-                    <span style="font-weight: 600; color: var(--warning);">⭐ 4.8</span>
-                </div>
-            </div>
+    <!-- Teachers List View -->
+    <div id="listView" style="display: none;">
+        <?php $__empty_1 = true; $__currentLoopData = $profesores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $profesor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <!-- Teacher List Item -->
+            <div class="card mb-md" style="padding: var(--spacing-lg);">
+                <div style="display: flex; align-items: center; gap: var(--spacing-xl);">
+                    <!-- Avatar -->
+                    <div
+                        style="width: 80px; height: 80px; flex-shrink: 0; border-radius: var(--radius-lg); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: 700; box-shadow: var(--shadow-md);">
+                        <?php echo e(substr($profesor->nombre, 0, 1) . substr($profesor->apellido, 0, 1)); ?>
 
-            <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                <button class="btn btn-outline btn-sm">Ver Perfil</button>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">📧 Contactar</button>
-                </div>
-            </div>
-        </div>
+                    </div>
 
-        <!-- Teacher Card 2 -->
-        <div class="card">
-            <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                <div style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-full); background: var(--theme-color), var(--theme-color)); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
-                    AM
-                </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                    Dra. Ana Martínez
-                </h3>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
-                    ana.martinez@holaclase.edu
-                </p>
-                <span class="badge badge-success">Activo</span>
-            </div>
-            
-            <div style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
-                    <span style="font-weight: 600; color: var(--gray-900);">Química</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Asignaturas:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">2</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Estudiantes:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">56</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Calificación:</span>
-                    <span style="font-weight: 600; color: var(--warning);">⭐ 4.9</span>
-                </div>
-            </div>
+                    <!-- Info -->
+                    <div style="flex: 1; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-lg); align-items: center;">
+                        <!-- Name & Email -->
+                        <div>
+                            <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
+                                <?php echo e($profesor->nombre); ?> <?php echo e($profesor->apellido); ?>
 
-            <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                <button class="btn btn-outline btn-sm">Ver Perfil</button>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">📧 Contactar</button>
-                </div>
-            </div>
-        </div>
+                            </h3>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-xs);">
+                                <i class="fas fa-envelope" style="width: 16px;"></i> <?php echo e($profesor->email); ?>
 
-        <!-- Teacher Card 3 -->
-        <div class="card">
-            <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                <div style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-full); background: var(--theme-color), #059669); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
-                    LG
-                </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                    Prof. Luis González
-                </h3>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
-                    luis.gonzalez@holaclase.edu
-                </p>
-                <span class="badge badge-success">Activo</span>
-            </div>
-            
-            <div style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
-                    <span style="font-weight: 600; color: var(--gray-900);">Historia</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Asignaturas:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">2</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Estudiantes:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">72</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Calificación:</span>
-                    <span style="font-weight: 600; color: var(--warning);">⭐ 4.6</span>
-                </div>
-            </div>
+                            </p>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
+                                <i class="fas fa-id-card" style="width: 16px;"></i> <?php echo e($profesor->rut); ?>
 
-            <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                <button class="btn btn-outline btn-sm">Ver Perfil</button>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">📧 Contactar</button>
-                </div>
-            </div>
-        </div>
+                            </p>
+                        </div>
 
-        <!-- Teacher Card 4 -->
-        <div class="card">
-            <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                <div style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-full); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
-                    RP
-                </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                    Dr. Roberto Pérez
-                </h3>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
-                    roberto.perez@holaclase.edu
-                </p>
-                <span class="badge badge-success">Activo</span>
-            </div>
-            
-            <div style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
-                    <span style="font-weight: 600; color: var(--gray-900);">Física</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Asignaturas:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">2</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Estudiantes:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">43</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Calificación:</span>
-                    <span style="font-weight: 600; color: var(--warning);">⭐ 4.7</span>
-                </div>
-            </div>
+                        <!-- Especialidad -->
+                        <div>
+                            <div style="color: var(--gray-500); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--spacing-xs);">
+                                Especialidad
+                            </div>
+                            <div style="font-weight: 600; color: var(--gray-900);">
+                                <?php echo e($profesor->especialidad ?? 'N/A'); ?>
 
-            <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                <button class="btn btn-outline btn-sm">Ver Perfil</button>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">📧 Contactar</button>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
 
-        <!-- Teacher Card 5 -->
-        <div class="card">
-            <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                <div style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-full); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
-                    MS
-                </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                    Prof. María Silva
-                </h3>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
-                    maria.silva@holaclase.edu
-                </p>
-                <span class="badge badge-success">Activo</span>
-            </div>
-            
-            <div style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
-                    <span style="font-weight: 600; color: var(--gray-900);">Artes</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Asignaturas:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">2</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Estudiantes:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">68</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Calificación:</span>
-                    <span style="font-weight: 600; color: var(--warning);">⭐ 4.9</span>
-                </div>
-            </div>
+                        <!-- Teléfono -->
+                        <div>
+                            <div style="color: var(--gray-500); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--spacing-xs);">
+                                Teléfono
+                            </div>
+                            <div style="font-weight: 600;">
+                                <?php echo e($profesor->telefono ?? 'N/A'); ?>
 
-            <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                <button class="btn btn-outline btn-sm">Ver Perfil</button>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">📧 Contactar</button>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Teacher Card 6 -->
-        <div class="card">
-            <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                <div style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-full); background: var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
-                    JR
-                </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                    Prof. Jorge Ramírez
-                </h3>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
-                    jorge.ramirez@holaclase.edu
-                </p>
-                <span class="badge badge-warning">Licencia</span>
-            </div>
-            
-            <div style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
-                    <span style="font-weight: 600; color: var(--gray-900);">Biología</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Asignaturas:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">1</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Estudiantes:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">38</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Calificación:</span>
-                    <span style="font-weight: 600; color: var(--warning);">⭐ 4.5</span>
+                    <!-- Actions -->
+                    <div style="display: flex; gap: var(--spacing-sm); flex-shrink: 0;">
+                        <a href="<?php echo e(route('teachers.edit', $profesor)); ?>" class="btn btn-primary btn-sm" style="color: white;">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="<?php echo e(route('teachers.destroy', $profesor)); ?>" method="POST"
+                            onsubmit="return confirm('¿Estás seguro de querer eliminar este profesor?');">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('DELETE'); ?>
+                            <button type="submit" class="btn btn-outline btn-sm"
+                                style="color: #ef4444; border-color: #ef4444;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-
-            <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                <button class="btn btn-outline btn-sm">Ver Perfil</button>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">📧 Contactar</button>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+            <div class="card text-center" style="padding: var(--spacing-2xl);">
+                <div style="margin-bottom: var(--spacing-md); font-size: 3rem; color: var(--gray-300);">
+                    <i class="fas fa-user-graduate"></i>
                 </div>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--gray-700);">No hay profesores registrados</h3>
+                <p style="color: var(--gray-500);">Comienza agregando un nuevo profesor al sistema.</p>
             </div>
-        </div>
+        <?php endif; ?>
     </div>
 
-    <!-- Pagination -->
-    <div style="display: flex; justify-content: center; align-items: center; gap: var(--spacing-md); margin-top: var(--spacing-2xl);">
-        <button class="btn btn-ghost btn-sm">← Anterior</button>
-        <div style="display: flex; gap: var(--spacing-xs);">
-            <button class="btn btn-primary btn-sm">1</button>
-            <button class="btn btn-ghost btn-sm">2</button>
-        </div>
-        <button class="btn btn-ghost btn-sm">Siguiente →</button>
-    </div>
+    <script>
+        // View toggle functionality
+        const gridViewBtn = document.getElementById('gridViewBtn');
+        const listViewBtn = document.getElementById('listViewBtn');
+        const gridView = document.getElementById('gridView');
+        const listView = document.getElementById('listView');
+
+        // Load saved preference or default to grid
+        const savedView = localStorage.getItem('teachersView') || 'grid';
+        if (savedView === 'list') {
+            showListView();
+        }
+
+        gridViewBtn.addEventListener('click', () => {
+            showGridView();
+            localStorage.setItem('teachersView', 'grid');
+        });
+
+        listViewBtn.addEventListener('click', () => {
+            showListView();
+            localStorage.setItem('teachersView', 'list');
+        });
+
+        function showGridView() {
+            gridView.style.display = 'grid';
+            listView.style.display = 'none';
+            gridViewBtn.style.background = 'white';
+            gridViewBtn.style.color = 'var(--theme-dark)';
+            listViewBtn.style.background = 'transparent';
+            listViewBtn.style.color = 'white';
+        }
+
+        function showListView() {
+            gridView.style.display = 'none';
+            listView.style.display = 'block';
+            listViewBtn.style.background = 'white';
+            listViewBtn.style.color = 'var(--theme-dark)';
+            gridViewBtn.style.background = 'transparent';
+            gridViewBtn.style.color = 'white';
+        }
+    </script>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
@@ -376,5 +241,4 @@
 <?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
 <?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
 <?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?>
-<?php /**PATH C:\Users\Edy\Downloads\laragon-portable\www\HolaClase\resources\views/profesores/index.blade.php ENDPATH**/ ?>
+<?php endif; ?><?php /**PATH C:\Users\Edy\Downloads\laragon-portable\www\HolaClase\resources\views/profesores/index.blade.php ENDPATH**/ ?>
