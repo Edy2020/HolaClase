@@ -4,7 +4,8 @@
     </x-slot>
 
     <!-- Hero Header -->
-    <div style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center;">
+    <div
+        style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center;">
         <div>
             <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
                 <i class="fas fa-chalkboard-teacher"></i> Profesores
@@ -13,10 +14,11 @@
                 Administra el personal docente de la institución
             </p>
         </div>
-        <button class="btn btn-primary" style="background: white; color: var(--theme-dark); flex-shrink: 0;">
+        <a href="{{ route('teachers.create') }}" class="btn btn-primary"
+            style="background: white; color: var(--theme-dark); flex-shrink: 0;">
             <span><i class="fas fa-plus"></i></span>
             <span>Nuevo Profesor</span>
-        </button>
+        </a>
     </div>
 
     <!-- Search and Filters -->
@@ -24,11 +26,7 @@
         <div class="card-body">
             <div class="grid grid-cols-4">
                 <div class="form-group mb-0">
-                    <input 
-                        type="text" 
-                        class="form-input" 
-                        placeholder="🔍 Buscar profesores..."
-                    >
+                    <input type="text" class="form-input" placeholder="🔍 Buscar profesores...">
                 </div>
                 <div class="form-group mb-0">
                     <select class="form-select">
@@ -90,267 +88,71 @@
 
     <!-- Teachers Grid -->
     <div class="grid grid-cols-3">
-        <!-- Teacher Card 1 -->
-        <div class="card">
-            <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                <div style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-full); background: var(--theme-color), var(--theme-color)); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
-                    CR
+        @forelse ($profesores as $profesor)
+            <!-- Teacher Card -->
+            <div class="card">
+                <div style="text-align: center; margin-bottom: var(--spacing-lg);">
+                    <div
+                        style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-full); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
+                        {{ substr($profesor->nombre, 0, 1) . substr($profesor->apellido, 0, 1) }}
+                    </div>
+                    <h3
+                        style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
+                        {{ $profesor->nombre }} {{ $profesor->apellido }}
+                    </h3>
+                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-xs);">
+                        {{ $profesor->rut }}
+                    </p>
+                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
+                        {{ $profesor->email }}
+                    </p>
+                    <span class="badge badge-success">Activo</span>
                 </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                    Dr. Carlos Ruiz
-                </h3>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
-                    carlos.ruiz@holaclase.edu
-                </p>
-                <span class="badge badge-success">Activo</span>
-            </div>
-            
-            <div style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
-                    <span style="font-weight: 600; color: var(--gray-900);">Matemáticas</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Asignaturas:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">3</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Estudiantes:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">85</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Calificación:</span>
-                    <span style="font-weight: 600; color: var(--warning);">⭐ 4.8</span>
-                </div>
-            </div>
 
-            <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                <button class="btn btn-outline btn-sm">Ver Perfil</button>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">📧 Contactar</button>
+                <div
+                    style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
+                        <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
+                        <span
+                            style="font-weight: 600; color: var(--gray-900);">{{ $profesor->especialidad ?? 'N/A' }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
+                        <span style="color: var(--gray-600); font-size: 0.875rem;">Teléfono:</span>
+                        <span style="font-weight: 600; color: var(--theme-color);">{{ $profesor->telefono ?? 'N/A' }}</span>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Teacher Card 2 -->
-        <div class="card">
-            <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                <div style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-full); background: var(--theme-color), var(--theme-color)); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
-                    AM
-                </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                    Dra. Ana Martínez
-                </h3>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
-                    ana.martinez@holaclase.edu
-                </p>
-                <span class="badge badge-success">Activo</span>
-            </div>
-            
-            <div style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
-                    <span style="font-weight: 600; color: var(--gray-900);">Química</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Asignaturas:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">2</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Estudiantes:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">56</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Calificación:</span>
-                    <span style="font-weight: 600; color: var(--warning);">⭐ 4.9</span>
+                <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                    <a href="{{ route('teachers.edit', $profesor) }}" class="btn btn-primary btn-sm"
+                        style="flex: 1; text-align: center;">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <form action="{{ route('teachers.destroy', $profesor) }}" method="POST"
+                        onsubmit="return confirm('¿Estás seguro de querer eliminar este profesor?');"
+                        style="display: block; width: 100%;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-outline btn-sm"
+                            style="width: 100%; color: #ef4444; border-color: #ef4444;">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </form>
                 </div>
             </div>
-
-            <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                <button class="btn btn-outline btn-sm">Ver Perfil</button>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">📧 Contactar</button>
+        @empty
+            <div class="col-span-3 text-center py-12">
+                <div style="margin-bottom: var(--spacing-md); font-size: 3rem; color: var(--gray-300);">
+                    <i class="fas fa-user-graduate"></i>
                 </div>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--gray-700);">No hay profesores registrados</h3>
+                <p style="color: var(--gray-500);">Comienza agregando un nuevo profesor al sistema.</p>
             </div>
-        </div>
-
-        <!-- Teacher Card 3 -->
-        <div class="card">
-            <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                <div style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-full); background: var(--theme-color), #059669); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
-                    LG
-                </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                    Prof. Luis González
-                </h3>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
-                    luis.gonzalez@holaclase.edu
-                </p>
-                <span class="badge badge-success">Activo</span>
-            </div>
-            
-            <div style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
-                    <span style="font-weight: 600; color: var(--gray-900);">Historia</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Asignaturas:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">2</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Estudiantes:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">72</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Calificación:</span>
-                    <span style="font-weight: 600; color: var(--warning);">⭐ 4.6</span>
-                </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                <button class="btn btn-outline btn-sm">Ver Perfil</button>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">📧 Contactar</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Teacher Card 4 -->
-        <div class="card">
-            <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                <div style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-full); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
-                    RP
-                </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                    Dr. Roberto Pérez
-                </h3>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
-                    roberto.perez@holaclase.edu
-                </p>
-                <span class="badge badge-success">Activo</span>
-            </div>
-            
-            <div style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
-                    <span style="font-weight: 600; color: var(--gray-900);">Física</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Asignaturas:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">2</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Estudiantes:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">43</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Calificación:</span>
-                    <span style="font-weight: 600; color: var(--warning);">⭐ 4.7</span>
-                </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                <button class="btn btn-outline btn-sm">Ver Perfil</button>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">📧 Contactar</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Teacher Card 5 -->
-        <div class="card">
-            <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                <div style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-full); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
-                    MS
-                </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                    Prof. María Silva
-                </h3>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
-                    maria.silva@holaclase.edu
-                </p>
-                <span class="badge badge-success">Activo</span>
-            </div>
-            
-            <div style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
-                    <span style="font-weight: 600; color: var(--gray-900);">Artes</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Asignaturas:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">2</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Estudiantes:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">68</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Calificación:</span>
-                    <span style="font-weight: 600; color: var(--warning);">⭐ 4.9</span>
-                </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                <button class="btn btn-outline btn-sm">Ver Perfil</button>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">📧 Contactar</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Teacher Card 6 -->
-        <div class="card">
-            <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                <div style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-full); background: var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
-                    JR
-                </div>
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                    Prof. Jorge Ramírez
-                </h3>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
-                    jorge.ramirez@holaclase.edu
-                </p>
-                <span class="badge badge-warning">Licencia</span>
-            </div>
-            
-            <div style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
-                    <span style="font-weight: 600; color: var(--gray-900);">Biología</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Asignaturas:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">1</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Estudiantes:</span>
-                    <span style="font-weight: 600; color: var(--theme-color);">38</span>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--gray-600); font-size: 0.875rem;">Calificación:</span>
-                    <span style="font-weight: 600; color: var(--warning);">⭐ 4.5</span>
-                </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                <button class="btn btn-outline btn-sm">Ver Perfil</button>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">📧 Contactar</button>
-                </div>
-            </div>
-        </div>
+        @endforelse
     </div>
 
     <!-- Pagination -->
-    <div style="display: flex; justify-content: center; align-items: center; gap: var(--spacing-md); margin-top: var(--spacing-2xl);">
+    <div
+        style="display: flex; justify-content: center; align-items: center; gap: var(--spacing-md); margin-top: var(--spacing-2xl);">
         <button class="btn btn-ghost btn-sm">← Anterior</button>
         <div style="display: flex; gap: var(--spacing-xs);">
             <button class="btn btn-primary btn-sm">1</button>
