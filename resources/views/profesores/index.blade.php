@@ -16,12 +16,13 @@
         </div>
         <div style="display: flex; gap: var(--spacing-md); align-items: center;">
             <!-- View Toggle -->
-            <div style="display: flex; gap: var(--spacing-xs); background: rgba(255,255,255,0.1); padding: var(--spacing-xs); border-radius: var(--radius-md);">
-                <button id="gridViewBtn" class="btn btn-sm" 
+            <div
+                style="display: flex; gap: var(--spacing-xs); background: rgba(255,255,255,0.1); padding: var(--spacing-xs); border-radius: var(--radius-md);">
+                <button id="gridViewBtn" class="btn btn-sm"
                     style="background: white; color: var(--theme-dark); border: none; padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--radius-md);">
                     <i class="fas fa-th"></i>
                 </button>
-                <button id="listViewBtn" class="btn btn-sm" 
+                <button id="listViewBtn" class="btn btn-sm"
                     style="background: transparent; color: white; border: none; padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--radius-md);">
                     <i class="fas fa-list"></i>
                 </button>
@@ -33,7 +34,7 @@
             </a>
         </div>
     </div>
-    
+
     <!-- Teachers Grid View -->
     <div id="gridView" class="grid grid-cols-3">
         @forelse ($profesores as $profesor)
@@ -59,23 +60,18 @@
                 <div
                     style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
                     <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                        <span style="color: var(--gray-600); font-size: 0.875rem;">Especialidad:</span>
-                        <span
-                            style="font-weight: 600; color: var(--gray-900);">{{ $profesor->especialidad ?? 'N/A' }}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
                         <span style="color: var(--gray-600); font-size: 0.875rem;">Teléfono:</span>
                         <span style="font-weight: 600;">{{ $profesor->telefono ?? 'N/A' }}</span>
                     </div>
                 </div>
 
                 <div style="display: flex; gap: var(--spacing-sm);">
-                    <a href="{{ route('teachers.edit', $profesor) }}" class="btn btn-primary btn-sm" style="color: white; flex: 1;">
+                    <a href="{{ route('teachers.edit', $profesor) }}" class="btn btn-primary btn-sm"
+                        style="color: white; flex: 1;">
                         <i class="fas fa-edit"></i> Editar
                     </a>
                     <form action="{{ route('teachers.destroy', $profesor) }}" method="POST"
-                        onsubmit="return confirm('¿Estás seguro de querer eliminar este profesor?');"
-                        style="flex: 1;">
+                        onsubmit="return confirm('¿Estás seguro de querer eliminar este profesor?');" style="flex: 1;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-outline btn-sm"
@@ -109,10 +105,12 @@
                     </div>
 
                     <!-- Info -->
-                    <div style="flex: 1; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-lg); align-items: center;">
+                    <div
+                        style="flex: 1; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-lg); align-items: center;">
                         <!-- Name & Email -->
                         <div>
-                            <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
+                            <h3
+                                style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
                                 {{ $profesor->nombre }} {{ $profesor->apellido }}
                             </h3>
                             <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-xs);">
@@ -125,7 +123,8 @@
 
                         <!-- Especialidad -->
                         <div>
-                            <div style="color: var(--gray-500); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--spacing-xs);">
+                            <div
+                                style="color: var(--gray-500); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--spacing-xs);">
                                 Especialidad
                             </div>
                             <div style="font-weight: 600; color: var(--gray-900);">
@@ -135,7 +134,8 @@
 
                         <!-- Teléfono -->
                         <div>
-                            <div style="color: var(--gray-500); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--spacing-xs);">
+                            <div
+                                style="color: var(--gray-500); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--spacing-xs);">
                                 Teléfono
                             </div>
                             <div style="font-weight: 600;">
@@ -146,7 +146,8 @@
 
                     <!-- Actions -->
                     <div style="display: flex; gap: var(--spacing-sm); flex-shrink: 0;">
-                        <a href="{{ route('teachers.edit', $profesor) }}" class="btn btn-primary btn-sm" style="color: white;">
+                        <a href="{{ route('teachers.edit', $profesor) }}" class="btn btn-primary btn-sm"
+                            style="color: white;">
                             <i class="fas fa-edit"></i>
                         </a>
                         <form action="{{ route('teachers.destroy', $profesor) }}" method="POST"

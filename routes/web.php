@@ -19,9 +19,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Module Routes - Spanish
-    Route::get('/cursos', function () {
-        return view('cursos.index');
-    })->name('courses.index');
+    // Route::get('/cursos', function () {
+    //     return view('cursos.index');
+    // })->name('courses.index');
+
+    Route::resource('cursos', App\Http\Controllers\CursoController::class)->names([
+        'index' => 'courses.index',
+        'create' => 'courses.create',
+        'store' => 'courses.store',
+        'show' => 'courses.show',
+        'edit' => 'courses.edit',
+        'update' => 'courses.update',
+        'destroy' => 'courses.destroy',
+    ]);
 
     Route::get('/estudiantes', function () {
         return view('estudiantes.index');

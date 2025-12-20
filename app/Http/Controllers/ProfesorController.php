@@ -27,19 +27,30 @@ class ProfesorController extends Controller
             'fecha_nacimiento' => 'nullable|date',
             'email' => 'required|string|email|max:255|unique:profesores',
             'telefono' => 'nullable|string|max:20',
-            'especialidad' => 'nullable|string|max:255',
+            'nivel_ensenanza' => 'nullable|string|max:255',
             'titulo' => 'nullable|string|max:255',
-            'documento_identidad' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'documento_archivo' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'documento_tipo' => 'nullable|string|required_with:documento_archivo',
         ]);
 
-        $data = $request->all();
+        $profesor = Profesor::create($request->only([
+            'rut',
+            'nombre',
+            'apellido',
+            'fecha_nacimiento',
+            'email',
+            'telefono',
+            'nivel_ensenanza',
+            'titulo'
+        ]));
 
-        if ($request->hasFile('documento_identidad')) {
-            $path = $request->file('documento_identidad')->store('documentos_identidad', 'public');
-            $data['documento_identidad'] = $path;
+        if ($request->hasFile('documento_archivo')) {
+            $path = $request->file('documento_archivo')->store('documentos_profesores', 'public');
+            $profesor->documentos()->create([
+                'tipo' => $request->documento_tipo,
+                'ruta_archivo' => $path,
+            ]);
         }
-
-        Profesor::create($data);
 
         return redirect()->route('teachers.index')->with('success', 'Profesor creado exitosamente.');
     }
@@ -61,19 +72,30 @@ class ProfesorController extends Controller
             'fecha_nacimiento' => 'nullable|date',
             'email' => 'required|string|email|max:255|unique:profesores,email,' . $profesor->id,
             'telefono' => 'nullable|string|max:20',
-            'especialidad' => 'nullable|string|max:255',
+            'nivel_ensenanza' => 'nullable|string|max:255',
             'titulo' => 'nullable|string|max:255',
-            'documento_identidad' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'documento_archivo' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'documento_tipo' => 'nullable|string|required_with:documento_archivo',
         ]);
 
-        $data = $request->all();
+        $profesor->update($request->only([
+            'rut',
+            'nombre',
+            'apellido',
+            'fecha_nacimiento',
+            'email',
+            'telefono',
+            'nivel_ensenanza',
+            'titulo'
+        ]));
 
-        if ($request->hasFile('documento_identidad')) {
-            $path = $request->file('documento_identidad')->store('documentos_identidad', 'public');
-            $data['documento_identidad'] = $path;
+        if ($request->hasFile('documento_archivo')) {
+            $path = $request->file('documento_archivo')->store('documentos_profesores', 'public');
+            $profesor->documentos()->create([
+                'tipo' => $request->documento_tipo,
+                'ruta_archivo' => $path,
+            ]);
         }
-
-        $profesor->update($data);
 
         return redirect()->route('teachers.index')->with('success', 'Profesor actualizado exitosamente.');
     }

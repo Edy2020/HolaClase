@@ -19,8 +19,8 @@
             <div class="grid grid-cols-2" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
                 <div class="form-group mb-0">
                     <label class="form-label">RUT <span style="color: #ef4444;">*</span></label>
-                    <input type="text" name="rut" class="form-input" value="{{ old('rut', $profesor->rut) }}" required
-                        placeholder="12345678-9">
+                    <input type="text" name="rut" id="rut" class="form-input" value="{{ old('rut', $profesor->rut) }}"
+                        required placeholder="12345678-9" maxlength="12">
                     @error('rut')
                         <span
                             style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
@@ -79,20 +79,14 @@
                     @enderror
                 </div>
                 <div class="form-group mb-0">
-                    <label class="form-label">Especialidad</label>
-                    <select name="especialidad" class="form-select">
-                        <option value="">Seleccione una especialidad...</option>
-                        <option value="Matemáticas" {{ old('especialidad', $profesor->especialidad) == 'Matemáticas' ? 'selected' : '' }}>Matemáticas</option>
-                        <option value="Ciencias" {{ old('especialidad', $profesor->especialidad) == 'Ciencias' ? 'selected' : '' }}>Ciencias</option>
-                        <option value="Historia" {{ old('especialidad', $profesor->especialidad) == 'Historia' ? 'selected' : '' }}>Historia</option>
-                        <option value="Lenguaje" {{ old('especialidad', $profesor->especialidad) == 'Lenguaje' ? 'selected' : '' }}>Lenguaje</option>
-                        <option value="Inglés" {{ old('especialidad', $profesor->especialidad) == 'Inglés' ? 'selected' : '' }}>Inglés</option>
-                        <option value="Artes" {{ old('especialidad', $profesor->especialidad) == 'Artes' ? 'selected' : '' }}>Artes</option>
-                        <option value="Música" {{ old('especialidad', $profesor->especialidad) == 'Música' ? 'selected' : '' }}>Música</option>
-                        <option value="Educación Física" {{ old('especialidad', $profesor->especialidad) == 'Educación Física' ? 'selected' : '' }}>Educación Física</option>
-                        <option value="Tecnología" {{ old('especialidad', $profesor->especialidad) == 'Tecnología' ? 'selected' : '' }}>Tecnología</option>
+                    <label class="form-label">Nivel de Enseñanza</label>
+                    <select name="nivel_ensenanza" class="form-select">
+                        <option value="">Seleccione nivel...</option>
+                        <option value="Primer Ciclo" {{ old('nivel_ensenanza', $profesor->nivel_ensenanza) == 'Primer Ciclo' ? 'selected' : '' }}>Primer Ciclo</option>
+                        <option value="Segundo Ciclo" {{ old('nivel_ensenanza', $profesor->nivel_ensenanza) == 'Segundo Ciclo' ? 'selected' : '' }}>Segundo Ciclo</option>
+                        <option value="Superior" {{ old('nivel_ensenanza', $profesor->nivel_ensenanza) == 'Superior' ? 'selected' : '' }}>Superior</option>
                     </select>
-                    @error('especialidad')
+                    @error('nivel_ensenanza')
                         <span
                             style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
                     @enderror
@@ -109,23 +103,75 @@
                             style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
                     @enderror
                 </div>
-                <div class="form-group mb-0">
-                    <label class="form-label">Documento de Identidad (PDF/Imagen)</label>
-                    <input type="file" name="documento_identidad" class="form-input">
-                    @if($profesor->documento_identidad)
-                        <div style="margin-top: 5px;">
-                            <a href="{{ asset('storage/' . $profesor->documento_identidad) }}" target="_blank"
-                                style="color: var(--theme-color); font-size: 0.875rem;">
-                                <i class="fas fa-file-alt"></i> Ver documento actual
-                            </a>
-                        </div>
-                    @endif
-                    @error('documento_identidad')
-                        <span
-                            style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                    @enderror
+            </div>
+
+            <div
+                style="margin-bottom: var(--spacing-xl); padding: 1rem; background-color: #f9fafb; border-radius: 0.5rem; border: 1px solid #e5e7eb;">
+                <h3 style="font-size: 1rem; font-weight: 600; color: var(--gray-800); margin-bottom: 1rem;">Documentos
+                </h3>
+
+                @if($profesor->documentos->count() > 0)
+                    <div style="margin-bottom: 1rem;">
+                        <ul style="list-style: none; padding: 0;">
+                            @foreach($profesor->documentos as $documento)
+                                <li
+                                    style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e5e7eb;">
+                                    <div>
+                                        <i class="fas fa-file-alt" style="color: var(--gray-500); margin-right: 0.5rem;"></i>
+                                        <span style="font-weight: 500; color: var(--gray-700);">{{ $documento->tipo }}</span>
+                                    </div>
+                                    <a href="{{ asset('storage/' . $documento->ruta_archivo) }}" target="_blank"
+                                        style="color: var(--theme-color); font-size: 0.875rem;">
+                                        Ver documento
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @else
+                    <p style="color: var(--gray-500); font-style: italic; margin-bottom: 1rem;">No hay documentos cargados.
+                    </p>
+                @endif
+
+                <h4
+                    style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: 0.5rem; margin-top: 1rem;">
+                    Cargar Nuevo Documento</h4>
+                <div class="grid grid-cols-2" style="gap: var(--spacing-lg);">
+                    <div class="form-group mb-0">
+                        <label class="form-label">Tipo de Documento</label>
+                        <select name="documento_type" class="form-select">
+                            <option value="">Seleccione tipo...</option>
+                            <option value="Carnet" {{ old('documento_type') == 'Carnet' ? 'selected' : '' }}>Carnet
+                            </option>
+                            <option value="Certificado de Nacimiento" {{ old('documento_type') == 'Certificado de Nacimiento' ? 'selected' : '' }}>Certificado de Nacimiento</option>
+                            <option value="Certificado de Titulo" {{ old('documento_type') == 'Certificado de Titulo' ? 'selected' : '' }}>Certificado de Título</option>
+                            <option value="Certificado de Habilitacion" {{ old('documento_type') == 'Certificado de Habilitacion' ? 'selected' : '' }}>Certificado de Habilitación</option>
+                        </select>
+                        @error('documento_type')
+                            <span
+                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group mb-0">
+                        <label class="form-label">Archivo (PDF/Imagen)</label>
+                        <input type="file" name="documento_archivo" class="form-input">
+                        @error('documento_archivo')
+                            <span
+                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
             </div>
+
+            <script>
+                document.getElementById('rut').addEventListener('input', function (e) {
+                    let value = e.target.value.replace(/[^0-9kK]/g, '');
+                    if (value.length > 1) {
+                        value = value.substring(0, value.length - 1) + '-' + value.substring(value.length - 1);
+                    }
+                    e.target.value = value;
+                });
+            </script>
 
             <div
                 style="display: flex; gap: var(--spacing-md); justify-content: flex-end; padding-top: var(--spacing-lg); border-top: 1px solid var(--gray-200);">

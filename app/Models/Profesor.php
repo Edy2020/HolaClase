@@ -18,10 +18,15 @@ class Profesor extends Model
         'fecha_nacimiento',
         'email',
         'telefono',
-        'especialidad',
+        'nivel_ensenanza', // Renamed from especialidad
         'titulo',
-        'documento_identidad',
+        // 'documento_identidad' removed, now in related table
     ];
+
+    public function documentos()
+    {
+        return $this->hasMany(ProfesorDocumento::class);
+    }
 
     protected $casts = [
         'fecha_nacimiento' => 'date',
