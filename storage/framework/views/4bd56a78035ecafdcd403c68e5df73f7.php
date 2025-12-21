@@ -15,8 +15,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <!-- Styles -->
-    <link rel="stylesheet" href="<?php echo e(asset('css/custom.css')); ?>">
-    <link rel="stylesheet" href="<?php echo e(asset('css/themes.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/custom.css')); ?>?v=<?php echo e(time()); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/themes.css')); ?>?v=<?php echo e(time()); ?>">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 
     <!-- Scripts -->

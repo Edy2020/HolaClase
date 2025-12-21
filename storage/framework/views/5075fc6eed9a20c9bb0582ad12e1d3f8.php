@@ -13,372 +13,352 @@
      <?php $__env->endSlot(); ?>
 
     <!-- Hero Header -->
-    <div style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center;">
+    <div class="hero-header"
+        style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center;">
         <div>
             <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
                 <i class="fas fa-graduation-cap"></i> Cursos
             </h2>
-            <p style="font-size: 1rem; opacity: 0.95; margin: 0;">
+            <p class="hero-description" style="font-size: 1rem; opacity: 0.95; margin: 0;">
                 Administra todos los cursos de enseñanza básica y media
             </p>
         </div>
-        <button class="btn btn-primary" style="background: white; color: var(--theme-dark); flex-shrink: 0;">
-            <span><i class="fas fa-plus"></i></span>
-            <span>Nuevo Curso</span>
-        </button>
-    </div>
-
-    <!-- Search and Filters -->
-    <div class="card mb-xl">
-        <div class="card-body">
-            <div class="grid grid-cols-3">
-                <div class="form-group mb-0">
-                    <input 
-                        type="text" 
-                        class="form-input" 
-                        placeholder="🔍 Buscar cursos..."
-                    >
-                </div>
-                <div class="form-group mb-0">
-                    <select class="form-select">
-                        <option>Todos los niveles</option>
-                        <option>Enseñanza Básica</option>
-                        <option>Enseñanza Media</option>
-                    </select>
-                </div>
-                <div class="form-group mb-0">
-                    <select class="form-select">
-                        <option>Todos los estados</option>
-                        <option>Activo</option>
-                        <option>Inactivo</option>
-                    </select>
-                </div>
+        <div class="hero-actions" style="display: flex; gap: var(--spacing-md); align-items: center;">
+            <!-- View Toggle -->
+            <div class="view-toggle"
+                style="display: flex; gap: var(--spacing-xs); background: rgba(255,255,255,0.1); padding: var(--spacing-xs); border-radius: var(--radius-md);">
+                <button id="gridViewBtn" class="btn btn-sm"
+                    style="background: white; color: var(--theme-dark); border: none; padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--radius-md);">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button id="listViewBtn" class="btn btn-sm"
+                    style="background: transparent; color: white; border: none; padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--radius-md);">
+                    <i class="fas fa-list"></i>
+                </button>
             </div>
+            <a href="<?php echo e(route('courses.create')); ?>" class="btn btn-primary btn-new-course"
+                style="background: white; color: var(--theme-dark); flex-shrink: 0; text-decoration: none;">
+                <span><i class="fas fa-plus"></i></span>
+                <span class="btn-text">Nuevo Curso</span>
+            </a>
         </div>
     </div>
 
-    <!-- Courses Grid -->
-    <div class="grid grid-cols-3">
-        <!-- Primero Básico -->
-        <div class="card">
-            <div style="height: 120px; background: var(--theme-color); border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-xl) * -1) var(--spacing-lg); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
-                1°
-            </div>
-            <div>
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
-                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin: 0;">
-                        Primero Básico
-                    </h3>
-                    <span class="badge badge-success">Activo</span>
-                </div>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-lg);">
-                    Primer año de enseñanza básica
-                </p>
-                <div style="display: flex; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--gray-200);">
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Alumnos
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900);">
-                            28
-                        </div>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Asistencia
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--success);">
-                            96%
-                        </div>
-                    </div>
-                </div>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-outline btn-sm" style="flex: 1;">Ver</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">Editar</button>
-                </div>
-            </div>
-        </div>
+    <style>
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .hero-header {
+                flex-direction: column !important;
+                gap: var(--spacing-lg) !important;
+                padding: var(--spacing-lg) !important;
+                text-align: center !important;
+            }
 
-        <!-- Segundo Básico -->
-        <div class="card">
-            <div style="height: 120px; background: var(--theme-color); border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-xl) * -1) var(--spacing-lg); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
-                2°
-            </div>
-            <div>
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
-                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin: 0;">
-                        Segundo Básico
-                    </h3>
-                    <span class="badge badge-success">Activo</span>
-                </div>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-lg);">
-                    Segundo año de enseñanza básica
-                </p>
-                <div style="display: flex; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--gray-200);">
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Alumnos
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900);">
-                            30
-                        </div>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Asistencia
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--success);">
-                            94%
-                        </div>
-                    </div>
-                </div>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-outline btn-sm" style="flex: 1;">Ver</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">Editar</button>
-                </div>
-            </div>
-        </div>
+            .hero-header h2 {
+                font-size: 1.5rem !important;
+            }
 
-        <!-- Tercero Básico -->
-        <div class="card">
-            <div style="height: 120px; background: var(--theme-color); border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-xl) * -1) var(--spacing-lg); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
-                3°
-            </div>
-            <div>
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
-                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin: 0;">
-                        Tercero Básico
-                    </h3>
-                    <span class="badge badge-success">Activo</span>
-                </div>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-lg);">
-                    Tercer año de enseñanza básica
-                </p>
-                <div style="display: flex; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--gray-200);">
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Alumnos
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900);">
-                            32
-                        </div>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Asistencia
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--success);">
-                            95%
-                        </div>
-                    </div>
-                </div>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-outline btn-sm" style="flex: 1;">Ver</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">Editar</button>
-                </div>
-            </div>
-        </div>
+            .hero-description {
+                font-size: 0.875rem !important;
+            }
 
-        <!-- Cuarto Básico -->
-        <div class="card">
-            <div style="height: 120px; background: var(--theme-color); border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-xl) * -1) var(--spacing-lg); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
-                4°
-            </div>
-            <div>
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
-                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin: 0;">
-                        Cuarto Básico
-                    </h3>
-                    <span class="badge badge-success">Activo</span>
-                </div>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-lg);">
-                    Cuarto año de enseñanza básica
-                </p>
-                <div style="display: flex; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--gray-200);">
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Alumnos
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900);">
-                            29
-                        </div>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Asistencia
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--success);">
-                            93%
-                        </div>
-                    </div>
-                </div>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-outline btn-sm" style="flex: 1;">Ver</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">Editar</button>
-                </div>
-            </div>
-        </div>
+            .hero-actions {
+                width: 100% !important;
+                flex-direction: column !important;
+                gap: var(--spacing-sm) !important;
+            }
 
-        <!-- Primero Medio -->
-        <div class="card">
-            <div style="height: 120px; background: var(--theme-color); border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-xl) * -1) var(--spacing-lg); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
-                1°M
-            </div>
-            <div>
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
-                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin: 0;">
-                        Primero Medio
-                    </h3>
-                    <span class="badge badge-success">Activo</span>
-                </div>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-lg);">
-                    Primer año de enseñanza media
-                </p>
-                <div style="display: flex; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--gray-200);">
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Alumnos
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900);">
-                            35
-                        </div>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Asistencia
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--success);">
-                            91%
-                        </div>
-                    </div>
-                </div>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-outline btn-sm" style="flex: 1;">Ver</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">Editar</button>
-                </div>
-            </div>
-        </div>
+            .view-toggle {
+                width: 100% !important;
+                justify-content: center !important;
+            }
 
-        <!-- Segundo Medio -->
-        <div class="card">
-            <div style="height: 120px; background: var(--theme-color); border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-xl) * -1) var(--spacing-lg); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
-                2°M
-            </div>
-            <div>
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
-                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin: 0;">
-                        Segundo Medio
-                    </h3>
-                    <span class="badge badge-success">Activo</span>
-                </div>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-lg);">
-                    Segundo año de enseñanza media
-                </p>
-                <div style="display: flex; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--gray-200);">
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Alumnos
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900);">
-                            33
-                        </div>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Asistencia
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--warning);">
-                            88%
-                        </div>
-                    </div>
-                </div>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-outline btn-sm" style="flex: 1;">Ver</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">Editar</button>
-                </div>
-            </div>
-        </div>
+            .btn-new-course {
+                width: 100% !important;
+                justify-content: center !important;
+            }
 
-        <!-- Tercero Medio -->
-        <div class="card">
-            <div style="height: 120px; background: var(--theme-color); border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-xl) * -1) var(--spacing-lg); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
-                3°M
-            </div>
-            <div>
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
-                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin: 0;">
-                        Tercero Medio
-                    </h3>
-                    <span class="badge badge-success">Activo</span>
-                </div>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-lg);">
-                    Tercer año de enseñanza media
-                </p>
-                <div style="display: flex; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--gray-200);">
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Alumnos
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900);">
-                            31
-                        </div>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Asistencia
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--warning);">
-                            87%
-                        </div>
-                    </div>
-                </div>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-outline btn-sm" style="flex: 1;">Ver</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">Editar</button>
-                </div>
-            </div>
-        </div>
+            .btn-text {
+                display: inline !important;
+            }
 
-        <!-- Cuarto Medio -->
-        <div class="card">
-            <div style="height: 120px; background: var(--theme-color); border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin: calc(var(--spacing-xl) * -1) calc(var(--spacing-xl) * -1) var(--spacing-lg); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
-                4°M
-            </div>
-            <div>
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
-                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin: 0;">
-                        Cuarto Medio
+            /* Grid responsive */
+            .grid-cols-3 {
+                grid-template-columns: 1fr !important;
+                gap: var(--spacing-md) !important;
+            }
+
+            /* Compact cards on mobile */
+            #gridView .card {
+                padding: var(--spacing-md) !important;
+            }
+
+            #gridView .card > div:first-child {
+                margin-bottom: var(--spacing-sm) !important;
+            }
+
+            #gridView .card > div:first-child > div:first-child {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 1.5rem !important;
+                margin-bottom: var(--spacing-sm) !important;
+            }
+
+            #gridView .card h3 {
+                font-size: 1rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            #gridView .card p,
+            #gridView .card div[style*="font-size: 0.875rem"] {
+                font-size: 0.75rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            #gridView .card .btn {
+                padding: var(--spacing-sm) var(--spacing-md) !important;
+                font-size: 0.875rem !important;
+            }
+
+            /* Compact list view on mobile */
+            #listView .card {
+                padding: var(--spacing-md) !important;
+                margin-bottom: var(--spacing-sm) !important;
+            }
+
+            #listView .card > div:first-child {
+                gap: var(--spacing-md) !important;
+            }
+
+            /* Badge in list view */
+            #listView .card > div:first-child > div:first-child {
+                width: 50px !important;
+                height: 50px !important;
+                font-size: 1.25rem !important;
+            }
+
+            /* Info grid in list view - stack vertically */
+            #listView .card > div:first-child > div:nth-child(2) {
+                grid-template-columns: 1fr !important;
+                gap: var(--spacing-xs) !important;
+            }
+
+            /* Titles in list view */
+            #listView .card h3 {
+                font-size: 0.9rem !important;
+                margin-bottom: 0.125rem !important;
+            }
+
+            /* Text in list view */
+            #listView .card p,
+            #listView .card div[style*="font-weight: 600"] {
+                font-size: 0.75rem !important;
+                margin-bottom: 0.125rem !important;
+            }
+
+            /* Section labels - make smaller */
+            #listView .card div[style*="text-transform: uppercase"] {
+                font-size: 0.65rem !important;
+                margin-bottom: 0.125rem !important;
+            }
+
+            /* Buttons in list view */
+            #listView .card .btn {
+                padding: 0.375rem 0.5rem !important;
+                font-size: 0.75rem !important;
+            }
+
+            #listView .card > div:last-child {
+                gap: var(--spacing-xs) !important;
+                margin-top: var(--spacing-sm) !important;
+                flex-wrap: wrap !important;
+            }
+
+            /* Table responsive */
+            .table-container {
+                overflow-x: auto !important;
+            }
+
+            .table {
+                font-size: 0.875rem !important;
+            }
+
+            .table th,
+            .table td {
+                padding: var(--spacing-sm) !important;
+            }
+
+            /* Hide some columns on mobile */
+            .table th:nth-child(4),
+            .table td:nth-child(4),
+            .table th:nth-child(5),
+            .table td:nth-child(5) {
+                display: none !important;
+            }
+        }
+    </style>
+
+
+    <!-- Courses Grid View -->
+    <div id="gridView" class="grid grid-cols-3">
+        <?php $__empty_1 = true; $__currentLoopData = $cursos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $curso): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <!-- Course Card -->
+            <div class="card">
+                <div style="text-align: center; margin-bottom: var(--spacing-lg);">
+                    <div
+                        style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-lg); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: 700; box-shadow: var(--shadow-lg);">
+                        <?php if($curso->nivel === 'Pre-Kinder' || $curso->nivel === 'Kinder'): ?>
+                            <?php echo e(substr($curso->nivel, 0, 2)); ?><?php echo e($curso->letra); ?>
+
+                        <?php else: ?>
+                            <?php echo e($curso->grado); ?><?php echo e($curso->letra); ?>
+
+                        <?php endif; ?>
+                    </div>
+                    <h3
+                        style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
+                        <?php echo e($curso->nombre); ?>
+
                     </h3>
-                    <span class="badge badge-success">Activo</span>
+                    <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
+                        <i class="fas fa-layer-group" style="margin-right: var(--spacing-xs);"></i><?php echo e($curso->nivel); ?>
+
+                    </p>
                 </div>
-                <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-lg);">
-                    Cuarto año de enseñanza media
-                </p>
-                <div style="display: flex; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--gray-200);">
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Alumnos
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900);">
-                            27
-                        </div>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--spacing-xs);">
-                            Asistencia
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--warning);">
-                            85%
-                        </div>
-                    </div>
-                </div>
+
                 <div style="display: flex; gap: var(--spacing-sm);">
-                    <button class="btn btn-outline btn-sm" style="flex: 1;">Ver</button>
-                    <button class="btn btn-ghost btn-sm" style="flex: 1;">Editar</button>
+                    <a href="<?php echo e(route('courses.edit', $curso)); ?>" class="btn btn-primary btn-sm"
+                        style="color: white; flex: 1;">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <form action="<?php echo e(route('courses.destroy', $curso)); ?>" method="POST"
+                        onsubmit="return confirm('¿Estás seguro de querer eliminar este curso?');" style="flex: 1;">
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('DELETE'); ?>
+                        <button type="submit" class="btn btn-outline btn-sm"
+                            style="width: 100%; color: #ef4444; border-color: #ef4444;">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </form>
                 </div>
             </div>
-        </div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+            <div class="col-span-3">
+                <div class="card text-center" style="padding: var(--spacing-2xl); width: 100%;">
+                    <div style="margin-bottom: var(--spacing-md); font-size: 3rem; color: var(--gray-300);">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--gray-700);">No hay cursos registrados</h3>
+                    <p style="color: var(--gray-500);">Comienza agregando un nuevo curso al sistema.</p>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
+
+    <!-- Courses List View -->
+    <div id="listView" style="display: none;">
+        <?php $__empty_1 = true; $__currentLoopData = $cursos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $curso): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <!-- Course List Item -->
+            <div class="card mb-md" style="padding: var(--spacing-lg);">
+                <div style="display: flex; align-items: center; gap: var(--spacing-xl);">
+                    <!-- Icon -->
+                    <div
+                        style="width: 80px; height: 80px; flex-shrink: 0; border-radius: var(--radius-lg); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 700; box-shadow: var(--shadow-md);">
+                        <?php if($curso->nivel === 'Pre-Kinder' || $curso->nivel === 'Kinder'): ?>
+                            <?php echo e(substr($curso->nivel, 0, 2)); ?><?php echo e($curso->letra); ?>
+
+                        <?php else: ?>
+                            <?php echo e($curso->grado); ?><?php echo e($curso->letra); ?>
+
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Info -->
+                    <div
+                        style="flex: 1; display: flex; flex-direction: column; gap: var(--spacing-xs);">
+                        <!-- Name & Level -->
+                        <div>
+                            <h3
+                                style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
+                                <?php echo e($curso->nombre); ?>
+
+                            </h3>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
+                                <i class="fas fa-layer-group" style="width: 16px;"></i> <?php echo e($curso->nivel); ?>
+
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div style="display: flex; gap: var(--spacing-sm); flex-shrink: 0;">
+                        <a href="<?php echo e(route('courses.edit', $curso)); ?>" class="btn btn-primary btn-sm" style="color: white;">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="<?php echo e(route('courses.destroy', $curso)); ?>" method="POST"
+                            onsubmit="return confirm('¿Estás seguro de querer eliminar este curso?');">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('DELETE'); ?>
+                            <button type="submit" class="btn btn-outline btn-sm"
+                                style="color: #ef4444; border-color: #ef4444;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+            <div class="card text-center" style="padding: var(--spacing-2xl);">
+                <div style="margin-bottom: var(--spacing-md); font-size: 3rem; color: var(--gray-300);">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--gray-700);">No hay cursos registrados</h3>
+                <p style="color: var(--gray-500);">Comienza agregando un nuevo curso al sistema.</p>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <script>
+        // View toggle functionality
+        const gridViewBtn = document.getElementById('gridViewBtn');
+        const listViewBtn = document.getElementById('listViewBtn');
+        const gridView = document.getElementById('gridView');
+        const listView = document.getElementById('listView');
+
+        // Load saved preference or default to grid
+        const savedView = localStorage.getItem('coursesView') || 'grid';
+        if (savedView === 'list') {
+            showListView();
+        }
+
+        gridViewBtn.addEventListener('click', () => {
+            showGridView();
+            localStorage.setItem('coursesView', 'grid');
+        });
+
+        listViewBtn.addEventListener('click', () => {
+            showListView();
+            localStorage.setItem('coursesView', 'list');
+        });
+
+        function showGridView() {
+            gridView.style.display = 'grid';
+            listView.style.display = 'none';
+            gridViewBtn.style.background = 'white';
+            gridViewBtn.style.color = 'var(--theme-dark)';
+            listViewBtn.style.background = 'transparent';
+            listViewBtn.style.color = 'white';
+        }
+
+        function showListView() {
+            gridView.style.display = 'none';
+            listView.style.display = 'block';
+            listViewBtn.style.background = 'white';
+            listViewBtn.style.color = 'var(--theme-dark)';
+            gridViewBtn.style.background = 'transparent';
+            gridViewBtn.style.color = 'white';
+        }
+    </script>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
@@ -388,5 +368,4 @@
 <?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
 <?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
 <?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?>
-<?php /**PATH C:\Users\Edy\Downloads\laragon-portable\www\HolaClase\resources\views/cursos/index.blade.php ENDPATH**/ ?>
+<?php endif; ?><?php /**PATH C:\Users\Edy\Downloads\laragon-portable\www\HolaClase\resources\views/cursos/index.blade.php ENDPATH**/ ?>

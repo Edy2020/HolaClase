@@ -4,19 +4,19 @@
     </x-slot>
 
     <!-- Hero Header -->
-    <div
+    <div class="hero-header"
         style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center;">
         <div>
             <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
                 <i class="fas fa-chalkboard-teacher"></i> Profesores
             </h2>
-            <p style="font-size: 1rem; opacity: 0.95; margin: 0;">
+            <p class="hero-description" style="font-size: 1rem; opacity: 0.95; margin: 0;">
                 Administra el personal docente de la institución
             </p>
         </div>
-        <div style="display: flex; gap: var(--spacing-md); align-items: center;">
+        <div class="hero-actions" style="display: flex; gap: var(--spacing-md); align-items: center;">
             <!-- View Toggle -->
-            <div
+            <div class="view-toggle"
                 style="display: flex; gap: var(--spacing-xs); background: rgba(255,255,255,0.1); padding: var(--spacing-xs); border-radius: var(--radius-md);">
                 <button id="gridViewBtn" class="btn btn-sm"
                     style="background: white; color: var(--theme-dark); border: none; padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--radius-md);">
@@ -27,13 +27,168 @@
                     <i class="fas fa-list"></i>
                 </button>
             </div>
-            <a href="{{ route('teachers.create') }}" class="btn btn-primary"
+            <a href="{{ route('teachers.create') }}" class="btn btn-primary btn-new-teacher"
                 style="background: white; color: var(--theme-dark); flex-shrink: 0;">
                 <span><i class="fas fa-plus"></i></span>
-                <span>Nuevo Profesor</span>
+                <span class="btn-text">Nuevo Profesor</span>
             </a>
         </div>
     </div>
+
+    <style>
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .hero-header {
+                flex-direction: column !important;
+                gap: var(--spacing-lg) !important;
+                padding: var(--spacing-lg) !important;
+                text-align: center !important;
+            }
+
+            .hero-header h2 {
+                font-size: 1.5rem !important;
+            }
+
+            .hero-description {
+                font-size: 0.875rem !important;
+            }
+
+            .hero-actions {
+                width: 100% !important;
+                flex-direction: column !important;
+                gap: var(--spacing-sm) !important;
+            }
+
+            .view-toggle {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+
+            .btn-new-teacher {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+
+            .btn-text {
+                display: inline !important;
+            }
+
+            /* Grid responsive */
+            .grid-cols-3 {
+                grid-template-columns: 1fr !important;
+                gap: var(--spacing-md) !important;
+            }
+
+            /* Compact cards on mobile */
+            #gridView .card {
+                padding: var(--spacing-md) !important;
+            }
+
+            #gridView .card > div:first-child {
+                margin-bottom: var(--spacing-sm) !important;
+            }
+
+            #gridView .card > div:first-child > div:first-child {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 1.5rem !important;
+                margin-bottom: var(--spacing-sm) !important;
+            }
+
+            #gridView .card h3 {
+                font-size: 1rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            #gridView .card p,
+            #gridView .card div[style*="font-size: 0.875rem"] {
+                font-size: 0.75rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            #gridView .card .btn {
+                padding: var(--spacing-sm) var(--spacing-md) !important;
+                font-size: 0.875rem !important;
+            }
+
+            /* Compact list view on mobile */
+            #listView .card {
+                padding: var(--spacing-md) !important;
+                margin-bottom: var(--spacing-sm) !important;
+            }
+
+            #listView .card > div:first-child {
+                gap: var(--spacing-md) !important;
+            }
+
+            /* Avatar in list view */
+            #listView .card > div:first-child > div:first-child {
+                width: 50px !important;
+                height: 50px !important;
+                font-size: 1.25rem !important;
+            }
+
+            /* Info grid in list view - stack vertically */
+            #listView .card > div:first-child > div:nth-child(2) {
+                grid-template-columns: 1fr !important;
+                gap: var(--spacing-xs) !important;
+            }
+
+            /* Titles in list view */
+            #listView .card h3 {
+                font-size: 0.9rem !important;
+                margin-bottom: 0.125rem !important;
+            }
+
+            /* Text in list view */
+            #listView .card p,
+            #listView .card div[style*="font-weight: 600"] {
+                font-size: 0.75rem !important;
+                margin-bottom: 0.125rem !important;
+            }
+
+            /* Section labels - make smaller */
+            #listView .card div[style*="text-transform: uppercase"] {
+                font-size: 0.65rem !important;
+                margin-bottom: 0.125rem !important;
+            }
+
+            /* Buttons in list view */
+            #listView .card .btn {
+                padding: 0.375rem 0.5rem !important;
+                font-size: 0.75rem !important;
+            }
+
+            #listView .card > div:last-child {
+                gap: var(--spacing-xs) !important;
+                margin-top: var(--spacing-sm) !important;
+                flex-wrap: wrap !important;
+            }
+
+            /* Table responsive */
+            .table-container {
+                overflow-x: auto !important;
+            }
+
+            .table {
+                font-size: 0.875rem !important;
+            }
+
+            .table th,
+            .table td {
+                padding: var(--spacing-sm) !important;
+            }
+
+            /* Hide some columns on mobile */
+            .table th:nth-child(3),
+            .table td:nth-child(3),
+            .table th:nth-child(4),
+            .table td:nth-child(4) {
+                display: none !important;
+            }
+        }
+    </style>
+
 
     <!-- Teachers Grid View -->
     <div id="gridView" class="grid grid-cols-3">
@@ -82,12 +237,14 @@
                 </div>
             </div>
         @empty
-            <div class="col-span-3 text-center py-12">
-                <div style="margin-bottom: var(--spacing-md); font-size: 3rem; color: var(--gray-300);">
-                    <i class="fas fa-user-graduate"></i>
+            <div class="col-span-3">
+                <div class="card text-center" style="padding: var(--spacing-2xl); width: 100%;">
+                    <div style="margin-bottom: var(--spacing-md); font-size: 3rem; color: var(--gray-300);">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--gray-700);">No hay profesores registrados</h3>
+                    <p style="color: var(--gray-500);">Comienza agregando un nuevo profesor al sistema.</p>
                 </div>
-                <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--gray-700);">No hay profesores registrados</h3>
-                <p style="color: var(--gray-500);">Comienza agregando un nuevo profesor al sistema.</p>
             </div>
         @endforelse
     </div>
