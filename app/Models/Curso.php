@@ -11,5 +11,50 @@ class Curso extends Model
         'grado',
         'letra',
         'nombre',
+        'profesor_id',
     ];
+
+    /**
+     * Get the profesor assigned to this curso.
+     */
+    public function profesor()
+    {
+        return $this->belongsTo(Profesor::class, 'profesor_id');
+    }
+
+    /**
+     * Get the estudiantes enrolled in this curso.
+     */
+    public function estudiantes()
+    {
+        return $this->belongsToMany(Estudiante::class, 'curso_estudiante')
+            ->withTimestamps()
+            ->withPivot('fecha_inscripcion');
+    }
+
+    /**
+     * Get the asignaturas for this curso.
+     */
+    public function asignaturas()
+    {
+        return $this->belongsToMany(Asignatura::class, 'curso_asignatura')
+            ->withTimestamps()
+            ->withPivot('profesor_id');
+    }
+
+    /**
+     * Get the eventos academicos for this curso.
+     */
+    public function eventos()
+    {
+        return $this->hasMany(EventoAcademico::class);
+    }
+
+    /**
+     * Get the pruebas for this curso.
+     */
+    public function pruebas()
+    {
+        return $this->hasMany(Prueba::class);
+    }
 }

@@ -28,6 +28,14 @@ class Profesor extends Model
         return $this->hasMany(ProfesorDocumento::class);
     }
 
+    /**
+     * Get the cursos where this profesor is assigned as the main teacher.
+     */
+    public function cursos()
+    {
+        return $this->hasMany(Curso::class, 'profesor_id');
+    }
+
     protected $casts = [
         'fecha_nacimiento' => 'date',
     ];

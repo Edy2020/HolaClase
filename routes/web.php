@@ -33,13 +33,30 @@ Route::middleware('auth')->group(function () {
         'destroy' => 'courses.destroy',
     ]);
 
+    // Additional course management routes
+    Route::post('/cursos/{curso}/assign-teacher', [App\Http\Controllers\CursoController::class, 'assignTeacher'])->name('courses.assign-teacher');
+    Route::post('/cursos/{curso}/students', [App\Http\Controllers\CursoController::class, 'addStudent'])->name('courses.add-student');
+    Route::delete('/cursos/{curso}/students/{estudiante}', [App\Http\Controllers\CursoController::class, 'removeStudent'])->name('courses.remove-student');
+    Route::post('/cursos/{curso}/subjects', [App\Http\Controllers\CursoController::class, 'addSubject'])->name('courses.add-subject');
+    Route::delete('/cursos/{curso}/subjects/{asignatura}', [App\Http\Controllers\CursoController::class, 'removeSubject'])->name('courses.remove-subject');
+    Route::post('/cursos/{curso}/events', [App\Http\Controllers\CursoController::class, 'storeEvent'])->name('courses.store-event');
+    Route::delete('/cursos/{curso}/events/{evento}', [App\Http\Controllers\CursoController::class, 'destroyEvent'])->name('courses.destroy-event');
+    Route::post('/cursos/{curso}/tests', [App\Http\Controllers\CursoController::class, 'storeTest'])->name('courses.store-test');
+    Route::delete('/cursos/{curso}/tests/{prueba}', [App\Http\Controllers\CursoController::class, 'destroyTest'])->name('courses.destroy-test');
+
     Route::get('/estudiantes', function () {
         return view('estudiantes.index');
     })->name('students.index');
 
-    Route::get('/asignaturas', function () {
-        return view('asignaturas.index');
-    })->name('subjects.index');
+    Route::resource('asignaturas', App\Http\Controllers\AsignaturaController::class)->names([
+        'index' => 'subjects.index',
+        'create' => 'subjects.create',
+        'store' => 'subjects.store',
+        'show' => 'subjects.show',
+        'edit' => 'subjects.edit',
+        'update' => 'subjects.update',
+        'destroy' => 'subjects.destroy',
+    ]);
 
     // Route::get('/profesores', function () {
     //    return view('profesores.index');

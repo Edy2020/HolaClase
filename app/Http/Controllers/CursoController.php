@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Curso;
+use App\Models\Profesor;
+use App\Models\Estudiante;
+use App\Models\Asignatura;
 use Illuminate\Http\Request;
 
 class CursoController extends Controller
@@ -92,7 +95,33 @@ class CursoController extends Controller
      */
     public function show(Curso $curso)
     {
-        //
+        // Load all relationships
+        $curso->load([
+            'profesor',
+            'estudiantes',
+            'asignaturas',
+            'eventos' => function ($query) {
+                $query->orderBy('fecha_inicio', 'asc');
+            },
+            'pruebas' => function ($query) {
+                $query->with('asignatura')->orderBy('fecha', 'asc');
+            }
+        ]);
+
+        // Get all profesores for the dropdown
+        $profesores = Profesor::orderBy('nombre')->get();
+
+        // Get all estudiantes not enrolled in this course
+        $estudiantesDisponibles = Estudiante::whereDoesntHave('cursos', function ($query) use ($curso) {
+            $query->where('curso_id', $curso->id);
+        })->orderBy('nombre')->get();
+
+        // Get all asignaturas not assigned to this course
+        $asignaturasDisponibles = Asignatura::whereDoesntHave('cursos', function ($query) use ($curso) {
+            $query->where('curso_id', $curso->id);
+        })->orderBy('nombre')->get();
+
+        return view('cursos.show', compact('curso', 'profesores', 'estudiantesDisponibles', 'asignaturasDisponibles'));
     }
 
     /**
@@ -174,5 +203,132 @@ class CursoController extends Controller
     {
         $curso->delete();
         return redirect()->route('courses.index')->with('success', 'Curso eliminado correctamente.');
+    }
+
+    /**
+     * Assign a teacher to the course.
+     */
+    public function assignTeacher(Request $request, Curso $curso)
+    {
+        $request->validate([
+            'profesor_id' => 'nullable|exists:profesores,id',
+        ]);
+
+        $curso->update(['profesor_id' => $request->profesor_id]);
+
+        return redirect()->route('courses.show', $curso)->with('success', 'Profesor asignado correctamente.');
+    }
+
+    /**
+     * Add a student to the course.
+     */
+    public function addStudent(Request $request, Curso $curso)
+    {
+        $request->validate([
+            'estudiante_id' => 'required|exists:estudiantes,id',
+            'fecha_inscripcion' => 'nullable|date',
+        ]);
+
+        $curso->estudiantes()->attach($request->estudiante_id, [
+            'fecha_inscripcion' => $request->fecha_inscripcion ?? now(),
+        ]);
+
+        return redirect()->route('courses.show', $curso)->with('success', 'Estudiante agregado correctamente.');
+    }
+
+    /**
+     * Remove a student from the course.
+     */
+    public function removeStudent(Curso $curso, $estudianteId)
+    {
+        $curso->estudiantes()->detach($estudianteId);
+
+        return redirect()->route('courses.show', $curso)->with('success', 'Estudiante removido correctamente.');
+    }
+
+    /**
+     * Add a subject to the course.
+     */
+    public function addSubject(Request $request, Curso $curso)
+    {
+        $request->validate([
+            'asignatura_id' => 'required|exists:asignaturas,id',
+            'profesor_id' => 'nullable|exists:profesores,id',
+        ]);
+
+        $curso->asignaturas()->attach($request->asignatura_id, [
+            'profesor_id' => $request->profesor_id,
+        ]);
+
+        return redirect()->route('courses.show', $curso)->with('success', 'Asignatura agregada correctamente.');
+    }
+
+    /**
+     * Remove a subject from the course.
+     */
+    public function removeSubject(Curso $curso, $asignaturaId)
+    {
+        $curso->asignaturas()->detach($asignaturaId);
+
+        return redirect()->route('courses.show', $curso)->with('success', 'Asignatura removida correctamente.');
+    }
+
+    /**
+     * Store a new academic event.
+     */
+    public function storeEvent(Request $request, Curso $curso)
+    {
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'nullable|date|after_or_equal:fecha_inicio',
+            'tipo' => 'required|in:vacaciones,reunion,actividad,examen,otro',
+        ]);
+
+        $curso->eventos()->create($request->all());
+
+        return redirect()->route('courses.show', $curso)->with('success', 'Evento creado correctamente.');
+    }
+
+    /**
+     * Delete an academic event.
+     */
+    public function destroyEvent(Curso $curso, $eventoId)
+    {
+        $evento = $curso->eventos()->findOrFail($eventoId);
+        $evento->delete();
+
+        return redirect()->route('courses.show', $curso)->with('success', 'Evento eliminado correctamente.');
+    }
+
+    /**
+     * Store a new test.
+     */
+    public function storeTest(Request $request, Curso $curso)
+    {
+        $request->validate([
+            'asignatura_id' => 'required|exists:asignaturas,id',
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'fecha' => 'required|date',
+            'hora' => 'nullable|date_format:H:i',
+            'ponderacion' => 'nullable|integer|min:0|max:100',
+        ]);
+
+        $curso->pruebas()->create($request->all());
+
+        return redirect()->route('courses.show', $curso)->with('success', 'Prueba creada correctamente.');
+    }
+
+    /**
+     * Delete a test.
+     */
+    public function destroyTest(Curso $curso, $pruebaId)
+    {
+        $prueba = $curso->pruebas()->findOrFail($pruebaId);
+        $prueba->delete();
+
+        return redirect()->route('courses.show', $curso)->with('success', 'Prueba eliminada correctamente.');
     }
 }

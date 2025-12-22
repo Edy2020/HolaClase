@@ -84,11 +84,11 @@
                 padding: var(--spacing-md) !important;
             }
 
-            #gridView .card > div:first-child {
+            #gridView .card>div:first-child {
                 margin-bottom: var(--spacing-sm) !important;
             }
 
-            #gridView .card > div:first-child > div:first-child {
+            #gridView .card>div:first-child>div:first-child {
                 width: 60px !important;
                 height: 60px !important;
                 font-size: 1.5rem !important;
@@ -117,19 +117,19 @@
                 margin-bottom: var(--spacing-sm) !important;
             }
 
-            #listView .card > div:first-child {
+            #listView .card>div:first-child {
                 gap: var(--spacing-md) !important;
             }
 
             /* Badge in list view */
-            #listView .card > div:first-child > div:first-child {
+            #listView .card>div:first-child>div:first-child {
                 width: 50px !important;
                 height: 50px !important;
                 font-size: 1.25rem !important;
             }
 
             /* Info grid in list view - stack vertically */
-            #listView .card > div:first-child > div:nth-child(2) {
+            #listView .card>div:first-child>div:nth-child(2) {
                 grid-template-columns: 1fr !important;
                 gap: var(--spacing-xs) !important;
             }
@@ -159,7 +159,7 @@
                 font-size: 0.75rem !important;
             }
 
-            #listView .card > div:last-child {
+            #listView .card>div:last-child {
                 gap: var(--spacing-xs) !important;
                 margin-top: var(--spacing-sm) !important;
                 flex-wrap: wrap !important;
@@ -259,8 +259,7 @@
                     </div>
 
                     <!-- Info -->
-                    <div
-                        style="flex: 1; display: flex; flex-direction: column; gap: var(--spacing-xs);">
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: var(--spacing-xs);">
                         <!-- Name & Level -->
                         <div>
                             <h3
@@ -275,6 +274,10 @@
 
                     <!-- Actions -->
                     <div style="display: flex; gap: var(--spacing-sm); flex-shrink: 0;">
+                        <a href="{{ route('courses.show', $curso) }}" class="btn btn-secondary btn-sm"
+                            style="color: white;">
+                            <i class="fas fa-eye"></i>
+                        </a>
                         <a href="{{ route('courses.edit', $curso) }}" class="btn btn-primary btn-sm" style="color: white;">
                             <i class="fas fa-edit"></i>
                         </a>
