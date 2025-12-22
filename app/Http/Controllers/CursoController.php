@@ -29,11 +29,23 @@ class CursoController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nivel' => 'required|string',
             'grado' => 'nullable|string',
             'letra' => 'required|string|max:5',
         ]);
+
+        // Check for duplicate curso
+        $exists = Curso::where('nivel', $request->nivel)
+            ->where('grado', $request->grado)
+            ->where('letra', $request->letra)
+            ->exists();
+
+        if ($exists) {
+            return back()->withErrors([
+                'letra' => 'Ya existe un curso con esta combinación de nivel, grado y letra.'
+            ])->withInput();
+        }
 
         $nivel = $request->nivel;
         $grado = $request->grado;
@@ -96,11 +108,24 @@ class CursoController extends Controller
      */
     public function update(Request $request, Curso $curso)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nivel' => 'required|string',
             'grado' => 'nullable|string',
             'letra' => 'required|string|max:5',
         ]);
+
+        // Check for duplicate curso (excluding current record)
+        $exists = Curso::where('nivel', $request->nivel)
+            ->where('grado', $request->grado)
+            ->where('letra', $request->letra)
+            ->where('id', '!=', $curso->id)
+            ->exists();
+
+        if ($exists) {
+            return back()->withErrors([
+                'letra' => 'Ya existe un curso con esta combinación de nivel, grado y letra.'
+            ])->withInput();
+        }
 
         $nivel = $request->nivel;
         $grado = $request->grado;
