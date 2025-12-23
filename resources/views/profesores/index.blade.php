@@ -253,38 +253,45 @@
     <div id="listView" style="display: none;">
         @forelse ($profesores as $profesor)
             <!-- Teacher List Item -->
-            <div class="card mb-md" style="padding: var(--spacing-lg);">
-                <div style="display: flex; align-items: center; gap: var(--spacing-xl);">
+            <div class="card mb-md" style="padding: var(--spacing-md);">
+                <div style="display: flex; align-items: center; gap: var(--spacing-md);">
                     <!-- Avatar -->
                     <div
-                        style="width: 80px; height: 80px; flex-shrink: 0; border-radius: var(--radius-lg); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: 700; box-shadow: var(--shadow-md);">
+                        style="width: 50px; height: 50px; flex-shrink: 0; border-radius: var(--radius-md); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; font-weight: 700; box-shadow: var(--shadow-sm);">
                         {{ substr($profesor->nombre, 0, 1) . substr($profesor->apellido, 0, 1) }}
                     </div>
 
                     <!-- Info -->
                     <div
-                        style="flex: 1; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-lg); align-items: center;">
-                        <!-- Name & Email -->
+                        style="flex: 1; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--spacing-md); align-items: center;">
                         <div>
                             <h3
-                                style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
+                                style="font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.25rem;">
                                 {{ $profesor->nombre }} {{ $profesor->apellido }}
                             </h3>
-                            <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-xs);">
-                                <i class="fas fa-envelope" style="width: 16px;"></i> {{ $profesor->email }}
+                            <p style="color: var(--gray-600); font-size: 0.8125rem; margin: 0;">
+                                <i class="fas fa-envelope" style="width: 14px;"></i> {{ $profesor->email }}
                             </p>
-                            <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
-                                <i class="fas fa-id-card" style="width: 16px;"></i> {{ $profesor->rut }}
-                            </p>
+                        </div>
+
+                        <!-- RUT -->
+                        <div>
+                            <div
+                                style="color: var(--gray-500); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+                                RUT
+                            </div>
+                            <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;">
+                                {{ $profesor->rut }}
+                            </div>
                         </div>
 
                         <!-- Especialidad -->
                         <div>
                             <div
-                                style="color: var(--gray-500); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--spacing-xs);">
+                                style="color: var(--gray-500); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
                                 Especialidad
                             </div>
-                            <div style="font-weight: 600; color: var(--gray-900);">
+                            <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;">
                                 {{ $profesor->especialidad ?? 'N/A' }}
                             </div>
                         </div>
@@ -292,17 +299,17 @@
                         <!-- Teléfono -->
                         <div>
                             <div
-                                style="color: var(--gray-500); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--spacing-xs);">
+                                style="color: var(--gray-500); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
                                 Teléfono
                             </div>
-                            <div style="font-weight: 600;">
+                            <div style="font-weight: 600; font-size: 0.875rem;">
                                 {{ $profesor->telefono ?? 'N/A' }}
                             </div>
                         </div>
                     </div>
 
                     <!-- Actions -->
-                    <div style="display: flex; gap: var(--spacing-sm); flex-shrink: 0;">
+                    <div style="display: flex; gap: var(--spacing-xs); flex-shrink: 0;">
                         <a href="{{ route('teachers.edit', $profesor) }}" class="btn btn-primary btn-sm"
                             style="color: white;">
                             <i class="fas fa-edit"></i>
