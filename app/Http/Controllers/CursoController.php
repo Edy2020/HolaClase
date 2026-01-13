@@ -15,7 +15,12 @@ class CursoController extends Controller
      */
     public function index()
     {
-        $cursos = Curso::orderBy('nivel')->orderBy('grado')->orderBy('letra')->paginate(12);
+        $cursos = Curso::withCount('estudiantes')
+            ->with('profesor')
+            ->orderBy('nivel')
+            ->orderBy('grado')
+            ->orderBy('letra')
+            ->paginate(12);
         return view('cursos.index', compact('cursos'));
     }
 

@@ -28,7 +28,7 @@
             <div class="stat-icon">
                 <i class="fas fa-book"></i>
             </div>
-            <div class="stat-value">12</div>
+            <div class="stat-value"><?php echo e($totalCursos); ?></div>
             <div class="stat-label">CURSOS ACTIVOS</div>
         </div>
 
@@ -36,7 +36,7 @@
             <div class="stat-icon">
                 <i class="fas fa-users"></i>
             </div>
-            <div class="stat-value">248</div>
+            <div class="stat-value"><?php echo e($totalEstudiantes); ?></div>
             <div class="stat-label">ESTUDIANTES</div>
         </div>
 
@@ -64,27 +64,27 @@
         </div>
         <div class="card-body">
             <div class="grid grid-cols-3">
-                <a href="#" class="btn btn-primary" style="text-decoration: none;">
+                <a href="<?php echo e(route('courses.create')); ?>" class="btn btn-primary" style="text-decoration: none;">
                     <span><i class="fas fa-book" style="color: white;"></i></span>
                     <span style="color: white;">Crear Curso</span>
                 </a>
-                <a href="#" class="btn btn-secondary" style="text-decoration: none;">
+                <a href="<?php echo e(route('students.index')); ?>" class="btn btn-secondary" style="text-decoration: none;">
                     <span><i class="fas fa-users"></i></span>
                     <span>Añadir Estudiante</span>
                 </a>
-                <a href="#" class="btn btn-accent" style="text-decoration: none;">
+                <a href="<?php echo e(route('attendance.index')); ?>" class="btn btn-accent" style="text-decoration: none;">
                     <span><i class="fas fa-check" style="color: white;"></i></span>
                     <span style="color: white;">Pasar Asistencia</span>
                 </a>
-                <a href="#" class="btn btn-outline" style="text-decoration: none;">
+                <a href="<?php echo e(route('grades.index')); ?>" class="btn btn-outline" style="text-decoration: none;">
                     <span><i class="fas fa-clipboard"></i></span>
                     <span>Registrar Notas</span>
                 </a>
-                <a href="#" class="btn btn-outline" style="text-decoration: none;">
+                <a href="<?php echo e(route('dashboard')); ?>" class="btn btn-outline" style="text-decoration: none;">
                     <span><i class="fas fa-chart-bar"></i></span>
                     <span>Ver Reportes</span>
                 </a>
-                <a href="#" class="btn btn-outline" style="text-decoration: none;">
+                <a href="<?php echo e(route('settings.index')); ?>" class="btn btn-outline" style="text-decoration: none;">
                     <span><i class="fas fa-cog"></i></span>
                     <span>Configuración</span>
                 </a>
@@ -99,63 +99,32 @@
                 <h3 class="card-title"><i class="fas fa-history"></i> Actividad Reciente</h3>
             </div>
             <div class="card-body">
-                <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
-                    <div style="display: flex; gap: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div style="width: 40px; height: 40px; background: var(--theme-color); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="font-weight: 600; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                                Nuevo curso creado
-                            </div>
-                            <div style="font-size: 0.875rem; color: var(--gray-600);">
-                                Matemáticas Avanzadas - Hace 2 horas
-                            </div>
-                        </div>
-                    </div>
+                <?php if($recentActivities->count() > 0): ?>
+                    <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
+                        <?php $__currentLoopData = $recentActivities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $activity): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <div style="display: flex; gap: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
+                                <div style="width: 40px; height: 40px; background: var(--theme-color); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
+                                    <i class="fas <?php echo e($activity['icon']); ?>"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
+                                        <?php echo e($activity['title']); ?>
 
-                    <div style="display: flex; gap: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div style="width: 40px; height: 40px; background: var(--theme-color); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="font-weight: 600; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                                Asistencia registrada
-                            </div>
-                            <div style="font-size: 0.875rem; color: var(--gray-600);">
-                                Física I - Hace 3 horas
-                            </div>
-                        </div>
-                    </div>
+                                    </div>
+                                    <div style="font-size: 0.875rem; color: var(--gray-600);">
+                                        <?php echo e($activity['description']); ?> - <?php echo e($activity['created_at']->diffForHumans()); ?>
 
-                    <div style="display: flex; gap: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div style="width: 40px; height: 40px; background: var(--theme-color); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
-                            <i class="fas fa-clipboard"></i>
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="font-weight: 600; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                                Notas actualizadas
+                                    </div>
+                                </div>
                             </div>
-                            <div style="font-size: 0.875rem; color: var(--gray-600);">
-                                Química Orgánica - Hace 5 horas
-                            </div>
-                        </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
-
-                    <div style="display: flex; gap: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div style="width: 40px; height: 40px; background: var(--theme-color); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="font-weight: 600; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                                Nuevo estudiante registrado
-                            </div>
-                            <div style="font-size: 0.875rem; color: var(--gray-600);">
-                                María González - Hace 1 día
-                            </div>
-                        </div>
+                <?php else: ?>
+                    <div style="text-align: center; padding: var(--spacing-2xl); color: var(--gray-500);">
+                        <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: var(--spacing-md); opacity: 0.3;"></i>
+                        <p style="margin: 0;">No hay actividad reciente</p>
                     </div>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -165,55 +134,57 @@
                 <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Próximas Tareas</h3>
             </div>
             <div class="card-body">
-                <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
-                    <div style="padding: var(--spacing-md); border-left: 4px solid var(--error); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-xs);">
-                            <div style="font-weight: 600; color: var(--gray-900);">
-                                Examen Final - Cálculo II
-                            </div>
-                            <span class="badge badge-error">Urgente</span>
-                        </div>
-                        <div style="font-size: 0.875rem; color: var(--gray-600);">
-                            Mañana, 10:00 AM
-                        </div>
-                    </div>
+                <?php if($upcomingPruebas->count() > 0): ?>
+                    <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
+                        <?php $__currentLoopData = $upcomingPruebas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $prueba): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php
+                                $daysUntil = now()->diffInDays($prueba->fecha, false);
+                                if ($daysUntil == 0) {
+                                    $borderColor = 'var(--error)';
+                                    $badgeClass = 'badge-error';
+                                    $badgeText = 'Hoy';
+                                } elseif ($daysUntil == 1) {
+                                    $borderColor = 'var(--error)';
+                                    $badgeClass = 'badge-error';
+                                    $badgeText = 'Mañana';
+                                } elseif ($daysUntil <= 3) {
+                                    $borderColor = 'var(--warning)';
+                                    $badgeClass = 'badge-warning';
+                                    $badgeText = 'Próximo';
+                                } else {
+                                    $borderColor = 'var(--theme-light)';
+                                    $badgeClass = 'badge-primary';
+                                    $badgeText = 'Programado';
+                                }
+                            ?>
+                            <div style="padding: var(--spacing-md); border-left: 4px solid <?php echo e($borderColor); ?>; background: var(--gray-50); border-radius: var(--radius-md);">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-xs);">
+                                    <div style="font-weight: 600; color: var(--gray-900);">
+                                        <?php echo e($prueba->titulo); ?> - <?php echo e($prueba->curso->nombre); ?>
 
-                    <div style="padding: var(--spacing-md); border-left: 4px solid var(--warning); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-xs);">
-                            <div style="font-weight: 600; color: var(--gray-900);">
-                                Entrega de Notas - Historia
-                            </div>
-                            <span class="badge badge-warning">Pendiente</span>
-                        </div>
-                        <div style="font-size: 0.875rem; color: var(--gray-600);">
-                            En 3 días
-                        </div>
-                    </div>
+                                    </div>
+                                    <span class="badge <?php echo e($badgeClass); ?>"><?php echo e($badgeText); ?></span>
+                                </div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">
+                                    <?php if($prueba->asignatura): ?>
+                                        <?php echo e($prueba->asignatura->nombre); ?> • 
+                                    <?php endif; ?>
+                                    <?php echo e($prueba->fecha->format('d/m/Y')); ?>
 
-                    <div style="padding: var(--spacing-md); border-left: 4px solid var(--theme-light); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-xs);">
-                            <div style="font-weight: 600; color: var(--gray-900);">
-                                Reunión de Profesores
-                            </div>
-                            <span class="badge badge-primary">Programado</span>
-                        </div>
-                        <div style="font-size: 0.875rem; color: var(--gray-600);">
-                            Viernes, 3:00 PM
-                        </div>
-                    </div>
+                                    <?php if($prueba->hora): ?>
+                                        , <?php echo e($prueba->hora); ?>
 
-                    <div style="padding: var(--spacing-md); border-left: 4px solid var(--success); background: var(--gray-50); border-radius: var(--radius-md);">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-xs);">
-                            <div style="font-weight: 600; color: var(--gray-900);">
-                                Revisión de Asistencia
+                                    <?php endif; ?>
+                                </div>
                             </div>
-                            <span class="badge badge-success">Completado</span>
-                        </div>
-                        <div style="font-size: 0.875rem; color: var(--gray-600);">
-                            Ayer
-                        </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
-                </div>
+                <?php else: ?>
+                    <div style="text-align: center; padding: var(--spacing-2xl); color: var(--gray-500);">
+                        <i class="fas fa-calendar-check" style="font-size: 3rem; margin-bottom: var(--spacing-md); opacity: 0.3;"></i>
+                        <p style="margin: 0;">No hay pruebas programadas</p>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

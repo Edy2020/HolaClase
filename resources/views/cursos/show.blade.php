@@ -5,9 +5,20 @@
 
     <!-- Success Message -->
     @if(session('success'))
-        <div class="alert alert-success" style="background: #10b981; color: white; padding: var(--spacing-md); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
+        <div id="successMessage" class="alert alert-success" style="background: #10b981; color: white; padding: var(--spacing-md); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg); transition: opacity 0.5s ease;">
             <i class="fas fa-check-circle"></i> {{ session('success') }}
         </div>
+        <script>
+            setTimeout(function() {
+                const message = document.getElementById('successMessage');
+                if (message) {
+                    message.style.opacity = '0';
+                    setTimeout(function() {
+                        message.style.display = 'none';
+                    }, 500);
+                }
+            }, 3000);
+        </script>
     @endif
 
     <!-- Header Section -->
@@ -18,19 +29,22 @@
                     {{ $curso->nombre }}
                 </h2>
                 <p style="color: var(--gray-600); font-size: 1rem;">
-                    <i class="fas fa-layer-group"></i> {{ $curso->nivel }}
+                    <i class="fas fa-graduation-cap"></i> Grado: {{ $curso->grado }}
                     @if($curso->grado)
-                        | <i class="fas fa-graduation-cap"></i> Grado: {{ $curso->grado }}
+                        | <i class="fas fa-layer-group"></i> {{ $curso->nivel }}
                     @endif
                     | <i class="fas fa-tag"></i> Sección: {{ $curso->letra }}
                 </p>
             </div>
             <div style="display: flex; gap: var(--spacing-sm);">
-                <a href="{{ route('courses.index') }}" class="btn btn-outline">
-                    <i class="fas fa-arrow-left"></i> Volver
+                <a href="#" class="btn btn-accent" style="color: white;">
+                    <i class="fas fa-check"></i> Pasar Asistencia
                 </a>
                 <a href="{{ route('courses.edit', $curso) }}" class="btn btn-primary" style="color: white;">
                     <i class="fas fa-edit"></i> Editar Curso
+                </a>
+                <a href="{{ route('courses.index') }}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Volver
                 </a>
             </div>
         </div>
@@ -47,7 +61,7 @@
             </h3>
 
             @if($curso->profesor)
-                <div style="background: var(--gray-50); padding: var(--spacing-lg); border-radius: var(--radius-md); margin-bottom: var(--spacing-md);">
+                <div id="teacherCard" onclick="toggleTeacherForm()" style="background: var(--gray-50); padding: var(--spacing-lg); border-radius: var(--radius-md); margin-bottom: var(--spacing-md); cursor: pointer; transition: all 0.3s ease; min-height: 200px; display: flex; flex-direction: column; justify-content: center;">
                     <div style="display: flex; align-items: center; gap: var(--spacing-md);">
                         <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 700;">
                             {{ substr($curso->profesor->nombre, 0, 1) }}{{ substr($curso->profesor->apellido, 0, 1) }}
@@ -65,34 +79,134 @@
                                 </p>
                             @endif
                         </div>
+                        <form action="{{ route('courses.assign-teacher', $curso) }}" method="POST" style="margin: 0;" onclick="event.stopPropagation();" onsubmit="return confirm('¿Estás seguro de querer quitar el profesor asignado?');">
+                            @csrf
+                            <input type="hidden" name="profesor_id" value="">
+                            <button type="submit" class="btn btn-outline" style="color: #ef4444; border-color: #ef4444; white-space: nowrap;">
+                                <i class="fas fa-trash"></i> Quitar
+                            </button>
+                        </form>
                     </div>
+                    <p style="text-align: center; color: var(--gray-500); font-size: 0.75rem; margin-top: var(--spacing-sm); margin-bottom: 0;">
+                        Click para cambiar profesor
+                    </p>
                 </div>
             @else
-                <div style="text-align: center; padding: var(--spacing-xl); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-md);">
+                <div onclick="toggleTeacherForm()" style="text-align: center; padding: var(--spacing-2xl); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-md); cursor: pointer; transition: all 0.3s ease; min-height: 200px; display: flex; flex-direction: column; justify-content: center;" id="emptyTeacherCard">
                     <i class="fas fa-user-slash" style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
-                    <p style="color: var(--gray-600);">No hay profesor asignado</p>
+                    <p style="color: var(--gray-600); margin-bottom: var(--spacing-xs);">No hay profesor asignado</p>
+                    <p style="color: var(--gray-500); font-size: 0.75rem; margin: 0;">Click para asignar un profesor</p>
                 </div>
             @endif
 
-            <form action="{{ route('courses.assign-teacher', $curso) }}" method="POST">
+            <form id="teacherForm" action="{{ route('courses.assign-teacher', $curso) }}" method="POST" style="display: none; animation: slideDown 0.3s ease;">
                 @csrf
                 <div style="margin-bottom: var(--spacing-md);">
                     <label style="display: block; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-sm);">
-                        Seleccionar Profesor
+                        Buscar Profesor
                     </label>
-                    <select name="profesor_id" class="form-input" style="width: 100%;">
-                        <option value="">Sin profesor</option>
-                        @foreach($profesores as $profesor)
-                            <option value="{{ $profesor->id }}" {{ $curso->profesor_id == $profesor->id ? 'selected' : '' }}>
-                                {{ $profesor->nombre }} {{ $profesor->apellido }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <input type="text" id="teacherSearch" class="form-input" placeholder="Escribe el nombre del profesor..." style="width: 100%; padding: var(--spacing-sm);" autocomplete="off" oninput="filterTeachers(this.value)">
+                    <input type="hidden" name="profesor_id" id="selectedTeacherId">
+                    <div id="teacherSuggestions" style="display: none; position: absolute; background: white; border: 1px solid var(--gray-300); border-radius: var(--radius-md); margin-top: 0.25rem; max-height: 200px; overflow-y: auto; width: calc(100% - 2rem); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); z-index: 10;"></div>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; color: white;">
-                    <i class="fas fa-user-check"></i> Asignar Profesor
-                </button>
+                <div style="display: flex; gap: var(--spacing-sm);">
+                    <button type="submit" class="btn btn-primary" style="flex: 1; color: white;">
+                        <i class="fas fa-user-check"></i> Asignar Profesor
+                    </button>
+                    @if($curso->profesor)
+                        <button type="button" onclick="toggleTeacherForm()" class="btn btn-outline" style="flex: 1;">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    @endif
+                </div>
             </form>
+
+            <script>
+                const profesores = @json($profesores->map(function($p) {
+                    return ['id' => $p->id, 'nombre' => $p->nombre . ' ' . $p->apellido];
+                }));
+
+                function filterTeachers(query) {
+                    const suggestions = document.getElementById('teacherSuggestions');
+                    const searchInput = document.getElementById('teacherSearch');
+                    
+                    if (!query || query.length < 2) {
+                        suggestions.style.display = 'none';
+                        return;
+                    }
+
+                    const filtered = profesores.filter(p => 
+                        p.nombre.toLowerCase().includes(query.toLowerCase())
+                    );
+
+                    if (filtered.length === 0) {
+                        suggestions.style.display = 'none';
+                        return;
+                    }
+
+                    suggestions.innerHTML = filtered.map(p => `
+                        <div onclick="selectTeacher(${p.id}, '${p.nombre}')" style="padding: var(--spacing-sm); cursor: pointer; border-bottom: 1px solid var(--gray-100); transition: background 0.2s;" onmouseover="this.style.background='var(--gray-50)'" onmouseout="this.style.background='white'">
+                            <i class="fas fa-user"></i> ${p.nombre}
+                        </div>
+                    `).join('');
+                    
+                    suggestions.style.display = 'block';
+                }
+
+                function selectTeacher(id, nombre) {
+                    document.getElementById('teacherSearch').value = nombre;
+                    document.getElementById('selectedTeacherId').value = id;
+                    document.getElementById('teacherSuggestions').style.display = 'none';
+                }
+
+                // Close suggestions when clicking outside
+                document.addEventListener('click', function(e) {
+                    const suggestions = document.getElementById('teacherSuggestions');
+                    const searchInput = document.getElementById('teacherSearch');
+                    if (e.target !== searchInput && e.target !== suggestions) {
+                        suggestions.style.display = 'none';
+                    }
+                });
+            </script>
+            <script>
+                function toggleTeacherForm() {
+                    const form = document.getElementById('teacherForm');
+                    const card = document.getElementById('teacherCard');
+                    const emptyCard = document.getElementById('emptyTeacherCard');
+                    
+                    if (form.style.display === 'none') {
+                        form.style.display = 'block';
+                        if (card) card.style.display = 'none';
+                        if (emptyCard) emptyCard.style.display = 'none';
+                    } else {
+                        form.style.display = 'none';
+                        if (card) card.style.display = 'block';
+                        if (emptyCard && !card) emptyCard.style.display = 'block'; // Show empty card if no teacher is assigned and form is hidden
+                    }
+                }
+
+                // Add hover effect to teacher cards
+                document.addEventListener('DOMContentLoaded', function() {
+                    const card = document.getElementById('teacherCard');
+                    const emptyCard = document.getElementById('emptyTeacherCard');
+                    
+                    function addHoverEffect(element) {
+                        if (element) {
+                            element.addEventListener('mouseenter', function() {
+                                this.style.transform = 'translateY(-2px)';
+                                this.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                            });
+                            element.addEventListener('mouseleave', function() {
+                                this.style.transform = 'translateY(0)';
+                                this.style.boxShadow = 'none';
+                            });
+                        }
+                    }
+                    
+                    addHoverEffect(card);
+                    addHoverEffect(emptyCard);
+                });
+            </script>
         </div>
 
         <!-- Quick Stats Section -->
@@ -144,12 +258,13 @@
 
     <!-- Students Section -->
     <div class="card" style="margin-bottom: var(--spacing-xl);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+        <div class="section-header">
             <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); display: flex; align-items: center; gap: var(--spacing-sm); margin: 0;">
                 <i class="fas fa-users" style="color: var(--theme-color);"></i>
                 Estudiantes Inscritos ({{ $curso->estudiantes->count() }})
             </h3>
-            <button onclick="document.getElementById('addStudentModal').style.display='flex'" class="btn btn-primary" style="color: white;">
+            
+            <button onclick="document.getElementById('addStudentModal').style.display='flex'" class="btn btn-primary section-button" style="color: white;">
                 <i class="fas fa-user-plus"></i> Agregar Estudiante
             </button>
         </div>
@@ -200,12 +315,13 @@
 
     <!-- Subjects Section -->
     <div class="card" style="margin-bottom: var(--spacing-xl);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+        <div class="section-header">
             <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); display: flex; align-items: center; gap: var(--spacing-sm); margin: 0;">
                 <i class="fas fa-book" style="color: var(--theme-color);"></i>
                 Asignaturas del Curso ({{ $curso->asignaturas->count() }})
             </h3>
-            <button onclick="document.getElementById('addSubjectModal').style.display='flex'" class="btn btn-primary" style="color: white;">
+            
+            <button onclick="document.getElementById('addSubjectModal').style.display='flex'" class="btn btn-primary section-button" style="color: white;">
                 <i class="fas fa-plus"></i> Agregar Asignatura
             </button>
         </div>
@@ -253,12 +369,13 @@
         
         <!-- Academic Events Section -->
         <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+            <div class="section-header">
                 <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); display: flex; align-items: center; gap: var(--spacing-sm); margin: 0;">
                     <i class="fas fa-calendar-alt" style="color: var(--theme-color);"></i>
                     Calendario Académico
                 </h3>
-                <button onclick="document.getElementById('addEventModal').style.display='flex'" class="btn btn-primary btn-sm" style="color: white;">
+                
+                <button onclick="document.getElementById('addEventModal').style.display='flex'" class="btn btn-primary section-button" style="color: white;">
                     <i class="fas fa-plus"></i> Nuevo Evento
                 </button>
             </div>
@@ -309,12 +426,13 @@
 
         <!-- Upcoming Tests Section -->
         <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+            <div class="section-header">
                 <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); display: flex; align-items: center; gap: var(--spacing-sm); margin: 0;">
                     <i class="fas fa-file-alt" style="color: var(--theme-color);"></i>
                     Próximas Pruebas
                 </h3>
-                <button onclick="document.getElementById('addTestModal').style.display='flex'" class="btn btn-primary btn-sm" style="color: white;">
+                
+                <button onclick="document.getElementById('addTestModal').style.display='flex'" class="btn btn-primary section-button" style="color: white;">
                     <i class="fas fa-plus"></i> Nueva Prueba
                 </button>
             </div>
@@ -620,6 +738,27 @@
             cursor: default;
         }
 
+        /* Section header responsive layout */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            gap: var(--spacing-md);
+        }
+
+        /* Slide down animation for forms */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             div[style*="grid-template-columns: 1fr 1fr"] {
@@ -638,4 +777,262 @@
             });
         });
     </script>
+
+    <style>
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            /* Header Section */
+            .card:first-of-type > div:first-child {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: var(--spacing-md) !important;
+            }
+
+            .card:first-of-type h2 {
+                font-size: 1.5rem !important;
+            }
+
+            .card:first-of-type p {
+                font-size: 0.875rem !important;
+            }
+
+            /* Action buttons in header */
+            .card:first-of-type > div:first-child > div:last-child {
+                width: 100% !important;
+                flex-direction: column !important;
+                gap: var(--spacing-xs) !important;
+            }
+
+            .card:first-of-type .btn {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: var(--spacing-sm) var(--spacing-md) !important;
+                font-size: 0.875rem !important;
+            }
+
+            /* Main grid - stack vertically (but not stats grid) */
+            div[style*="grid-template-columns: 1fr 1fr"]:not(.card div) {
+                grid-template-columns: 1fr !important;
+                gap: var(--spacing-md) !important;
+            }
+
+            /* Stats grid - explicitly keep 2 columns */
+            .card div[style*="display: grid"][style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr 1fr !important;
+                gap: var(--spacing-sm) !important;
+            }
+
+
+            /* Cards */
+            .card {
+                padding: var(--spacing-md) !important;
+            }
+
+            .card h3 {
+                font-size: 1.125rem !important;
+                margin-bottom: var(--spacing-md) !important;
+            }
+
+            /* Teacher avatar */
+            .card div[style*="width: 60px"] {
+                width: 50px !important;
+                height: 50px !important;
+                font-size: 1.25rem !important;
+            }
+
+            /* Form inputs and buttons */
+            .form-input,
+            select.form-input {
+                font-size: 0.875rem !important;
+                padding: var(--spacing-sm) !important;
+            }
+
+            /* Fix select dropdown text overflow */
+            select.form-input {
+                padding-right: 2.5rem !important;
+                min-height: 44px !important;
+            }
+
+            select.form-input option {
+                padding: var(--spacing-sm);
+            }
+
+            /* Fix subject cards overflow on mobile */
+            div[style*="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))"] {
+                grid-template-columns: 1fr !important;
+                gap: var(--spacing-sm) !important;
+            }
+
+
+            /* Student cards in grid */
+            .grid-cols-3 {
+                grid-template-columns: 1fr !important;
+                gap: var(--spacing-sm) !important;
+            }
+
+            /* Student card content */
+            .grid-cols-3 .card {
+                padding: var(--spacing-sm) !important;
+            }
+
+            .grid-cols-3 .card div[style*="width: 50px"] {
+                width: 40px !important;
+                height: 40px !important;
+                font-size: 1rem !important;
+            }
+
+            .grid-cols-3 .card h4 {
+                font-size: 0.9rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            .grid-cols-3 .card p {
+                font-size: 0.75rem !important;
+                margin-bottom: 0.125rem !important;
+            }
+
+            /* Teacher card mobile layout */
+            #teacherCard > div:first-child {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: var(--spacing-md) !important;
+            }
+
+            #teacherCard form {
+                width: 100% !important;
+            }
+
+            #teacherCard form button {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+
+            /* Stats cards - keep 2 columns on mobile with better spacing */
+            .card div[style*="display: grid"][style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr 1fr !important;
+                gap: var(--spacing-sm) !important;
+            }
+
+            /* Stat card content - much more compact */
+            div[style*="text-align: center"][style*="padding: var(--spacing-lg)"] {
+                padding: var(--spacing-sm) !important;
+            }
+
+            div[style*="text-align: center"] i.fas {
+                font-size: 1.25rem !important;
+                margin-right: 0.25rem !important;
+            }
+
+            div[style*="text-align: center"] div[style*="font-size: 2.5rem"] {
+                font-size: 1.75rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            div[style*="text-align: center"] div[style*="font-size: 0.875rem"] {
+                font-size: 0.8125rem !important;
+            }
+
+
+            /* Modal */
+            div[style*="position: fixed"] > div {
+                width: 95% !important;
+                max-width: 95% !important;
+                margin: var(--spacing-md) !important;
+            }
+
+            /* Modal content */
+            div[id$="Modal"] h3 {
+                font-size: 1.125rem !important;
+            }
+
+            div[id$="Modal"] .form-input {
+                font-size: 0.875rem !important;
+            }
+
+            /* Table responsive */
+            .table-container {
+                overflow-x: auto !important;
+            }
+
+            table {
+                font-size: 0.75rem !important;
+            }
+
+            table th,
+            table td {
+                padding: var(--spacing-xs) !important;
+            }
+
+            /* Hide some table columns on very small screens */
+            @media (max-width: 480px) {
+                table th:nth-child(3),
+                table td:nth-child(3) {
+                    display: none !important;
+                }
+            }
+
+            /* Section buttons - full width on mobile */
+            .section-button {
+                width: 100% !important;
+            }
+
+            /* Section headers - stack vertically on mobile */
+            .section-header {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: var(--spacing-sm);
+            }
+
+            .section-header h3 {
+                margin-bottom: var(--spacing-sm) !important;
+            }
+
+            /* Button optimizations for mobile */
+
+            .btn {
+                min-height: 44px !important; /* Better touch target */
+                padding: var(--spacing-sm) var(--spacing-md) !important;
+                font-size: 0.875rem !important;
+            }
+
+            /* Section header buttons */
+            div[style*="justify-content: space-between"] .btn {
+                padding: var(--spacing-sm) var(--spacing-md) !important;
+                font-size: 0.875rem !important;
+                white-space: nowrap !important;
+            }
+
+            /* Icon-only buttons (delete, etc) */
+            .btn-sm {
+                min-width: 40px !important;
+                min-height: 40px !important;
+                padding: var(--spacing-sm) !important;
+            }
+
+            /* Button icons */
+            .btn i {
+                font-size: 0.875rem !important;
+            }
+
+            /* Form buttons */
+            form .btn {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+
+            /* Action button groups */
+            div[style*="display: flex"][style*="gap"] .btn {
+                flex: 1 !important;
+                min-width: 0 !important;
+            }
+
+            /* Delete buttons in tables */
+            table .btn {
+                padding: 0.5rem !important;
+                min-width: 36px !important;
+                min-height: 36px !important;
+            }
+        }
+
+    </style>
 </x-app-layout>

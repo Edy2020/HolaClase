@@ -45,6 +45,17 @@
     </div>
 
     <style>
+        /* Clickable card styles */
+        .clickable-card {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .clickable-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        }
+
         /* Mobile Responsive Styles */
         @media (max-width: 768px) {
             .hero-header {
@@ -93,11 +104,11 @@
                 padding: var(--spacing-md) !important;
             }
 
-            #gridView .card > div:first-child {
+            #gridView .card>div:first-child {
                 margin-bottom: var(--spacing-sm) !important;
             }
 
-            #gridView .card > div:first-child > div:first-child {
+            #gridView .card>div:first-child>div:first-child {
                 width: 60px !important;
                 height: 60px !important;
                 font-size: 1.5rem !important;
@@ -126,19 +137,19 @@
                 margin-bottom: var(--spacing-sm) !important;
             }
 
-            #listView .card > div:first-child {
+            #listView .card>div:first-child {
                 gap: var(--spacing-md) !important;
             }
 
             /* Badge in list view */
-            #listView .card > div:first-child > div:first-child {
+            #listView .card>div:first-child>div:first-child {
                 width: 50px !important;
                 height: 50px !important;
                 font-size: 1.25rem !important;
             }
 
             /* Info grid in list view - stack vertically */
-            #listView .card > div:first-child > div:nth-child(2) {
+            #listView .card>div:first-child>div:nth-child(2) {
                 grid-template-columns: 1fr !important;
                 gap: var(--spacing-xs) !important;
             }
@@ -168,7 +179,7 @@
                 font-size: 0.75rem !important;
             }
 
-            #listView .card > div:last-child {
+            #listView .card>div:last-child {
                 gap: var(--spacing-xs) !important;
                 margin-top: var(--spacing-sm) !important;
                 flex-wrap: wrap !important;
@@ -203,7 +214,7 @@
     <div id="gridView" class="grid grid-cols-3">
         <?php $__empty_1 = true; $__currentLoopData = $cursos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $curso): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
             <!-- Course Card -->
-            <div class="card">
+            <div class="card clickable-card" data-curso-url="<?php echo e(route('courses.show', $curso)); ?>">
                 <div style="text-align: center; margin-bottom: var(--spacing-lg);">
                     <div
                         style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-lg); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: 700; box-shadow: var(--shadow-lg);">
@@ -224,9 +235,17 @@
                         <i class="fas fa-layer-group" style="margin-right: var(--spacing-xs);"></i><?php echo e($curso->nivel); ?>
 
                     </p>
+                    <p style="color: var(--gray-600); font-size: 0.875rem; margin: var(--spacing-xs) 0 0 0;">
+                        <i class="fas fa-users" style="margin-right: var(--spacing-xs);"></i><?php echo e($curso->estudiantes_count); ?> estudiante<?php echo e($curso->estudiantes_count != 1 ? 's' : ''); ?>
+
+                    </p>
+                    <p style="color: var(--gray-600); font-size: 0.875rem; margin: var(--spacing-xs) 0 0 0;">
+                        <i class="fas fa-chalkboard-teacher" style="margin-right: var(--spacing-xs);"></i><?php echo e($curso->profesor ? $curso->profesor->nombre . ' ' . $curso->profesor->apellido : 'Sin profesor'); ?>
+
+                    </p>
                 </div>
 
-                <div style="display: flex; gap: var(--spacing-sm);">
+                <div class="card-actions" style="display: flex; gap: var(--spacing-sm);">
                     <a href="<?php echo e(route('courses.edit', $curso)); ?>" class="btn btn-primary btn-sm"
                         style="color: white; flex: 1;">
                         <i class="fas fa-edit"></i> Editar
@@ -259,11 +278,11 @@
     <div id="listView" style="display: none;">
         <?php $__empty_1 = true; $__currentLoopData = $cursos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $curso): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
             <!-- Course List Item -->
-            <div class="card mb-md" style="padding: var(--spacing-lg);">
-                <div style="display: flex; align-items: center; gap: var(--spacing-xl);">
+            <div class="card clickable-card mb-md" style="padding: var(--spacing-md);" data-curso-url="<?php echo e(route('courses.show', $curso)); ?>">
+                <div style="display: flex; align-items: center; gap: var(--spacing-md);">
                     <!-- Icon -->
                     <div
-                        style="width: 80px; height: 80px; flex-shrink: 0; border-radius: var(--radius-lg); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 700; box-shadow: var(--shadow-md);">
+                        style="width: 50px; height: 50px; flex-shrink: 0; border-radius: var(--radius-md); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; font-weight: 700; box-shadow: var(--shadow-sm);">
                         <?php if($curso->nivel === 'Pre-Kinder' || $curso->nivel === 'Kinder'): ?>
                             <?php echo e(substr($curso->nivel, 0, 2)); ?><?php echo e($curso->letra); ?>
 
@@ -275,24 +294,49 @@
 
                     <!-- Info -->
                     <div
-                        style="flex: 1; display: flex; flex-direction: column; gap: var(--spacing-xs);">
-                        <!-- Name & Level -->
+                        style="flex: 1; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-md); align-items: center;">
+                        <!-- Name -->
                         <div>
                             <h3
-                                style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
+                                style="font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.25rem;">
                                 <?php echo e($curso->nombre); ?>
 
                             </h3>
-                            <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
-                                <i class="fas fa-layer-group" style="width: 16px;"></i> <?php echo e($curso->nivel); ?>
+                            <p style="color: var(--gray-600); font-size: 0.8125rem; margin: 0;">
+                                <i class="fas fa-layer-group" style="width: 14px;"></i> <?php echo e($curso->nivel); ?>
 
                             </p>
+                        </div>
+
+                        <!-- Estudiantes -->
+                        <div>
+                            <div
+                                style="color: var(--gray-500); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+                                Estudiantes
+                            </div>
+                            <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;">
+                                <?php echo e($curso->estudiantes_count); ?>
+
+                            </div>
+                        </div>
+
+                        <!-- Profesor Jefe -->
+                        <div>
+                            <div
+                                style="color: var(--gray-500); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+                                Profesor Jefe
+                            </div>
+                            <div style="font-weight: 600; font-size: 0.875rem;">
+                                <?php echo e($curso->profesor ? $curso->profesor->nombre . ' ' . $curso->profesor->apellido : 'Sin profesor'); ?>
+
+                            </div>
                         </div>
                     </div>
 
                     <!-- Actions -->
-                    <div style="display: flex; gap: var(--spacing-sm); flex-shrink: 0;">
-                        <a href="<?php echo e(route('courses.edit', $curso)); ?>" class="btn btn-primary btn-sm" style="color: white;">
+                    <div class="card-actions" style="display: flex; gap: var(--spacing-xs); flex-shrink: 0;">
+                        <a href="<?php echo e(route('courses.edit', $curso)); ?>" class="btn btn-primary btn-sm"
+                            style="color: white;">
                             <i class="fas fa-edit"></i>
                         </a>
                         <form action="<?php echo e(route('courses.destroy', $curso)); ?>" method="POST"
@@ -358,6 +402,25 @@
             gridViewBtn.style.background = 'transparent';
             gridViewBtn.style.color = 'white';
         }
+
+        // Make cards clickable
+        document.addEventListener('DOMContentLoaded', function() {
+            const clickableCards = document.querySelectorAll('.clickable-card');
+            
+            clickableCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Don't navigate if clicking on buttons, links, or forms
+                    if (e.target.closest('.card-actions')) {
+                        return;
+                    }
+                    
+                    const url = this.getAttribute('data-curso-url');
+                    if (url) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
     </script>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
