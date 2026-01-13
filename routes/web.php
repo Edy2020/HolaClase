@@ -44,9 +44,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/cursos/{curso}/tests', [App\Http\Controllers\CursoController::class, 'storeTest'])->name('courses.store-test');
     Route::delete('/cursos/{curso}/tests/{prueba}', [App\Http\Controllers\CursoController::class, 'destroyTest'])->name('courses.destroy-test');
 
-    Route::get('/estudiantes', function () {
-        return view('estudiantes.index');
-    })->name('students.index');
+    Route::resource('estudiantes', App\Http\Controllers\EstudianteController::class)->names([
+        'index' => 'students.index',
+        'create' => 'students.create',
+        'store' => 'students.store',
+        'show' => 'students.show',
+        'edit' => 'students.edit',
+        'update' => 'students.update',
+        'destroy' => 'students.destroy',
+    ]);
+
 
     Route::resource('asignaturas', App\Http\Controllers\AsignaturaController::class)->names([
         'index' => 'subjects.index',

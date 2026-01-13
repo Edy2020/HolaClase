@@ -13,10 +13,10 @@
                 Gestiona la información de todos tus estudiantes
             </p>
         </div>
-        <button class="btn btn-primary">
+        <a href="{{ route('students.create') }}" class="btn btn-primary">
             <span>➕</span>
             <span>Nuevo Estudiante</span>
-        </button>
+        </a>
     </div>
 
     <!-- Search and Filters -->
@@ -24,11 +24,7 @@
         <div class="card-body">
             <div class="grid grid-cols-4">
                 <div class="form-group mb-0">
-                    <input 
-                        type="text" 
-                        class="form-input" 
-                        placeholder="🔍 Buscar estudiantes..."
-                    >
+                    <input type="text" class="form-input" placeholder="🔍 Buscar estudiantes...">
                 </div>
                 <div class="form-group mb-0">
                     <select class="form-select">
@@ -70,148 +66,98 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td style="font-weight: 600; color: var(--gray-900);">#001</td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                            <div style="width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--theme-color), var(--theme-color)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
-                                JG
+                @forelse($estudiantes as $estudiante)
+                    <tr>
+                        <td style="font-weight: 600; color: var(--gray-900);">
+                            #{{ str_pad($estudiante->id, 3, '0', STR_PAD_LEFT) }}</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+                                <div
+                                    style="width: 40px; height: 40px; border-radius: var(--radius-full); background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+                                    {{ strtoupper(substr($estudiante->nombre, 0, 1) . substr($estudiante->apellido, 0, 1)) }}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600; color: var(--gray-900);">
+                                        {{ $estudiante->nombre_completo }}</div>
+                                    <div style="font-size: 0.875rem; color: var(--gray-500);">{{ $estudiante->rut }}</div>
+                                </div>
                             </div>
-                            <div>
-                                <div style="font-weight: 600; color: var(--gray-900);">Juan García</div>
-                                <div style="font-size: 0.875rem; color: var(--gray-500);">Estudiante</div>
+                        </td>
+                        <td style="color: var(--gray-600);">{{ $estudiante->email ?? 'Sin email' }}</td>
+                        <td>
+                            @if($estudiante->curso_actual)
+                                <span class="badge badge-primary">{{ $estudiante->curso_actual->nombre }}</span>
+                            @else
+                                <span class="badge">Sin curso</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($estudiante->promedio_general)
+                                <div
+                                    style="font-weight: 700; color: {{ $estudiante->promedio_general >= 6.0 ? 'var(--success)' : ($estudiante->promedio_general >= 4.0 ? 'var(--warning)' : 'var(--error)') }}; font-size: 1.125rem;">
+                                    {{ number_format($estudiante->promedio_general, 1) }}
+                                </div>
+                            @else
+                                <div style="color: var(--gray-400);">-</div>
+                            @endif
+                        </td>
+                        <td>
+                            <div style="font-weight: 600; color: var(--gray-400);">-</div>
+                        </td>
+                        <td>
+                            @if($estudiante->estado === 'activo')
+                                <span class="badge badge-success">Activo</span>
+                            @elseif($estudiante->estado === 'inactivo')
+                                <span class="badge badge-warning">Inactivo</span>
+                            @else
+                                <span class="badge">{{ ucfirst($estudiante->estado) }}</span>
+                            @endif
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: var(--spacing-sm);">
+                                <a href="{{ route('students.show', $estudiante->id) }}" class="btn btn-ghost btn-sm"
+                                    title="Ver detalles">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('students.edit', $estudiante->id) }}" class="btn btn-ghost btn-sm"
+                                    title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('students.destroy', $estudiante->id) }}" method="POST"
+                                    style="display: inline;"
+                                    onsubmit="return confirm('¿Está seguro de eliminar este estudiante?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-ghost btn-sm" style="color: var(--error);"
+                                        title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
                             </div>
-                        </div>
-                    </td>
-                    <td style="color: var(--gray-600);">juan.garcia@email.com</td>
-                    <td>
-                        <span class="badge badge-primary">Matemáticas</span>
-                    </td>
-                    <td>
-                        <div style="font-weight: 700; color: var(--success); font-size: 1.125rem;">9.2</div>
-                    </td>
-                    <td>
-                        <div style="font-weight: 600; color: var(--success);">96%</div>
-                    </td>
-                    <td>
-                        <span class="badge badge-success">Activo</span>
-                    </td>
-                    <td>
-                        <div style="display: flex; gap: var(--spacing-sm);">
-                            <button class="btn btn-ghost btn-sm"><i class="fas fa-eye"></i></button>
-                            <button class="btn btn-ghost btn-sm"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-ghost btn-sm" style="color: var(--error);"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="font-weight: 600; color: var(--gray-900);">#002</td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                            <div style="width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--theme-color), var(--theme-color)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
-                                ML
-                            </div>
-                            <div>
-                                <div style="font-weight: 600; color: var(--gray-900);">María López</div>
-                                <div style="font-size: 0.875rem; color: var(--gray-500);">Estudiante</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td style="color: var(--gray-600);">maria.lopez@email.com</td>
-                    <td>
-                        <span class="badge" style="background: var(--accent-100); color: var(--accent-700);">Química</span>
-                    </td>
-                    <td>
-                        <div style="font-weight: 700; color: var(--success); font-size: 1.125rem;">8.8</div>
-                    </td>
-                    <td>
-                        <div style="font-weight: 600; color: var(--success);">94%</div>
-                    </td>
-                    <td>
-                        <span class="badge badge-success">Activo</span>
-                    </td>
-                    <td>
-                        <div style="display: flex; gap: var(--spacing-sm);">
-                            <button class="btn btn-ghost btn-sm"><i class="fas fa-eye"></i></button>
-                            <button class="btn btn-ghost btn-sm"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-ghost btn-sm" style="color: var(--error);"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="font-weight: 600; color: var(--gray-900);">#003</td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                            <div style="width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--theme-color), #059669); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
-                                CR
-                            </div>
-                            <div>
-                                <div style="font-weight: 600; color: var(--gray-900);">Carlos Rodríguez</div>
-                                <div style="font-size: 0.875rem; color: var(--gray-500);">Estudiante</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td style="color: var(--gray-600);">carlos.rodriguez@email.com</td>
-                    <td>
-                        <span class="badge" style="background: #d1fae5; color: #065f46;">Historia</span>
-                    </td>
-                    <td>
-                        <div style="font-weight: 700; color: var(--warning); font-size: 1.125rem;">7.5</div>
-                    </td>
-                    <td>
-                        <div style="font-weight: 600; color: var(--warning);">85%</div>
-                    </td>
-                    <td>
-                        <span class="badge badge-success">Activo</span>
-                    </td>
-                    <td>
-                        <div style="display: flex; gap: var(--spacing-sm);">
-                            <button class="btn btn-ghost btn-sm"><i class="fas fa-eye"></i></button>
-                            <button class="btn btn-ghost btn-sm"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-ghost btn-sm" style="color: var(--error);"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="font-weight: 600; color: var(--gray-900);">#004</td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                            <div style="width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
-                                AM
-                            </div>
-                            <div>
-                                <div style="font-weight: 600; color: var(--gray-900);">Ana Martínez</div>
-                                <div style="font-size: 0.875rem; color: var(--gray-500);">Estudiante</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td style="color: var(--gray-600);">ana.martinez@email.com</td>
-                    <td>
-                        <span class="badge badge-primary">Matemáticas</span>
-                    </td>
-                    <td>
-                        <div style="font-weight: 700; color: var(--success); font-size: 1.125rem;">9.5</div>
-                    </td>
-                    <td>
-                        <div style="font-weight: 600; color: var(--success);">98%</div>
-                    </td>
-                    <td>
-                        <span class="badge badge-success">Activo</span>
-                    </td>
-                    <td>
-                        <div style="display: flex; gap: var(--spacing-sm);">
-                            <button class="btn btn-ghost btn-sm"><i class="fas fa-eye"></i></button>
-                            <button class="btn btn-ghost btn-sm"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-ghost btn-sm" style="color: var(--error);"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: var(--spacing-2xl); color: var(--gray-500);">
+                            <i class="fas fa-users"
+                                style="font-size: 3rem; margin-bottom: var(--spacing-md); opacity: 0.3;"></i>
+                            <p style="margin: 0; font-size: 1.125rem;">No hay estudiantes registrados</p>
+                            <p style="margin: var(--spacing-sm) 0 0 0; font-size: 0.875rem;">Haz clic en "Nuevo Estudiante"
+                                para comenzar</p>
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
-        </table>
+    </div>
+    </td>
+    </tr>
+    </tbody>
+    </table>
     </div>
 
     <!-- Pagination -->
-    <div style="display: flex; justify-content: center; align-items: center; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
+    <div
+        style="display: flex; justify-content: center; align-items: center; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
         <button class="btn btn-ghost btn-sm">← Anterior</button>
         <div style="display: flex; gap: var(--spacing-xs);">
             <button class="btn btn-primary btn-sm">1</button>
