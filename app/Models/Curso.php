@@ -29,7 +29,8 @@ class Curso extends Model
     {
         return $this->belongsToMany(Estudiante::class, 'curso_estudiante')
             ->withTimestamps()
-            ->withPivot('fecha_inscripcion');
+            ->withPivot('fecha_inscripcion')
+            ->withCasts(['fecha_inscripcion' => 'date']);
     }
 
     /**

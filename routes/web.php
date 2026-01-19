@@ -78,13 +78,36 @@ Route::middleware('auth')->group(function () {
         'destroy' => 'teachers.destroy',
     ]);
 
-    Route::get('/asistencia', function () {
-        return view('asistencia.index');
-    })->name('attendance.index');
+    // Attendance Routes
+    Route::resource('asistencia', App\Http\Controllers\AsistenciaController::class)->names([
+        'index' => 'attendance.index',
+        'create' => 'attendance.create',
+        'store' => 'attendance.store',
+        'show' => 'attendance.show',
+        'edit' => 'attendance.edit',
+        'update' => 'attendance.update',
+        'destroy' => 'attendance.destroy',
+    ]);
 
-    Route::get('/notas', function () {
-        return view('notas.index');
-    })->name('grades.index');
+    Route::get('asistencia/reporte/curso/{curso}', [App\Http\Controllers\AsistenciaController::class, 'reportePorCurso'])->name('attendance.reporte.curso');
+    Route::get('asistencia/reporte/estudiante/{estudiante}', [App\Http\Controllers\AsistenciaController::class, 'reportePorEstudiante'])->name('attendance.reporte.estudiante');
+
+
+    // Grades Routes
+    Route::resource('notas', App\Http\Controllers\NotaController::class)->names([
+        'index' => 'grades.index',
+        'create' => 'grades.create',
+        'store' => 'grades.store',
+        'show' => 'grades.show',
+        'edit' => 'grades.edit',
+        'update' => 'grades.update',
+        'destroy' => 'grades.destroy',
+    ]);
+
+    Route::get('notas/reporte/curso/{curso}', [App\Http\Controllers\NotaController::class, 'reportePorCurso'])->name('grades.reporte.curso');
+    Route::get('notas/reporte/estudiante/{estudiante}', [App\Http\Controllers\NotaController::class, 'reportePorEstudiante'])->name('grades.reporte.estudiante');
+    Route::get('notas/libreta/{estudiante}', [App\Http\Controllers\NotaController::class, 'libreta'])->name('grades.libreta');
+
 
     // Settings Routes
     Route::get('/configuracion', [ConfiguracionController::class, 'index'])->name('settings.index');

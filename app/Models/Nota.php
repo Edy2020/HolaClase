@@ -55,4 +55,90 @@ class Nota extends Model
     {
         return $this->nota * $this->ponderacion;
     }
+
+    /**
+     * Get formatted grade display.
+     */
+    public function getNotaFormattedAttribute()
+    {
+        return number_format($this->nota, 1);
+    }
+
+    /**
+     * Get pass/fail status based on Chilean system (>= 4.0).
+     */
+    public function getEstadoAttribute()
+    {
+        return $this->nota >= 4.0 ? 'Aprobado' : 'Reprobado';
+    }
+
+    /**
+     * Get grade color for UI.
+     */
+    public function getNotaColorAttribute()
+    {
+        if ($this->nota >= 6.0)
+            return 'success';
+        if ($this->nota >= 5.0)
+            return 'info';
+        if ($this->nota >= 4.0)
+            return 'warning';
+        return 'danger';
+    }
+
+    /**
+     * Scope a query to only include grades for a specific course.
+     */
+    public function scopeForCurso($query, $cursoId)
+    {
+        return $query->where('curso_id', $cursoId);
+    }
+
+    /**
+     * Scope a query to only include grades for a specific subject.
+     */
+    public function scopeForAsignatura($query, $asignaturaId)
+    {
+        return $query->where('asignatura_id', $asignaturaId);
+    }
+
+    /**
+     * Scope a query to only include grades for a specific student.
+     */
+    public function scopeForEstudiante($query, $estudianteId)
+    {
+        return $query->where('estudiante_id', $estudianteId);
+    }
+
+    /**
+     * Scope a query to only include grades for a specific period.
+     */
+    public function scopeForPeriodo($query, $periodo)
+    {
+        return $query->where('periodo', $periodo);
+    }
+
+    /**
+     * Scope a query to only include grades for a specific evaluation type.
+     */
+    public function scopeForTipoEvaluacion($query, $tipo)
+    {
+        return $query->where('tipo_evaluacion', $tipo);
+    }
+
+    /**
+     * Scope a query to only include passing grades.
+     */
+    public function scopeAprobado($query)
+    {
+        return $query->where('nota', '>=', 4.0);
+    }
+
+    /**
+     * Scope a query to only include failing grades.
+     */
+    public function scopeReprobado($query)
+    {
+        return $query->where('nota', '<', 4.0);
+    }
 }

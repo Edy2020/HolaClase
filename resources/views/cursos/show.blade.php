@@ -289,7 +289,13 @@
                                 <td>{{ $estudiante->nombre }} {{ $estudiante->apellido }}</td>
                                 <td>{{ $estudiante->email ?? '-' }}</td>
                                 <td>{{ $estudiante->telefono ?? '-' }}</td>
-                                <td>{{ $estudiante->pivot->fecha_inscripcion->format('d/m/Y') }}</td>
+                                <td>
+                                    @if($estudiante->pivot->fecha_inscripcion)
+                                        {{ is_string($estudiante->pivot->fecha_inscripcion) ? \Carbon\Carbon::parse($estudiante->pivot->fecha_inscripcion)->format('d/m/Y') : $estudiante->pivot->fecha_inscripcion->format('d/m/Y') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td>
                                     <form action="{{ route('courses.remove-student', [$curso, $estudiante]) }}" method="POST" 
                                         onsubmit="return confirm('¿Estás seguro de querer remover este estudiante del curso?');" style="display: inline;">
