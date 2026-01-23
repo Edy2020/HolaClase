@@ -14,7 +14,7 @@ class EstudianteController extends Controller
      */
     public function index()
     {
-        $estudiantes = Estudiante::with(['cursos', 'apoderado'])
+        $estudiantes = Estudiante::with(['cursos', 'apoderado', 'notas'])
             ->paginate(10);
 
         return view('estudiantes.index', compact('estudiantes'));

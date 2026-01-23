@@ -3,77 +3,104 @@
         Gestión de Estudiantes
     </x-slot>
 
-    <!-- Header Actions -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-2xl);">
+    <!-- Hero Header -->
+    <div class="hero-header"
+        style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center;">
         <div>
-            <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
+            <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
                 <i class="fas fa-users"></i> Estudiantes
             </h2>
-            <p style="color: var(--gray-600); margin: 0;">
+            <p class="hero-description" style="font-size: 1rem; opacity: 0.95; margin: 0;">
                 Gestiona la información de todos tus estudiantes
             </p>
         </div>
-        <a href="{{ route('students.create') }}" class="btn btn-primary">
-            <span>➕</span>
-            <span>Nuevo Estudiante</span>
-        </a>
-    </div>
-
-    <!-- Search and Filters -->
-    <div class="card mb-xl">
-        <div class="card-body">
-            <div class="grid grid-cols-4">
-                <div class="form-group mb-0">
-                    <input type="text" class="form-input" placeholder="🔍 Buscar estudiantes...">
-                </div>
-                <div class="form-group mb-0">
-                    <select class="form-select">
-                        <option>Todos los cursos</option>
-                        <option>Matemáticas Avanzadas</option>
-                        <option>Química Orgánica</option>
-                        <option>Historia Universal</option>
-                    </select>
-                </div>
-                <div class="form-group mb-0">
-                    <select class="form-select">
-                        <option>Todos los estados</option>
-                        <option>Activo</option>
-                        <option>Inactivo</option>
-                    </select>
-                </div>
-                <div class="form-group mb-0">
-                    <button class="btn btn-outline" style="width: 100%;">
-                        <i class="fas fa-chart-bar"></i> Exportar
-                    </button>
-                </div>
-            </div>
+        <div class="hero-actions" style="display: flex; gap: var(--spacing-md); align-items: center;">
+            <a href="{{ route('students.create') }}" class="btn btn-primary btn-new-student"
+                style="background: white; color: var(--theme-dark); flex-shrink: 0;">
+                <span><i class="fas fa-plus"></i></span>
+                <span class="btn-text">Nuevo Estudiante</span>
+            </a>
         </div>
     </div>
+
+    <style>
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .hero-header {
+                flex-direction: column !important;
+                gap: var(--spacing-lg) !important;
+                padding: var(--spacing-lg) !important;
+                text-align: center !important;
+            }
+
+            .hero-header h2 {
+                font-size: 1.5rem !important;
+            }
+
+            .hero-description {
+                font-size: 0.875rem !important;
+            }
+
+            .hero-actions {
+                width: 100% !important;
+                flex-direction: column !important;
+                gap: var(--spacing-sm) !important;
+            }
+
+            .btn-new-student {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+
+            .btn-text {
+                display: inline !important;
+            }
+
+            /* Table responsive */
+            .table-container {
+                overflow-x: auto !important;
+            }
+
+            .table {
+                font-size: 0.875rem !important;
+            }
+
+            .table th,
+            .table td {
+                padding: var(--spacing-sm) !important;
+            }
+
+            /* Hide some columns on mobile */
+            .table th:nth-child(4),
+            .table td:nth-child(4),
+            .table th:nth-child(5),
+            .table td:nth-child(5) {
+                display: none !important;
+            }
+        }
+    </style>
 
     <!-- Students Table -->
     <div class="table-container">
         <table class="table">
             <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Estudiante</th>
-                    <th>Email</th>
-                    <th>Curso Principal</th>
-                    <th>Promedio</th>
-                    <th>Asistencia</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
+                <tr style="background: var(--theme-dark);">
+                    <th style="color: white !important;">Estudiante</th>
+                    <th style="color: white !important;">Email</th>
+                    <th style="color: white !important;">Curso</th>
+                    <th style="color: white !important;">Promedio</th>
+                    <th style="color: white !important;">Asistencia</th>
+                    <th style="color: white !important;">Estado</th>
+                    <th style="color: white !important;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($estudiantes as $estudiante)
-                    <tr>
-                        <td style="font-weight: 600; color: var(--gray-900);">
-                            #{{ str_pad($estudiante->id, 3, '0', STR_PAD_LEFT) }}</td>
+                    <tr style="cursor: pointer;" onclick="window.location='{{ route('students.show', $estudiante->id) }}'">
                         <td>
                             <div style="display: flex; align-items: center; gap: var(--spacing-md);">
                                 <div
-                                    style="width: 40px; height: 40px; border-radius: var(--radius-full); background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+                                    style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
                                     {{ strtoupper(substr($estudiante->nombre, 0, 1) . substr($estudiante->apellido, 0, 1)) }}
                                 </div>
                                 <div>
@@ -114,11 +141,7 @@
                             @endif
                         </td>
                         <td>
-                            <div style="display: flex; gap: var(--spacing-sm);">
-                                <a href="{{ route('students.show', $estudiante->id) }}" class="btn btn-ghost btn-sm"
-                                    title="Ver detalles">
-                                    <i class="fas fa-eye"></i>
-                                </a>
+                            <div style="display: flex; gap: var(--spacing-sm);" onclick="event.stopPropagation();">
                                 <a href="{{ route('students.edit', $estudiante->id) }}" class="btn btn-ghost btn-sm"
                                     title="Editar">
                                     <i class="fas fa-edit"></i>
@@ -148,23 +171,5 @@
                     </tr>
                 @endforelse
             </tbody>
-    </div>
-    </td>
-    </tr>
-    </tbody>
-    </table>
-    </div>
-
-    <!-- Pagination -->
-    <div
-        style="display: flex; justify-content: center; align-items: center; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
-        <button class="btn btn-ghost btn-sm">← Anterior</button>
-        <div style="display: flex; gap: var(--spacing-xs);">
-            <button class="btn btn-primary btn-sm">1</button>
-            <button class="btn btn-ghost btn-sm">2</button>
-            <button class="btn btn-ghost btn-sm">3</button>
-            <button class="btn btn-ghost btn-sm">4</button>
-        </div>
-        <button class="btn btn-ghost btn-sm">Siguiente →</button>
     </div>
 </x-app-layout>

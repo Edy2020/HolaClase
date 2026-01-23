@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,6 +23,7 @@
     <!-- Scripts -->
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 </head>
+
 <body>
     <div class="app-container">
         <!-- Desktop Sidebar -->
@@ -29,7 +31,8 @@
             <div class="sidebar-header">
                 <a href="<?php echo e(route('dashboard')); ?>" class="sidebar-logo">
                     <div class="sidebar-logo-icon">
-                        <img src="<?php echo e(asset('hc_icon.png')); ?>" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
+                        <img src="<?php echo e(asset('hc_icon.png')); ?>" alt="HolaClase"
+                            style="width: 100%; height: 100%; object-fit: contain;">
                     </div>
                     <span class="sidebar-logo-text">HolaClase!</span>
                 </a>
@@ -41,43 +44,57 @@
             <nav>
                 <ul class="sidebar-nav">
                     <li class="sidebar-nav-item">
-                        <a href="<?php echo e(route('dashboard')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('dashboard')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-home"></i></span>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="<?php echo e(route('courses.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('courses.*') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('courses.index')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('courses.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-graduation-cap"></i></span>
                             <span>Cursos</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="<?php echo e(route('subjects.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('subjects.*') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('subjects.index')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('subjects.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-book"></i></span>
                             <span>Asignaturas</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="<?php echo e(route('teachers.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('teachers.*') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('teachers.index')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('teachers.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-chalkboard-teacher"></i></span>
                             <span>Profesores</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="<?php echo e(route('attendance.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('attendance.*') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('students.index')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('students.*') ? 'active' : ''); ?>">
+                            <span class="sidebar-nav-icon"><i class="fas fa-user-graduate"></i></span>
+                            <span>Estudiantes</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="<?php echo e(route('attendance.index')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('attendance.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-calendar-check"></i></span>
                             <span>Asistencia</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="<?php echo e(route('grades.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('grades.*') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('grades.index')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('grades.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span>
                             <span>Notas</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="<?php echo e(route('settings.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('settings.*') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('settings.index')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('settings.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-cog"></i></span>
                             <span>Configuración</span>
                         </a>
@@ -94,7 +111,8 @@
             <div class="sidebar-header">
                 <a href="<?php echo e(route('dashboard')); ?>" class="sidebar-logo">
                     <div class="sidebar-logo-icon">
-                        <img src="<?php echo e(asset('hc_icon.png')); ?>" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
+                        <img src="<?php echo e(asset('hc_icon.png')); ?>" alt="HolaClase"
+                            style="width: 100%; height: 100%; object-fit: contain;">
                     </div>
                     <span class="sidebar-logo-text">HolaClase</span>
                 </a>
@@ -106,43 +124,57 @@
             <nav>
                 <ul class="sidebar-nav">
                     <li class="sidebar-nav-item">
-                        <a href="<?php echo e(route('dashboard')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('dashboard')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-home"></i></span>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="<?php echo e(route('courses.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('courses.*') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('courses.index')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('courses.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-graduation-cap"></i></span>
                             <span>Cursos</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="<?php echo e(route('subjects.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('subjects.*') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('subjects.index')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('subjects.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-book"></i></span>
                             <span>Asignaturas</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="<?php echo e(route('teachers.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('teachers.*') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('teachers.index')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('teachers.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-chalkboard-teacher"></i></span>
                             <span>Profesores</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="<?php echo e(route('attendance.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('attendance.*') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('students.index')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('students.*') ? 'active' : ''); ?>">
+                            <span class="sidebar-nav-icon"><i class="fas fa-user-graduate"></i></span>
+                            <span>Estudiantes</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="<?php echo e(route('attendance.index')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('attendance.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-calendar-check"></i></span>
                             <span>Asistencia</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="<?php echo e(route('grades.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('grades.*') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('grades.index')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('grades.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span>
                             <span>Notas</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="<?php echo e(route('settings.index')); ?>" class="sidebar-nav-link <?php echo e(request()->routeIs('settings.*') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('settings.index')); ?>"
+                            class="sidebar-nav-link <?php echo e(request()->routeIs('settings.*') ? 'active' : ''); ?>">
                             <span class="sidebar-nav-icon"><i class="fas fa-cog"></i></span>
                             <span>Configuración</span>
                         </a>
@@ -259,7 +291,7 @@
         // Desktop Sidebar toggle functionality
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
-        
+
         // Load saved sidebar state
         let sidebarOpen = localStorage.getItem('sidebarOpen') !== 'false';
 
@@ -320,10 +352,10 @@
         }
 
         // Close menu when clicking outside
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             const menu = document.getElementById('user-menu');
             const button = document.getElementById('user-icon-btn');
-            
+
             // Check if click is outside both menu and button
             if (!menu.contains(event.target) && !button.contains(event.target)) {
                 menu.classList.remove('show');
@@ -350,7 +382,7 @@
         const savedTheme = localStorage.getItem('theme') || 'purple';
         if (savedTheme) {
             document.documentElement.setAttribute('data-theme', savedTheme);
-            
+
             // Apply custom color if custom theme is selected
             if (savedTheme === 'custom') {
                 const customColor = localStorage.getItem('customColor');
@@ -369,7 +401,7 @@
         function applyCustomColor(baseColor) {
             // Generate color variations
             const variations = generateColorVariations(baseColor);
-            
+
             // Apply custom colors
             document.documentElement.style.setProperty('--custom-color', baseColor);
             document.documentElement.style.setProperty('--custom-light', variations.light);
@@ -382,19 +414,19 @@
             const r = parseInt(hexColor.substr(1, 2), 16);
             const g = parseInt(hexColor.substr(3, 2), 16);
             const b = parseInt(hexColor.substr(5, 2), 16);
-            
+
             // Generate lighter version (increase brightness by 15%)
             const light = `#${Math.min(255, Math.round(r * 1.15)).toString(16).padStart(2, '0')}${Math.min(255, Math.round(g * 1.15)).toString(16).padStart(2, '0')}${Math.min(255, Math.round(b * 1.15)).toString(16).padStart(2, '0')}`;
-            
+
             // Generate darker version (decrease brightness by 15%)
             const dark = `#${Math.round(r * 0.85).toString(16).padStart(2, '0')}${Math.round(g * 0.85).toString(16).padStart(2, '0')}${Math.round(b * 0.85).toString(16).padStart(2, '0')}`;
-            
+
             // Generate even darker version (decrease brightness by 30%)
             const darker = `#${Math.round(r * 0.7).toString(16).padStart(2, '0')}${Math.round(g * 0.7).toString(16).padStart(2, '0')}${Math.round(b * 0.7).toString(16).padStart(2, '0')}`;
-            
+
             return { light, dark, darker };
         }
     </script>
 </body>
-</html>
-<?php /**PATH C:\Users\Edy\Downloads\laragon-portable\www\HolaClase\resources\views/layouts/app.blade.php ENDPATH**/ ?>
+
+</html><?php /**PATH C:\Users\Edy\Downloads\laragon-portable\www\HolaClase\resources\views/layouts/app.blade.php ENDPATH**/ ?>

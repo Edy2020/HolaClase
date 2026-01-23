@@ -15,18 +15,6 @@
             </p>
         </div>
         <div class="hero-actions" style="display: flex; gap: var(--spacing-md); align-items: center;">
-            <!-- View Toggle -->
-            <div class="view-toggle"
-                style="display: flex; gap: var(--spacing-xs); background: rgba(255,255,255,0.1); padding: var(--spacing-xs); border-radius: var(--radius-md);">
-                <button id="gridViewBtn" class="btn btn-sm"
-                    style="background: white; color: var(--theme-dark); border: none; padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--radius-md);">
-                    <i class="fas fa-th"></i>
-                </button>
-                <button id="listViewBtn" class="btn btn-sm"
-                    style="background: transparent; color: white; border: none; padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--radius-md);">
-                    <i class="fas fa-list"></i>
-                </button>
-            </div>
             <a href="{{ route('teachers.create') }}" class="btn btn-primary btn-new-teacher"
                 style="background: white; color: var(--theme-dark); flex-shrink: 0;">
                 <span><i class="fas fa-plus"></i></span>
@@ -59,11 +47,6 @@
                 gap: var(--spacing-sm) !important;
             }
 
-            .view-toggle {
-                width: 100% !important;
-                justify-content: center !important;
-            }
-
             .btn-new-teacher {
                 width: 100% !important;
                 justify-content: center !important;
@@ -71,98 +54,6 @@
 
             .btn-text {
                 display: inline !important;
-            }
-
-            /* Grid responsive */
-            .grid-cols-3 {
-                grid-template-columns: 1fr !important;
-                gap: var(--spacing-md) !important;
-            }
-
-            /* Compact cards on mobile */
-            #gridView .card {
-                padding: var(--spacing-md) !important;
-            }
-
-            #gridView .card > div:first-child {
-                margin-bottom: var(--spacing-sm) !important;
-            }
-
-            #gridView .card > div:first-child > div:first-child {
-                width: 60px !important;
-                height: 60px !important;
-                font-size: 1.5rem !important;
-                margin-bottom: var(--spacing-sm) !important;
-            }
-
-            #gridView .card h3 {
-                font-size: 1rem !important;
-                margin-bottom: 0.25rem !important;
-            }
-
-            #gridView .card p,
-            #gridView .card div[style*="font-size: 0.875rem"] {
-                font-size: 0.75rem !important;
-                margin-bottom: 0.25rem !important;
-            }
-
-            #gridView .card .btn {
-                padding: var(--spacing-sm) var(--spacing-md) !important;
-                font-size: 0.875rem !important;
-            }
-
-            /* Compact list view on mobile */
-            #listView .card {
-                padding: var(--spacing-md) !important;
-                margin-bottom: var(--spacing-sm) !important;
-            }
-
-            #listView .card > div:first-child {
-                gap: var(--spacing-md) !important;
-            }
-
-            /* Avatar in list view */
-            #listView .card > div:first-child > div:first-child {
-                width: 50px !important;
-                height: 50px !important;
-                font-size: 1.25rem !important;
-            }
-
-            /* Info grid in list view - stack vertically */
-            #listView .card > div:first-child > div:nth-child(2) {
-                grid-template-columns: 1fr !important;
-                gap: var(--spacing-xs) !important;
-            }
-
-            /* Titles in list view */
-            #listView .card h3 {
-                font-size: 0.9rem !important;
-                margin-bottom: 0.125rem !important;
-            }
-
-            /* Text in list view */
-            #listView .card p,
-            #listView .card div[style*="font-weight: 600"] {
-                font-size: 0.75rem !important;
-                margin-bottom: 0.125rem !important;
-            }
-
-            /* Section labels - make smaller */
-            #listView .card div[style*="text-transform: uppercase"] {
-                font-size: 0.65rem !important;
-                margin-bottom: 0.125rem !important;
-            }
-
-            /* Buttons in list view */
-            #listView .card .btn {
-                padding: 0.375rem 0.5rem !important;
-                font-size: 0.75rem !important;
-            }
-
-            #listView .card > div:last-child {
-                gap: var(--spacing-xs) !important;
-                margin-top: var(--spacing-sm) !important;
-                flex-wrap: wrap !important;
             }
 
             /* Table responsive */
@@ -182,200 +73,85 @@
             /* Hide some columns on mobile */
             .table th:nth-child(3),
             .table td:nth-child(3),
-            .table th:nth-child(4),
-            .table td:nth-child(4) {
+            .table th:nth-child(5),
+            .table td:nth-child(5) {
                 display: none !important;
             }
         }
     </style>
 
-
-    <!-- Teachers Grid View -->
-    <div id="gridView" class="grid grid-cols-3">
-        @forelse ($profesores as $profesor)
-            <!-- Teacher Card -->
-            <div class="card">
-                <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                    <div
-                        style="width: 100px; height: 100px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-lg); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-lg);">
-                        {{ substr($profesor->nombre, 0, 1) . substr($profesor->apellido, 0, 1) }}
-                    </div>
-                    <h3
-                        style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                        {{ $profesor->nombre }} {{ $profesor->apellido }}
-                    </h3>
-                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-xs);">
-                        {{ $profesor->rut }}
-                    </p>
-                    <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">
-                        {{ $profesor->email }}
-                    </p>
-                </div>
-
-                <div
-                    style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm);">
-                        <span style="color: var(--gray-600); font-size: 0.875rem;">Teléfono:</span>
-                        <span style="font-weight: 600;">{{ $profesor->telefono ?? 'N/A' }}</span>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    <a href="{{ route('teachers.edit', $profesor) }}" class="btn btn-primary btn-sm"
-                        style="color: white; flex: 1;">
-                        <i class="fas fa-edit"></i> Editar
-                    </a>
-                    <form action="{{ route('teachers.destroy', $profesor) }}" method="POST"
-                        onsubmit="return confirm('¿Estás seguro de querer eliminar este profesor?');" style="flex: 1;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-outline btn-sm"
-                            style="width: 100%; color: #ef4444; border-color: #ef4444;">
-                            <i class="fas fa-trash"></i> Eliminar
-                        </button>
-                    </form>
-                </div>
-            </div>
-        @empty
-            <div class="col-span-3">
-                <div class="card text-center" style="padding: var(--spacing-2xl); width: 100%;">
-                    <div style="margin-bottom: var(--spacing-md); font-size: 3rem; color: var(--gray-300);">
-                        <i class="fas fa-user-graduate"></i>
-                    </div>
-                    <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--gray-700);">No hay profesores registrados</h3>
-                    <p style="color: var(--gray-500);">Comienza agregando un nuevo profesor al sistema.</p>
-                </div>
-            </div>
-        @endforelse
+    <!-- Teachers Table -->
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr style="background: var(--theme-dark);">
+                    <th style="color: white !important;">Profesor</th>
+                    <th style="color: white !important;">Email</th>
+                    <th style="color: white !important;">Teléfono</th>
+                    <th style="color: white !important;">Nivel</th>
+                    <th style="color: white !important;">Título</th>
+                    <th style="color: white !important;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($profesores as $profesor)
+                    <tr style="cursor: pointer;" onclick="window.location='{{ route('teachers.show', $profesor->id) }}'">
+                        <td>
+                            <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+                                <div
+                                    style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+                                    {{ strtoupper(substr($profesor->nombre, 0, 1) . substr($profesor->apellido, 0, 1)) }}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600; color: var(--gray-900);">
+                                        {{ $profesor->nombre }} {{ $profesor->apellido }}</div>
+                                    <div style="font-size: 0.875rem; color: var(--gray-500);">{{ $profesor->rut }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="color: var(--gray-600);">{{ $profesor->email ?? 'Sin email' }}</td>
+                        <td style="color: var(--gray-600);">{{ $profesor->telefono ?? 'Sin teléfono' }}</td>
+                        <td>
+                            @if($profesor->nivel_ensenanza)
+                                <span class="badge badge-primary">{{ $profesor->nivel_ensenanza }}</span>
+                            @else
+                                <span class="badge">Sin nivel</span>
+                            @endif
+                        </td>
+                        <td style="color: var(--gray-600); font-size: 0.875rem;">
+                            {{ $profesor->titulo ?? 'Sin título' }}
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: var(--spacing-sm);" onclick="event.stopPropagation();">
+                                <a href="{{ route('teachers.edit', $profesor->id) }}" class="btn btn-ghost btn-sm"
+                                    title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('teachers.destroy', $profesor->id) }}" method="POST"
+                                    style="display: inline;"
+                                    onsubmit="return confirm('¿Está seguro de eliminar este profesor?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-ghost btn-sm" style="color: var(--error);"
+                                        title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: var(--spacing-2xl); color: var(--gray-500);">
+                            <i class="fas fa-chalkboard-teacher"
+                                style="font-size: 3rem; margin-bottom: var(--spacing-md); opacity: 0.3;"></i>
+                            <p style="margin: 0; font-size: 1.125rem;">No hay profesores registrados</p>
+                            <p style="margin: var(--spacing-sm) 0 0 0; font-size: 0.875rem;">Haz clic en "Nuevo Profesor"
+                                para comenzar</p>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
-
-    <!-- Teachers List View -->
-    <div id="listView" style="display: none;">
-        @forelse ($profesores as $profesor)
-            <!-- Teacher List Item -->
-            <div class="card mb-md" style="padding: var(--spacing-md);">
-                <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                    <!-- Avatar -->
-                    <div
-                        style="width: 50px; height: 50px; flex-shrink: 0; border-radius: var(--radius-md); background: var(--theme-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; font-weight: 700; box-shadow: var(--shadow-sm);">
-                        {{ substr($profesor->nombre, 0, 1) . substr($profesor->apellido, 0, 1) }}
-                    </div>
-
-                    <!-- Info -->
-                    <div
-                        style="flex: 1; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--spacing-md); align-items: center;">
-                        <div>
-                            <h3
-                                style="font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.25rem;">
-                                {{ $profesor->nombre }} {{ $profesor->apellido }}
-                            </h3>
-                            <p style="color: var(--gray-600); font-size: 0.8125rem; margin: 0;">
-                                <i class="fas fa-envelope" style="width: 14px;"></i> {{ $profesor->email }}
-                            </p>
-                        </div>
-
-                        <!-- RUT -->
-                        <div>
-                            <div
-                                style="color: var(--gray-500); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
-                                RUT
-                            </div>
-                            <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;">
-                                {{ $profesor->rut }}
-                            </div>
-                        </div>
-
-                        <!-- Especialidad -->
-                        <div>
-                            <div
-                                style="color: var(--gray-500); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
-                                Especialidad
-                            </div>
-                            <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;">
-                                {{ $profesor->especialidad ?? 'N/A' }}
-                            </div>
-                        </div>
-
-                        <!-- Teléfono -->
-                        <div>
-                            <div
-                                style="color: var(--gray-500); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
-                                Teléfono
-                            </div>
-                            <div style="font-weight: 600; font-size: 0.875rem;">
-                                {{ $profesor->telefono ?? 'N/A' }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Actions -->
-                    <div style="display: flex; gap: var(--spacing-xs); flex-shrink: 0;">
-                        <a href="{{ route('teachers.edit', $profesor) }}" class="btn btn-primary btn-sm"
-                            style="color: white;">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <form action="{{ route('teachers.destroy', $profesor) }}" method="POST"
-                            onsubmit="return confirm('¿Estás seguro de querer eliminar este profesor?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-outline btn-sm"
-                                style="color: #ef4444; border-color: #ef4444;">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <div class="card text-center" style="padding: var(--spacing-2xl);">
-                <div style="margin-bottom: var(--spacing-md); font-size: 3rem; color: var(--gray-300);">
-                    <i class="fas fa-user-graduate"></i>
-                </div>
-                <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--gray-700);">No hay profesores registrados</h3>
-                <p style="color: var(--gray-500);">Comienza agregando un nuevo profesor al sistema.</p>
-            </div>
-        @endforelse
-    </div>
-
-    <script>
-        // View toggle functionality
-        const gridViewBtn = document.getElementById('gridViewBtn');
-        const listViewBtn = document.getElementById('listViewBtn');
-        const gridView = document.getElementById('gridView');
-        const listView = document.getElementById('listView');
-
-        // Load saved preference or default to grid
-        const savedView = localStorage.getItem('teachersView') || 'grid';
-        if (savedView === 'list') {
-            showListView();
-        }
-
-        gridViewBtn.addEventListener('click', () => {
-            showGridView();
-            localStorage.setItem('teachersView', 'grid');
-        });
-
-        listViewBtn.addEventListener('click', () => {
-            showListView();
-            localStorage.setItem('teachersView', 'list');
-        });
-
-        function showGridView() {
-            gridView.style.display = 'grid';
-            listView.style.display = 'none';
-            gridViewBtn.style.background = 'white';
-            gridViewBtn.style.color = 'var(--theme-dark)';
-            listViewBtn.style.background = 'transparent';
-            listViewBtn.style.color = 'white';
-        }
-
-        function showListView() {
-            gridView.style.display = 'none';
-            listView.style.display = 'block';
-            listViewBtn.style.background = 'white';
-            listViewBtn.style.color = 'var(--theme-dark)';
-            gridViewBtn.style.background = 'transparent';
-            gridViewBtn.style.color = 'white';
-        }
-    </script>
 </x-app-layout>
