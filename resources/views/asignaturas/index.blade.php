@@ -58,29 +58,70 @@
                 justify-content: center !important;
             }
 
-            /* Table responsive */
+            /* Hide table on mobile, show cards */
             .table-container {
-                overflow-x: auto !important;
-            }
-
-            .table {
-                font-size: 0.875rem !important;
-            }
-
-            .table th,
-            .table td {
-                padding: var(--spacing-sm) !important;
-            }
-
-            /* Hide some columns on mobile */
-            .table th:nth-child(3),
-            .table td:nth-child(3) {
                 display: none !important;
+            }
+
+            .mobile-cards {
+                display: block !important;
+            }
+        }
+
+        /* Desktop: Show table, hide cards */
+        @media (min-width: 769px) {
+            .mobile-cards {
+                display: none !important;
+            }
+
+            .table-container {
+                display: block !important;
             }
         }
     </style>
 
-    <!-- Asignaturas Table -->
+    <!-- Mobile Cards View (hidden on desktop) -->
+    <div class="mobile-cards" style="display: none;">
+        @forelse($asignaturas as $asignatura)
+            <div class="card mb-md" style="cursor: pointer;" onclick="window.location='{{ route('subjects.show', $asignatura->id) }}'">
+                <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-md);">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 700; color: var(--gray-900); font-size: 1.125rem;">{{ $asignatura->nombre }}</div>
+                        <span class="badge badge-primary" style="margin-top: var(--spacing-xs);">{{ $asignatura->codigo }}</span>
+                    </div>
+                </div>
+                
+                <div style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: var(--spacing-md);">
+                    <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Descripción</div>
+                    <div style="color: var(--gray-700); font-size: 0.875rem;">{{ $asignatura->descripcion ? Str::limit($asignatura->descripcion, 100) : 'Sin descripción' }}</div>
+                </div>
+
+                <div style="display: flex; gap: var(--spacing-sm);" onclick="event.stopPropagation();">
+                    <a href="{{ route('subjects.edit', $asignatura->id) }}" class="btn btn-primary btn-sm" style="flex: 1; color: white;">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <form action="{{ route('subjects.destroy', $asignatura->id) }}" method="POST" style="flex: 1;" onsubmit="return confirm('¿Está seguro de eliminar esta asignatura?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-outline btn-sm" style="width: 100%; color: var(--error); border-color: var(--error);">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        @empty
+            <div class="card text-center" style="padding: var(--spacing-2xl);">
+                <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: var(--spacing-md); opacity: 0.3; color: var(--gray-300);"></i>
+                <p style="margin: 0; font-size: 1.125rem; color: var(--gray-500);">No hay asignaturas registradas</p>
+                <p style="margin: var(--spacing-sm) 0 0 0; font-size: 0.875rem; color: var(--gray-500);">Haz clic en "Nueva Asignatura" para comenzar</p>
+            </div>
+        @endforelse
+    </div>
+
+    <!-- Desktop Table View (hidden on mobile) -->
     <div class="table-container">
         <table class="table">
             <thead>

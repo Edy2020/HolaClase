@@ -65,31 +65,93 @@
                 display: inline !important;
             }
 
-            /* Table responsive */
+            /* Hide table on mobile, show cards */
             .table-container {
-                overflow-x: auto !important;
-            }
-
-            .table {
-                font-size: 0.875rem !important;
-            }
-
-            .table th,
-            .table td {
-                padding: var(--spacing-sm) !important;
-            }
-
-            /* Hide some columns on mobile */
-            .table th:nth-child(3),
-            .table td:nth-child(3),
-            .table th:nth-child(4),
-            .table td:nth-child(4) {
                 display: none !important;
+            }
+
+            .mobile-cards {
+                display: block !important;
+            }
+        }
+
+        /* Desktop: Show table, hide cards */
+        @media (min-width: 769px) {
+            .mobile-cards {
+                display: none !important;
+            }
+
+            .table-container {
+                display: block !important;
             }
         }
     </style>
 
-    <!-- Courses Table -->
+    <!-- Mobile Cards View (hidden on desktop) -->
+    <div class="mobile-cards" style="display: none;">
+        <?php $__empty_1 = true; $__currentLoopData = $cursos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $curso): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <div class="card mb-md" style="cursor: pointer;" onclick="window.location='<?php echo e(route('courses.show', $curso->id)); ?>'">
+                <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-md);">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem;">
+                        <?php if($curso->nivel === 'pre-kinder' || $curso->nivel === 'kinder'): ?>
+                            <?php echo e(strtoupper(substr($curso->nivel, 0, 2))); ?><?php echo e($curso->letra); ?>
+
+                        <?php else: ?>
+                            <?php echo e($curso->grado); ?><?php echo e($curso->letra); ?>
+
+                        <?php endif; ?>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 700; color: var(--gray-900); font-size: 1.125rem;"><?php echo e($curso->nombre); ?></div>
+                        <span class="badge badge-primary" style="margin-top: var(--spacing-xs);"><?php echo e(ucfirst($curso->nivel)); ?></span>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin-bottom: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Profesor Jefe</div>
+                        <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;">
+                            <?php if($curso->profesor): ?>
+                                <?php echo e($curso->profesor->nombre); ?> <?php echo e($curso->profesor->apellido); ?>
+
+                            <?php else: ?>
+                                Sin asignar
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Estudiantes</div>
+                        <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;">
+                            <i class="fas fa-users" style="color: var(--theme-color); margin-right: var(--spacing-xs);"></i>
+                            <?php echo e($curso->estudiantes_count ?? 0); ?>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: var(--spacing-sm);" onclick="event.stopPropagation();">
+                    <a href="<?php echo e(route('courses.edit', $curso->id)); ?>" class="btn btn-primary btn-sm" style="flex: 1; color: white;">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <form action="<?php echo e(route('courses.destroy', $curso->id)); ?>" method="POST" style="flex: 1;" onsubmit="return confirm('¿Está seguro de eliminar este curso?');">
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('DELETE'); ?>
+                        <button type="submit" class="btn btn-outline btn-sm" style="width: 100%; color: var(--error); border-color: var(--error);">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+            <div class="card text-center" style="padding: var(--spacing-2xl);">
+                <i class="fas fa-graduation-cap" style="font-size: 3rem; margin-bottom: var(--spacing-md); opacity: 0.3; color: var(--gray-300);"></i>
+                <p style="margin: 0; font-size: 1.125rem; color: var(--gray-500);">No hay cursos registrados</p>
+                <p style="margin: var(--spacing-sm) 0 0 0; font-size: 0.875rem; color: var(--gray-500);">Haz clic en "Nuevo Curso" para comenzar</p>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- Desktop Table View (hidden on mobile) -->
     <div class="table-container">
         <table class="table">
             <thead>

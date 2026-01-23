@@ -83,7 +83,46 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-2">
+    <style>
+        /* Mobile Responsive Styles for Dashboard */
+        @media (max-width: 768px) {
+            /* Stack grid columns vertically on mobile */
+            .grid.grid-cols-2,
+            .grid.grid-cols-3,
+            .grid.grid-cols-4 {
+                grid-template-columns: 1fr !important;
+                gap: var(--spacing-md) !important;
+            }
+
+            /* Adjust activity items on mobile */
+            .activity-item {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+            }
+
+            .activity-item .activity-icon {
+                margin-bottom: var(--spacing-sm) !important;
+            }
+
+            /* Adjust task items on mobile */
+            .task-item-header {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: var(--spacing-xs) !important;
+            }
+
+            .task-item-title {
+                font-size: 0.875rem !important;
+                word-break: break-word !important;
+            }
+
+            .task-item-details {
+                font-size: 0.8125rem !important;
+            }
+        }
+    </style>
+
+    <div class="grid grid-cols-2" style="gap: var(--spacing-lg);">
         <!-- Recent Activity -->
         <div class="card">
             <div class="card-header">
@@ -93,15 +132,15 @@
                 @if($recentActivities->count() > 0)
                     <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
                         @foreach($recentActivities as $activity)
-                            <div style="display: flex; gap: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                                <div style="width: 40px; height: 40px; background: var(--theme-color); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
+                            <div class="activity-item" style="display: flex; gap: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
+                                <div class="activity-icon" style="width: 40px; height: 40px; background: var(--theme-color); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
                                     <i class="fas {{ $activity['icon'] }}"></i>
                                 </div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
+                                <div style="flex: 1; min-width: 0;">
+                                    <div style="font-weight: 600; color: var(--gray-900); margin-bottom: var(--spacing-xs); word-break: break-word;">
                                         {{ $activity['title'] }}
                                     </div>
-                                    <div style="font-size: 0.875rem; color: var(--gray-600);">
+                                    <div style="font-size: 0.875rem; color: var(--gray-600); word-break: break-word;">
                                         {{ $activity['description'] }} - {{ $activity['created_at']->diffForHumans() }}
                                     </div>
                                 </div>
@@ -147,13 +186,13 @@
                                 }
                             @endphp
                             <div style="padding: var(--spacing-md); border-left: 4px solid {{ $borderColor }}; background: var(--gray-50); border-radius: var(--radius-md);">
-                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-xs);">
-                                    <div style="font-weight: 600; color: var(--gray-900);">
+                                <div class="task-item-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-xs);">
+                                    <div class="task-item-title" style="font-weight: 600; color: var(--gray-900); flex: 1; min-width: 0; word-break: break-word;">
                                         {{ $prueba->titulo }} - {{ $prueba->curso->nombre }}
                                     </div>
-                                    <span class="badge {{ $badgeClass }}">{{ $badgeText }}</span>
+                                    <span class="badge {{ $badgeClass }}" style="flex-shrink: 0; margin-left: var(--spacing-xs);">{{ $badgeText }}</span>
                                 </div>
-                                <div style="font-size: 0.875rem; color: var(--gray-600);">
+                                <div class="task-item-details" style="font-size: 0.875rem; color: var(--gray-600); word-break: break-word;">
                                     @if($prueba->asignatura)
                                         {{ $prueba->asignatura->nombre }} • 
                                     @endif
