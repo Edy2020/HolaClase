@@ -87,10 +87,55 @@
         }
     </style>
 
+    <!-- Search and Filters -->
+    <div class="card mb-xl" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <div class="card-body" style="padding: var(--spacing-lg);">
+            <div class="grid" style="grid-template-columns: 2fr 1fr; gap: var(--spacing-md); align-items: center;">
+                <!-- Search Input -->
+                <div class="form-group mb-0" style="position: relative;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1.125rem;">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <input type="text" id="searchInput" class="form-input" 
+                        placeholder="Buscar profesores..." 
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                </div>
+                
+                <!-- Nivel Filter -->
+                <div class="form-group mb-0" style="position: relative;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <select id="nivelFilter" class="form-select" 
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                        <option value="">Todos los niveles</option>
+                        <?php $__currentLoopData = $profesores->unique('nivel_ensenanza')->filter(fn($p) => $p->nivel_ensenanza); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $profesor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($profesor->nivel_ensenanza); ?>"><?php echo e($profesor->nivel_ensenanza); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Results Message (hidden by default) -->
+    <div id="noResults" class="card mb-xl" style="display: none;">
+        <div class="card-body text-center" style="padding: var(--spacing-2xl);">
+            <i class="fas fa-search" style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
+            <p style="color: var(--gray-600); margin: 0;">No se encontraron profesores que coincidan con tu búsqueda</p>
+        </div>
+    </div>
+
     <!-- Mobile Cards View (hidden on desktop) -->
     <div class="mobile-cards" style="display: none;">
         <?php $__empty_1 = true; $__currentLoopData = $profesores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $profesor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-            <div class="card mb-md" style="cursor: pointer;" onclick="window.location='<?php echo e(route('teachers.show', $profesor->id)); ?>'">
+            <div class="card mb-md profesor-item" style="cursor: pointer;" onclick="window.location='<?php echo e(route('teachers.show', $profesor->id)); ?>'" 
+                data-search="<?php echo e(strtolower($profesor->nombre . ' ' . $profesor->apellido . ' ' . $profesor->rut)); ?>"
+                data-nivel="<?php echo e($profesor->nivel_ensenanza ?? ''); ?>">
                 <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-md);">
                     <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem;">
                         <?php echo e(strtoupper(substr($profesor->nombre, 0, 1) . substr($profesor->apellido, 0, 1))); ?>
@@ -156,7 +201,7 @@
             </thead>
             <tbody>
                 <?php $__empty_1 = true; $__currentLoopData = $profesores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $profesor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                    <tr style="cursor: pointer;" onclick="window.location='<?php echo e(route('teachers.show', $profesor->id)); ?>'">
+                    <tr class="profesor-item" style="cursor: pointer;" onclick="window.location='<?php echo e(route('teachers.show', $profesor->id)); ?>'" \n                        data-search="<?php echo e(strtolower($profesor->nombre . ' ' . $profesor->apellido . ' ' . $profesor->rut)); ?>"\n                        data-nivel="<?php echo e($profesor->nivel_ensenanza ?? ''); ?>">
                         <td>
                             <div style="display: flex; align-items: center; gap: var(--spacing-md);">
                                 <div
@@ -217,6 +262,40 @@
             </tbody>
         </table>
     </div>
+
+    <script>
+        // Real-time search and filter functionality
+        const searchInput = document.getElementById('searchInput');
+        const nivelFilter = document.getElementById('nivelFilter');
+        const noResults = document.getElementById('noResults');
+        
+        function filterProfesores() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedNivel = nivelFilter.value;
+            const items = document.querySelectorAll('.profesor-item');
+            let visibleCount = 0;
+            
+            items.forEach(item => {
+                const searchText = item.dataset.search || '';
+                const nivel = item.dataset.nivel || '';
+                
+                const matchesSearch = searchText.includes(searchTerm);
+                const matchesNivel = !selectedNivel || nivel === selectedNivel;
+                
+                if (matchesSearch && matchesNivel) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+        
+        searchInput.addEventListener('input', filterProfesores);
+        nivelFilter.addEventListener('change', filterProfesores);
+    </script>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>

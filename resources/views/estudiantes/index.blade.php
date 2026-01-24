@@ -78,10 +78,72 @@
         }
     </style>
 
+    <!-- Search and Filters -->
+    <div class="card mb-xl" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <div class="card-body" style="padding: var(--spacing-lg);">
+            <div class="grid" style="grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-md); align-items: center;">
+                <!-- Search Input -->
+                <div class="form-group mb-0" style="position: relative;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1.125rem;">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <input type="text" id="searchInput" class="form-input" 
+                        placeholder="Buscar estudiantes..." 
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                </div>
+                
+                <!-- Curso Filter -->
+                <div class="form-group mb-0" style="position: relative;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <select id="cursoFilter" class="form-select" 
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                        <option value="">Todos los cursos</option>
+                        @foreach($estudiantes->pluck('curso_actual')->filter()->unique('id') as $curso)
+                            <option value="{{ $curso->id }}">{{ $curso->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                <!-- Estado Filter -->
+                <div class="form-group mb-0" style="position: relative;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <select id="estadoFilter" class="form-select" 
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                        <option value="">Todos los estados</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                        <option value="retirado">Retirado</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Results Message (hidden by default) -->
+    <div id="noResults" class="card mb-xl" style="display: none;">
+        <div class="card-body text-center" style="padding: var(--spacing-2xl);">
+            <i class="fas fa-search" style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
+            <p style="color: var(--gray-600); margin: 0;">No se encontraron estudiantes que coincidan con tu búsqueda</p>
+        </div>
+    </div>
+
     <!-- Mobile Cards View (hidden on desktop) -->
     <div class="mobile-cards" style="display: none;">
         @forelse($estudiantes as $estudiante)
-            <div class="card mb-md" style="cursor: pointer;" onclick="window.location='{{ route('students.show', $estudiante->id) }}'">
+            <div class="card mb-md estudiante-item" style="cursor: pointer;" onclick="window.location='{{ route('students.show', $estudiante->id) }}'" 
+                data-search="{{ strtolower($estudiante->nombre . ' ' . $estudiante->apellido . ' ' . $estudiante->rut) }}"
+                data-curso="{{ $estudiante->curso_actual->id ?? '' }}"
+                data-estado="{{ $estudiante->estado }}">
                 <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-md);">
                     <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem;">
                         {{ strtoupper(substr($estudiante->nombre, 0, 1) . substr($estudiante->apellido, 0, 1)) }}
@@ -153,7 +215,10 @@
             </thead>
             <tbody>
                 @forelse($estudiantes as $estudiante)
-                    <tr style="cursor: pointer;" onclick="window.location='{{ route('students.show', $estudiante->id) }}'">
+                    <tr class="estudiante-item" style="cursor: pointer;" onclick="window.location='{{ route('students.show', $estudiante->id) }}'" 
+                        data-search="{{ strtolower($estudiante->nombre . ' ' . $estudiante->apellido . ' ' . $estudiante->rut) }}"
+                        data-curso="{{ $estudiante->curso_actual->id ?? '' }}"
+                        data-estado="{{ $estudiante->estado }}">
                         <td>
                             <div style="display: flex; align-items: center; gap: var(--spacing-md);">
                                 <div
@@ -229,4 +294,43 @@
                 @endforelse
             </tbody>
     </div>
+
+    <script>
+        // Real-time search and filter functionality
+        const searchInput = document.getElementById('searchInput');
+        const cursoFilter = document.getElementById('cursoFilter');
+        const estadoFilter = document.getElementById('estadoFilter');
+        const noResults = document.getElementById('noResults');
+        
+        function filterEstudiantes() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedCurso = cursoFilter.value;
+            const selectedEstado = estadoFilter.value;
+            const items = document.querySelectorAll('.estudiante-item');
+            let visibleCount = 0;
+            
+            items.forEach(item => {
+                const searchText = item.dataset.search || '';
+                const curso = item.dataset.curso || '';
+                const estado = item.dataset.estado || '';
+                
+                const matchesSearch = searchText.includes(searchTerm);
+                const matchesCurso = !selectedCurso || curso === selectedCurso;
+                const matchesEstado = !selectedEstado || estado === selectedEstado;
+                
+                if (matchesSearch && matchesCurso && matchesEstado) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+        
+        searchInput.addEventListener('input', filterEstudiantes);
+        cursoFilter.addEventListener('change', filterEstudiantes);
+        estadoFilter.addEventListener('change', filterEstudiantes);
+    </script>
 </x-app-layout>

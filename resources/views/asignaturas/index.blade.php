@@ -80,10 +80,35 @@
         }
     </style>
 
+    <!-- Search -->
+    <div class="card mb-xl" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <div class="card-body" style="padding: var(--spacing-lg);">
+            <div class="form-group mb-0" style="position: relative;">
+                <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1.125rem;">
+                    <i class="fas fa-search"></i>
+                </div>
+                <input type="text" id="searchInput" class="form-input" 
+                    placeholder="Buscar por nombre o código..." 
+                    style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem;"
+                    onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                    onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+            </div>
+        </div>
+    </div>
+
+    <!-- No Results Message (hidden by default) -->
+    <div id="noResults" class="card mb-xl" style="display: none;">
+        <div class="card-body text-center" style="padding: var(--spacing-2xl);">
+            <i class="fas fa-search" style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
+            <p style="color: var(--gray-600); margin: 0;">No se encontraron asignaturas que coincidan con tu búsqueda</p>
+        </div>
+    </div>
+
     <!-- Mobile Cards View (hidden on desktop) -->
     <div class="mobile-cards" style="display: none;">
         @forelse($asignaturas as $asignatura)
-            <div class="card mb-md" style="cursor: pointer;" onclick="window.location='{{ route('subjects.show', $asignatura->id) }}'">
+            <div class="card mb-md asignatura-item" style="cursor: pointer;" onclick="window.location='{{ route('subjects.show', $asignatura->id) }}'" 
+                data-search="{{ strtolower($asignatura->nombre . ' ' . $asignatura->codigo) }}">
                 <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-md);">
                     <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
                         <i class="fas fa-book-open"></i>
@@ -134,7 +159,8 @@
             </thead>
             <tbody>
                 @forelse($asignaturas as $asignatura)
-                    <tr style="cursor: pointer;" onclick="window.location='{{ route('subjects.show', $asignatura->id) }}'">
+                    <tr class="asignatura-item" style="cursor: pointer;" onclick="window.location='{{ route('subjects.show', $asignatura->id) }}'" 
+                        data-search="{{ strtolower($asignatura->nombre . ' ' . $asignatura->codigo) }}">
                         <td>
                             <div style="display: flex; align-items: center; gap: var(--spacing-md);">
                                 <div
@@ -193,4 +219,31 @@
             {{ $asignaturas->links() }}
         </div>
     @endif
+
+    <script>
+        // Real-time search functionality
+        const searchInput = document.getElementById('searchInput');
+        const noResults = document.getElementById('noResults');
+        
+        function filterAsignaturas() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const items = document.querySelectorAll('.asignatura-item');
+            let visibleCount = 0;
+            
+            items.forEach(item => {
+                const searchText = item.dataset.search || '';
+                
+                if (searchText.includes(searchTerm)) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+        
+        searchInput.addEventListener('input', filterAsignaturas);
+    </script>
 </x-app-layout>

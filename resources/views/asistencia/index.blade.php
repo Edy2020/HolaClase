@@ -20,7 +20,7 @@
     @endif
 
     <!-- Hero Header -->
-    <div
+    <div class="hero-header"
         style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
@@ -36,6 +36,78 @@
             </a>
         </div>
     </div>
+
+    <style>
+        /* Mobile Responsive Styles for Asistencia */
+        @media (max-width: 768px) {
+            /* Hero header responsive */
+            .hero-header {
+                flex-direction: column !important;
+                gap: var(--spacing-md) !important;
+                text-align: center !important;
+            }
+
+            .hero-header > div:first-child {
+                width: 100%;
+            }
+
+            .hero-header h2 {
+                font-size: 1.5rem !important;
+            }
+
+            .hero-header p {
+                font-size: 0.875rem !important;
+            }
+
+            .hero-header .btn {
+                width: 100% !important;
+            }
+
+            /* Statistics grid - 2 columns on mobile */
+            .grid.grid-cols-5 {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: var(--spacing-sm) !important;
+            }
+
+            /* Last stat card spans 2 columns */
+            .grid.grid-cols-5 > .stat-card:last-child {
+                grid-column: 1 / -1 !important;
+            }
+
+            /* Stat cards more compact */
+            .stat-card {
+                padding: var(--spacing-md) !important;
+            }
+
+            .stat-value {
+                font-size: 1.5rem !important;
+            }
+
+            .stat-label {
+                font-size: 0.75rem !important;
+            }
+
+            /* Hide table on mobile, show cards */
+            .attendance-table-container {
+                display: none !important;
+            }
+
+            .mobile-attendance-cards {
+                display: block !important;
+            }
+        }
+
+        /* Desktop: Show table, hide cards */
+        @media (min-width: 769px) {
+            .mobile-attendance-cards {
+                display: none !important;
+            }
+
+            .attendance-table-container {
+                display: block !important;
+            }
+        }
+    </style>
 
     <!-- Statistics -->
     <div class="grid grid-cols-5 mb-xl">
@@ -62,54 +134,89 @@
     </div>
 
     <!-- Filters -->
-    <div class="card mb-xl">
-        <div class="card-header">
-            <h3 class="card-title">Filtros</h3>
-        </div>
-        <div class="card-body">
+    <div class="card mb-xl" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <div class="card-body" style="padding: var(--spacing-lg);">
             <form method="GET" action="{{ route('attendance.index') }}">
-                <div class="grid grid-cols-5">
+                <div class="grid grid-cols-5" style="gap: var(--spacing-md); align-items: end;">
+                    <!-- Curso Filter -->
                     <div class="form-group mb-0">
-                        <label class="form-label">Curso</label>
-                        <select name="curso_id" class="form-select">
-                            <option value="">Todos los cursos</option>
-                            @foreach($cursos as $curso)
-                                <option value="{{ $curso->id }}" {{ request('curso_id') == $curso->id ? 'selected' : '' }}>
-                                    {{ $curso->nombre }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Curso</label>
+                        <div style="position: relative;">
+                            <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <select name="curso_id" class="form-select" 
+                                style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                                onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                                onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                                <option value="">Todos los cursos</option>
+                                @foreach($cursos as $curso)
+                                    <option value="{{ $curso->id }}" {{ request('curso_id') == $curso->id ? 'selected' : '' }}>
+                                        {{ $curso->nombre }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
+                    
+                    <!-- Asignatura Filter -->
                     <div class="form-group mb-0">
-                        <label class="form-label">Asignatura</label>
-                        <select name="asignatura_id" class="form-select">
-                            <option value="">Todas las asignaturas</option>
-                            @foreach($asignaturas as $asignatura)
-                                <option value="{{ $asignatura->id }}" {{ request('asignatura_id') == $asignatura->id ? 'selected' : '' }}>
-                                    {{ $asignatura->nombre }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Asignatura</label>
+                        <div style="position: relative;">
+                            <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <select name="asignatura_id" class="form-select" 
+                                style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                                onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                                onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                                <option value="">Todas las asignaturas</option>
+                                @foreach($asignaturas as $asignatura)
+                                    <option value="{{ $asignatura->id }}" {{ request('asignatura_id') == $asignatura->id ? 'selected' : '' }}>
+                                        {{ $asignatura->nombre }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
+                    
+                    <!-- Fecha Filter -->
                     <div class="form-group mb-0">
-                        <label class="form-label">Fecha</label>
-                        <input type="date" name="fecha" class="form-input" value="{{ request('fecha') }}">
+                        <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Fecha</label>
+                        <div style="position: relative;">
+                            <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <input type="date" name="fecha" class="form-input" value="{{ request('fecha') }}" 
+                                style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem;"
+                                onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                                onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                        </div>
                     </div>
+                    
+                    <!-- Estado Filter -->
                     <div class="form-group mb-0">
-                        <label class="form-label">Estado</label>
-                        <select name="estado" class="form-select">
-                            <option value="">Todos</option>
-                            <option value="presente" {{ request('estado') == 'presente' ? 'selected' : '' }}>Presente
-                            </option>
-                            <option value="ausente" {{ request('estado') == 'ausente' ? 'selected' : '' }}>Ausente
-                            </option>
-                            <option value="tarde" {{ request('estado') == 'tarde' ? 'selected' : '' }}>Tarde</option>
-                            <option value="justificado" {{ request('estado') == 'justificado' ? 'selected' : '' }}>
-                                Justificado</option>
-                        </select>
+                        <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Estado</label>
+                        <div style="position: relative;">
+                            <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <select name="estado" class="form-select" 
+                                style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                                onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                                onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                                <option value="">Todos</option>
+                                <option value="presente" {{ request('estado') == 'presente' ? 'selected' : '' }}>Presente</option>
+                                <option value="ausente" {{ request('estado') == 'ausente' ? 'selected' : '' }}>Ausente</option>
+                                <option value="tarde" {{ request('estado') == 'tarde' ? 'selected' : '' }}>Tarde</option>
+                                <option value="justificado" {{ request('estado') == 'justificado' ? 'selected' : '' }}>Justificado</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group mb-0" style="display: flex; align-items: flex-end;">
-                        <button type="submit" class="btn btn-primary" style="width: 100%; color: white;">
+                    
+                    <!-- Submit Button -->
+                    <div class="form-group mb-0">
+                        <button type="submit" class="btn btn-primary" style="width: 100%; color: white; height: 42px; border-radius: var(--radius-lg); font-weight: 600;">
                             <i class="fas fa-search"></i> Filtrar
                         </button>
                     </div>
@@ -125,7 +232,50 @@
         </div>
         <div class="card-body">
             @if($asistencias->count() > 0)
-                <div style="overflow-x: auto;">
+                <!-- Mobile Cards View (hidden on desktop) -->
+                <div class="mobile-attendance-cards" style="display: none;">
+                    @foreach($asistencias as $asistencia)
+                        <div class="card mb-md" style="padding: var(--spacing-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 700; color: var(--gray-900); font-size: 1rem; margin-bottom: var(--spacing-xs);">{{ $asistencia->estudiante->nombre }} {{ $asistencia->estudiante->apellido }}</div>
+                                    <div style="font-size: 0.875rem; color: var(--gray-600);">{{ $asistencia->fecha->format('d/m/Y') }}</div>
+                                </div>
+                                <span class="badge badge-{{ $asistencia->estado_color }}">
+                                    {{ $asistencia->estado_label }}
+                                </span>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-sm); margin-bottom: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
+                                <div>
+                                    <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Curso</div>
+                                    <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;">{{ $asistencia->curso->nombre }}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Asignatura</div>
+                                    <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;">{{ $asistencia->asignatura->nombre }}</div>
+                                </div>
+                                @if($asistencia->notas)
+                                    <div>
+                                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Notas</div>
+                                        <div style="color: var(--gray-700); font-size: 0.875rem;">{{ $asistencia->notas }}</div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <form action="{{ route('attendance.destroy', $asistencia) }}" method="POST" onsubmit="return confirm('¿Eliminar este registro?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline btn-sm" style="width: 100%; color: var(--error); border-color: var(--error);">
+                                    <i class="fas fa-trash"></i> Eliminar Registro
+                                </button>
+                            </form>
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- Desktop Table View (hidden on mobile) -->
+                <div class="attendance-table-container" style="overflow-x: auto;">
                     <table class="table">
                         <thead>
                             <tr>
