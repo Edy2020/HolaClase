@@ -25,11 +25,16 @@
                     @endif
                 </div>
             </div>
-            <div>
-                <span class="badge badge-{{ $estudiante->estado === 'activo' ? 'success' : 'warning' }}"
-                    style="font-size: 1rem; padding: var(--spacing-sm) var(--spacing-lg);">
-                    {{ ucfirst($estudiante->estado) }}
-                </span>
+            <div style="position: relative;">
+                <select id="statusSelect" class="form-select" style="font-size: 1rem; padding: var(--spacing-sm) var(--spacing-lg); cursor: pointer; 
+                    background-color: {{ $estudiante->estado === 'activo' ? 'var(--success)' : ($estudiante->estado === 'inactivo' ? 'var(--warning)' : 'var(--error)') }}; 
+                    color: white; border: none; font-weight: 600; border-radius: var(--radius-md);">
+                    <option value="activo" {{ $estudiante->estado === 'activo' ? 'selected' : '' }}>✓ Activo</option>
+                    <option value="inactivo" {{ $estudiante->estado === 'inactivo' ? 'selected' : '' }}>⏸ Inactivo
+                    </option>
+                    <option value="retirado" {{ $estudiante->estado === 'retirado' ? 'selected' : '' }}>✕ Retirado
+                    </option>
+                </select>
             </div>
             <div style="display: flex; gap: var(--spacing-sm);">
                 <a href="{{ route('students.edit', $estudiante->id) }}" class="btn btn-primary">
@@ -398,5 +403,122 @@
                 grid-template-columns: 1fr !important;
             }
         }
+
+        /* Status dropdown styles */
+        #statusSelect {
+            transition: all 0.3s ease;
+        }
+
+        #statusSelect:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        #statusSelect:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Notification animations */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
     </style>
+
+    <script>
+        document.getElementById('statusSelect').addEventListener('change', function(e) {
+            const newStatus = e.target.value;
+            const select = e.target;
+            const originalStatus = '{{ $estudiante->estado }}';
+            
+            // Show loading state
+            select.disabled = true;
+            
+            // Send AJAX request
+            fetch('{{ route("students.update-status", $estudiante->id) }}', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    estado: newStatus
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update background color
+                    if (newStatus === 'activo') {
+                        select.style.backgroundColor = 'var(--success)';
+                    } else if (newStatus === 'inactivo') {
+                        select.style.backgroundColor = 'var(--warning)';
+                    } else {
+                        select.style.backgroundColor = 'var(--error)';
+                    }
+                    
+                    // Show success message
+                    showNotification('✓ Estado actualizado exitosamente', 'success');
+                } else {
+                    // Revert to original status
+                    select.value = originalStatus;
+                    showNotification('✕ Error al actualizar el estado', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Revert to original status
+                select.value = originalStatus;
+                showNotification('✕ Error al actualizar el estado', 'error');
+            })
+            .finally(() => {
+                select.disabled = false;
+            });
+        });
+
+        function showNotification(message, type) {
+            // Simple notification
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: ${type === 'success' ? 'var(--success)' : 'var(--error)'};
+                color: white;
+                border-radius: var(--radius-lg);
+                box-shadow: var(--shadow-lg);
+                z-index: 9999;
+                font-weight: 600;
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
 </x-app-layout>

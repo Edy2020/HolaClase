@@ -36,6 +36,25 @@ class Profesor extends Model
         return $this->hasMany(Curso::class, 'profesor_id');
     }
 
+    /**
+     * Get the profesor's full name.
+     */
+    public function getNombreCompletoAttribute()
+    {
+        return "{$this->nombre} {$this->apellido}";
+    }
+
+    /**
+     * Get the profesor's age.
+     */
+    public function getEdadAttribute()
+    {
+        if (!$this->fecha_nacimiento) {
+            return null;
+        }
+        return $this->fecha_nacimiento->age;
+    }
+
     protected $casts = [
         'fecha_nacimiento' => 'date',
     ];

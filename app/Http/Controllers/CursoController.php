@@ -105,6 +105,7 @@ class CursoController extends Controller
             'profesor',
             'estudiantes',
             'asignaturas',
+            'notas',
             'eventos' => function ($query) {
                 $query->orderBy('fecha_inicio', 'asc');
             },

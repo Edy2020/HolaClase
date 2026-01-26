@@ -58,4 +58,12 @@ class Curso extends Model
     {
         return $this->hasMany(Prueba::class);
     }
+
+    /**
+     * Get the notas for this curso.
+     */
+    public function notas()
+    {
+        return $this->hasMany(Nota::class);
+    }
 }

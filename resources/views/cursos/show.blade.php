@@ -37,7 +37,7 @@
                 </p>
             </div>
             <div style="display: flex; gap: var(--spacing-sm);">
-                <a href="#" class="btn btn-accent" style="color: white;">
+                <a href="{{ route('attendance.create', ['curso_id' => $curso->id]) }}" class="btn btn-accent" style="color: white;">
                     <i class="fas fa-check"></i> Pasar Asistencia
                 </a>
                 <a href="{{ route('courses.edit', $curso) }}" class="btn btn-primary" style="color: white;">
@@ -368,6 +368,94 @@
                 <p style="color: var(--gray-600);">No hay asignaturas asignadas a este curso</p>
             </div>
         @endif
+    </div>
+
+    <!-- Grades Management Section -->
+    <div class="card" style="margin-bottom: var(--spacing-xl);">
+        <div class="section-header">
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); display: flex; align-items: center; gap: var(--spacing-sm); margin: 0;">
+                <i class="fas fa-clipboard-list" style="color: var(--theme-color);"></i>
+                Gestión de Notas
+            </h3>
+            
+            <a href="{{ route('grades.create', ['curso_id' => $curso->id]) }}" class="btn btn-primary section-button" style="color: white;">
+                <i class="fas fa-plus"></i> Agregar Notas
+            </a>
+        </div>
+
+        <!-- Quick Stats -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
+            <div style="text-align: center; padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--theme-color);">
+                    {{ $curso->notas->count() }}
+                </div>
+                <div style="color: var(--gray-600); font-size: 0.875rem;">Total Notas</div>
+            </div>
+            <div style="text-align: center; padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">
+                    {{ $curso->notas->count() > 0 ? number_format($curso->notas->avg('nota'), 1) : 'N/A' }}
+                </div>
+                <div style="color: var(--gray-600); font-size: 0.875rem;">Promedio General</div>
+            </div>
+            <div style="text-align: center; padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent);">
+                    {{ $curso->notas->where('nota', '>=', 4.0)->count() }}
+                </div>
+                <div style="color: var(--gray-600); font-size: 0.875rem;">Aprobados</div>
+            </div>
+            <div style="text-align: center; padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--error);">
+                    {{ $curso->notas->where('nota', '<', 4.0)->count() }}
+                </div>
+                <div style="color: var(--gray-600); font-size: 0.875rem;">Reprobados</div>
+            </div>
+        </div>
+
+        <!-- Grades by Subject -->
+        @if($curso->asignaturas->count() > 0)
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
+                @foreach($curso->asignaturas as $asignatura)
+                    @php
+                        $notasAsignatura = $curso->notas->where('asignatura_id', $asignatura->id);
+                        $promedio = $notasAsignatura->count() > 0 ? $notasAsignatura->avg('nota') : null;
+                    @endphp
+                    <div style="padding: var(--spacing-md); border: 1px solid var(--gray-200); border-radius: var(--radius-md); transition: all 0.3s ease;" 
+                         onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'; this.style.transform='translateY(-2px)';" 
+                         onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)';">
+                        <h4 style="font-weight: 600; color: var(--gray-900); margin-bottom: var(--spacing-sm); font-size: 0.875rem;">
+                            {{ $asignatura->nombre }}
+                        </h4>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-sm);">
+                            <span style="color: var(--gray-600); font-size: 0.75rem;">
+                                <i class="fas fa-clipboard-check"></i> {{ $notasAsignatura->count() }} notas
+                            </span>
+                            @if($promedio)
+                                <span style="font-weight: 700; font-size: 1.125rem; color: {{ $promedio >= 6.0 ? 'var(--success)' : ($promedio >= 4.0 ? 'var(--warning)' : 'var(--error)') }};">
+                                    {{ number_format($promedio, 1) }}
+                                </span>
+                            @else
+                                <span style="color: var(--gray-400); font-size: 0.875rem;">Sin notas</span>
+                            @endif
+                        </div>
+                        <a href="{{ route('grades.create', ['curso_id' => $curso->id, 'asignatura_id' => $asignatura->id]) }}" 
+                           class="btn btn-sm btn-outline" style="width: 100%; font-size: 0.75rem;">
+                            <i class="fas fa-plus"></i> Agregar Notas
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <p style="text-align: center; color: var(--gray-500); padding: var(--spacing-lg); background: var(--gray-50); border-radius: var(--radius-md);">
+                <i class="fas fa-info-circle"></i> Agrega asignaturas al curso para poder registrar notas
+            </p>
+        @endif
+
+        <!-- View All Grades Link -->
+        <div style="text-align: center; margin-top: var(--spacing-md);">
+            <a href="{{ route('grades.reporte.curso', $curso) }}" class="btn btn-outline">
+                <i class="fas fa-chart-bar"></i> Ver Reporte Completo de Notas
+            </a>
+        </div>
     </div>
 
     <!-- Events and Tests Grid -->

@@ -297,6 +297,28 @@ class EstudianteController extends Controller
     }
 
     /**
+     * Update student status only (for quick status changes).
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $estudiante = Estudiante::findOrFail($id);
+
+        $validated = $request->validate([
+            'estado' => 'required|in:activo,inactivo,retirado',
+        ]);
+
+        $estudiante->update([
+            'estado' => $validated['estado'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Estado actualizado exitosamente',
+            'estado' => $estudiante->estado,
+        ]);
+    }
+
+    /**
      * Validate Chilean RUT.
      */
     private function validarRut($rut)

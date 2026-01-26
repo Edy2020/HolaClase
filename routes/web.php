@@ -53,6 +53,10 @@ Route::middleware('auth')->group(function () {
         'destroy' => 'students.destroy',
     ]);
 
+    // Quick status update for students
+    Route::patch('/estudiantes/{estudiante}/status', [App\Http\Controllers\EstudianteController::class, 'updateStatus'])->name('students.update-status');
+
+
 
     Route::resource('asignaturas', App\Http\Controllers\AsignaturaController::class)->names([
         'index' => 'subjects.index',

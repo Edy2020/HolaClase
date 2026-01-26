@@ -55,6 +55,13 @@ class ProfesorController extends Controller
         return redirect()->route('teachers.index')->with('success', 'Profesor creado exitosamente.');
     }
 
+    public function show($id)
+    {
+        $profesor = Profesor::with(['cursos.asignaturas', 'documentos'])->findOrFail($id);
+
+        return view('profesores.show', compact('profesor'));
+    }
+
     public function edit($id)
     {
         $profesor = Profesor::findOrFail($id);

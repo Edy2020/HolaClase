@@ -45,7 +45,9 @@ class AsignaturaController extends Controller
      */
     public function show(Asignatura $asignatura)
     {
-        //
+        $asignatura->load(['cursos.estudiantes', 'notas']);
+
+        return view('asignaturas.show', compact('asignatura'));
     }
 
     /**

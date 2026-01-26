@@ -29,4 +29,12 @@ class Asignatura extends Model
     {
         return $this->hasMany(Prueba::class);
     }
+
+    /**
+     * Get the notas for this asignatura.
+     */
+    public function notas()
+    {
+        return $this->hasMany(Nota::class);
+    }
 }
