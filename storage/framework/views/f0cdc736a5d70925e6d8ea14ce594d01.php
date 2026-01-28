@@ -31,18 +31,20 @@
 
     <!-- Hero Header -->
     <div class="hero-header"
-        style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg);">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
-                    <i class="fas fa-calendar-check"></i> Control de Asistencia
-                </h2>
-                <p style="font-size: 1rem; opacity: 0.95; margin: 0;">
-                    Gestiona y monitorea la asistencia de los estudiantes
-                </p>
-            </div>
-            <a href="<?php echo e(route('attendance.create')); ?>" class="btn" style="background: #10b981; color: white; border: none;">
-                <i class="fas fa-plus"></i> Tomar Asistencia
+        style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
+                <i class="fas fa-calendar-check"></i> Asistencia
+            </h2>
+            <p class="hero-description" style="font-size: 1rem; opacity: 0.95; margin: 0;">
+                Gestiona y monitorea la asistencia de los estudiantes
+            </p>
+        </div>
+        <div class="hero-actions">
+            <a href="<?php echo e(route('attendance.create')); ?>" class="btn btn-primary btn-new-attendance"
+                style="background: white; color: var(--theme-dark); text-decoration: none;">
+                <span><i class="fas fa-plus"></i></span>
+                <span class="btn-text">Tomar Asistencia</span>
             </a>
         </div>
     </div>
@@ -53,24 +55,26 @@
             /* Hero header responsive */
             .hero-header {
                 flex-direction: column !important;
-                gap: var(--spacing-md) !important;
+                gap: var(--spacing-lg) !important;
+                padding: var(--spacing-lg) !important;
                 text-align: center !important;
-            }
-
-            .hero-header > div:first-child {
-                width: 100%;
             }
 
             .hero-header h2 {
                 font-size: 1.5rem !important;
             }
 
-            .hero-header p {
+            .hero-description {
                 font-size: 0.875rem !important;
             }
 
-            .hero-header .btn {
+            .hero-actions {
+                width: 100%;
+            }
+
+            .btn-new-attendance {
                 width: 100% !important;
+                justify-content: center !important;
             }
 
             /* Statistics grid - 2 columns on mobile */
@@ -97,24 +101,80 @@
                 font-size: 0.75rem !important;
             }
 
-            /* Hide table on mobile, show cards */
+            /* Hide desktop filter card on mobile */
+            .desktop-filters-card {
+                display: none !important;
+            }
+
+            /* Show mobile filter button */
+            .mobile-filter-button {
+                display: flex !important;
+            }
+
+            /* Hide table on mobile, show compact table */
             .attendance-table-container {
                 display: none !important;
             }
 
-            .mobile-attendance-cards {
+            .mobile-attendance-table {
                 display: block !important;
             }
         }
 
-        /* Desktop: Show table, hide cards */
+        /* Desktop: Show filter card, hide mobile button */
         @media (min-width: 769px) {
-            .mobile-attendance-cards {
+            .mobile-filter-button {
+                display: none !important;
+            }
+
+            .mobile-attendance-table {
                 display: none !important;
             }
 
             .attendance-table-container {
                 display: block !important;
+            }
+        }
+
+        /* Filter Modal Styles */
+        .filter-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .filter-modal.active {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .filter-modal-content {
+            background: white;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
             }
         }
     </style>
@@ -143,8 +203,135 @@
         </div>
     </div>
 
-    <!-- Filters -->
-    <div class="card mb-xl" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+    <!-- Mobile Filter Button (hidden on desktop) -->
+    <div class="mobile-filter-button" style="display: none; margin-bottom: var(--spacing-lg);">
+        <button type="button" onclick="openFilterModal()" class="btn btn-primary"
+            style="width: 100%; height: 48px; border-radius: var(--radius-lg); position: relative; display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); color: white;">
+            <i class="fas fa-search"></i>
+            <span>Buscar y Filtrar</span>
+            <span id="activeFiltersBadge" class="filter-badge" style="display: none;">0</span>
+        </button>
+    </div>
+
+    <!-- Filter Modal (Mobile) -->
+    <div id="filterModal" class="filter-modal" onclick="if(event.target === this) closeFilterModal()">
+        <div class="filter-modal-content">
+            <div style="position: sticky; top: 0; background: white; z-index: 10; border-bottom: 1px solid var(--gray-200); padding: var(--spacing-lg);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                    <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--gray-900);">
+                        <i class="fas fa-search" style="color: var(--theme-color); margin-right: var(--spacing-sm);"></i>
+                        Buscar y Filtrar
+                    </h3>
+                    <button type="button" onclick="closeFilterModal()" 
+                        style="width: 32px; height: 32px; border-radius: 50%; background: var(--gray-100); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;"
+                        onmouseover="this.style.background='var(--gray-200)'"
+                        onmouseout="this.style.background='var(--gray-100)'">
+                        <i class="fas fa-times" style="color: var(--gray-600);"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <form method="GET" action="<?php echo e(route('attendance.index')); ?>" id="mobileFilterForm" style="padding: var(--spacing-lg);">
+                <!-- Curso Filter -->
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Curso</label>
+                    <div style="position: relative;">
+                        <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <select name="curso_id" id="mobileCursoFilter" class="form-select" 
+                            style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                            onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                            onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                            <option value="">Todos los cursos</option>
+                            <?php $__currentLoopData = $cursos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $curso): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($curso->id); ?>" <?php echo e(request('curso_id') == $curso->id ? 'selected' : ''); ?>><?php echo e($curso->nombre); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Asignatura Filter -->
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Asignatura</label>
+                    <div style="position: relative;">
+                        <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <select name="asignatura_id" id="mobileAsignaturaFilter" class="form-select" 
+                            style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                            onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                            onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                            <option value="">Todas las asignaturas</option>
+                            <?php $__currentLoopData = $asignaturas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $asignatura): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($asignatura->id); ?>" <?php echo e(request('asignatura_id') == $asignatura->id ? 'selected' : ''); ?>><?php echo e($asignatura->nombre); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Fecha Desde Filter -->
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Desde</label>
+                    <div style="position: relative;">
+                        <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <input type="date" name="fecha_desde" id="mobileFechaDesde" class="form-control" value="<?php echo e(request('fecha_desde')); ?>"
+                            style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem;"
+                            onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                            onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                    </div>
+                </div>
+
+                <!-- Fecha Hasta Filter -->
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Hasta</label>
+                    <div style="position: relative;">
+                        <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <input type="date" name="fecha_hasta" id="mobileFechaHasta" class="form-control" value="<?php echo e(request('fecha_hasta')); ?>"
+                            style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem;"
+                            onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                            onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                    </div>
+                </div>
+
+                <!-- Estado Filter -->
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Estado</label>
+                    <div style="position: relative;">
+                        <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <select name="estado" id="mobileEstadoFilter" class="form-select" 
+                            style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                            onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                            onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                            <option value="">Todos</option>
+                            <option value="presente" <?php echo e(request('estado') == 'presente' ? 'selected' : ''); ?>>Presente</option>
+                            <option value="ausente" <?php echo e(request('estado') == 'ausente' ? 'selected' : ''); ?>>Ausente</option>
+                            <option value="tarde" <?php echo e(request('estado') == 'tarde' ? 'selected' : ''); ?>>Tarde</option>
+                            <option value="justificado" <?php echo e(request('estado') == 'justificado' ? 'selected' : ''); ?>>Justificado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="position: sticky; bottom: 0; background: white; padding: var(--spacing-lg) 0; border-top: 1px solid var(--gray-200); margin-top: var(--spacing-lg); display: flex; gap: var(--spacing-sm);">
+                    <button type="button" onclick="clearFilters()" class="btn btn-outline" style="flex: 1; height: 44px; border-radius: var(--radius-lg); font-weight: 600;">
+                        Limpiar
+                    </button>
+                    <button type="button" onclick="applyFilters()" class="btn btn-primary" style="flex: 1; color: white; height: 44px; border-radius: var(--radius-lg); font-weight: 600;">
+                        Aplicar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Desktop Filters Card (hidden on mobile) -->
+    <div class="card desktop-filters-card mb-xl" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
         <div class="card-body" style="padding: var(--spacing-lg);">
             <form method="GET" action="<?php echo e(route('attendance.index')); ?>">
                 <div class="grid grid-cols-5" style="gap: var(--spacing-md); align-items: end;">
@@ -244,47 +431,53 @@
         </div>
         <div class="card-body">
             <?php if($asistencias->count() > 0): ?>
-                <!-- Mobile Cards View (hidden on desktop) -->
-                <div class="mobile-attendance-cards" style="display: none;">
-                    <?php $__currentLoopData = $asistencias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $asistencia): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <div class="card mb-md" style="padding: var(--spacing-md);">
-                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 700; color: var(--gray-900); font-size: 1rem; margin-bottom: var(--spacing-xs);"><?php echo e($asistencia->estudiante->nombre); ?> <?php echo e($asistencia->estudiante->apellido); ?></div>
-                                    <div style="font-size: 0.875rem; color: var(--gray-600);"><?php echo e($asistencia->fecha->format('d/m/Y')); ?></div>
-                                </div>
-                                <span class="badge badge-<?php echo e($asistencia->estado_color); ?>">
-                                    <?php echo e($asistencia->estado_label); ?>
-
-                                </span>
-                            </div>
-                            
-                            <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-sm); margin-bottom: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                                <div>
-                                    <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Curso</div>
-                                    <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;"><?php echo e($asistencia->curso->nombre); ?></div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Asignatura</div>
-                                    <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;"><?php echo e($asistencia->asignatura->nombre); ?></div>
-                                </div>
-                                <?php if($asistencia->notas): ?>
-                                    <div>
-                                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Notas</div>
-                                        <div style="color: var(--gray-700); font-size: 0.875rem;"><?php echo e($asistencia->notas); ?></div>
+                <!-- Mobile Table View (hidden on desktop) -->
+                <div class="mobile-attendance-table" style="display: none;">
+                    <div class="mobile-table-container" style="background: white; border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <?php $__currentLoopData = $asistencias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $asistencia): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <div class="asistencia-item mobile-table-row" 
+                                style="border-bottom: 1px solid var(--gray-200); padding: var(--spacing-sm) var(--spacing-md); transition: background 0.2s;"
+                                data-curso-id="<?php echo e($asistencia->curso_id); ?>"
+                                data-asignatura-id="<?php echo e($asistencia->asignatura_id); ?>"
+                                data-fecha="<?php echo e($asistencia->fecha->format('Y-m-d')); ?>"
+                                data-estado="<?php echo e($asistencia->estado); ?>"
+                                onmouseover="this.style.background='var(--gray-50)'"
+                                onmouseout="this.style.background='white'">
+                                
+                                <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                                    <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0;">
+                                        <i class="fas fa-calendar-check" style="font-size: 0.875rem;"></i>
                                     </div>
-                                <?php endif; ?>
-                            </div>
+                                    
+                                    <div style="flex: 1; min-width: 0;">
+                                        <div style="display: flex; align-items: center; gap: var(--spacing-xs); margin-bottom: 2px;">
+                                            <span style="font-weight: 700; color: var(--gray-900); font-size: 0.9375rem; line-height: 1.3;"><?php echo e($asistencia->estudiante->nombre); ?> <?php echo e($asistencia->estudiante->apellido); ?></span>
+                                            <span class="badge badge-<?php echo e($asistencia->estado_color); ?>" style="font-size: 0.625rem; padding: 2px 6px;"><?php echo e($asistencia->estado_label); ?></span>
+                                        </div>
+                                        <div style="font-size: 0.75rem; color: var(--gray-600);">
+                                            <i class="fas fa-calendar" style="font-size: 0.625rem;"></i> <?php echo e($asistencia->fecha->format('d/m/Y')); ?>
 
-                            <form action="<?php echo e(route('attendance.destroy', $asistencia)); ?>" method="POST" onsubmit="return confirm('¿Eliminar este registro?');">
-                                <?php echo csrf_field(); ?>
-                                <?php echo method_field('DELETE'); ?>
-                                <button type="submit" class="btn btn-outline btn-sm" style="width: 100%; color: var(--error); border-color: var(--error);">
-                                    <i class="fas fa-trash"></i> Eliminar Registro
-                                </button>
-                            </form>
-                        </div>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <span style="margin: 0 var(--spacing-xs);">•</span>
+                                            <i class="fas fa-graduation-cap" style="font-size: 0.625rem;"></i> <?php echo e($asistencia->curso->nombre); ?>
+
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="flex-shrink: 0;" onclick="event.stopPropagation();">
+                                        <form action="<?php echo e(route('attendance.destroy', $asistencia)); ?>" method="POST" style="margin: 0;" onsubmit="return confirm('¿Eliminar este registro?');">
+                                            <?php echo csrf_field(); ?>
+                                            <?php echo method_field('DELETE'); ?>
+                                            <button type="submit" 
+                                                style="width: 32px; height: 32px; border-radius: var(--radius-md); background: white; color: var(--error); border: 1px solid var(--error); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem;"
+                                                title="Eliminar">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </div>
                 </div>
 
                 <!-- Desktop Table View (hidden on mobile) -->
@@ -303,7 +496,11 @@
                         </thead>
                         <tbody>
                             <?php $__currentLoopData = $asistencias; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $asistencia): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <tr>
+                                <tr class="asistencia-item"
+                                    data-curso-id="<?php echo e($asistencia->curso_id); ?>"
+                                    data-asignatura-id="<?php echo e($asistencia->asignatura_id); ?>"
+                                    data-fecha="<?php echo e($asistencia->fecha->format('Y-m-d')); ?>"
+                                    data-estado="<?php echo e($asistencia->estado); ?>">
                                     <td><?php echo e($asistencia->fecha->format('d/m/Y')); ?></td>
                                     <td><?php echo e($asistencia->curso->nombre); ?></td>
                                     <td><?php echo e($asistencia->asignatura->nombre); ?></td>
@@ -351,6 +548,56 @@
             <?php endif; ?>
         </div>
     </div>
+
+    <script>
+        // Filter Modal Functions
+        function openFilterModal() {
+            const modal = document.getElementById('filterModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFilterModal() {
+            const modal = document.getElementById('filterModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Update active filters badge
+        function updateFiltersBadge() {
+            const badge = document.getElementById('activeFiltersBadge');
+            let activeCount = 0;
+
+            const params = new URLSearchParams(window.location.search);
+            const filters = ['curso_id', 'asignatura_id', 'fecha_desde', 'fecha_hasta', 'estado'];
+            
+            filters.forEach(filter => {
+                if (params.get(filter)) activeCount++;
+            });
+
+            if (activeCount > 0) {
+                badge.textContent = activeCount;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Apply filters - submit the form
+        function applyFilters() {
+            const form = document.getElementById('mobileFilterForm');
+            closeFilterModal();
+            form.submit();
+        }
+
+        // Clear filters - redirect to index without params
+        function clearFilters() {
+            window.location.href = '<?php echo e(route('attendance.index')); ?>';
+        }
+
+        // Initialize badge on page load
+        updateFiltersBadge();
+    </script>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>

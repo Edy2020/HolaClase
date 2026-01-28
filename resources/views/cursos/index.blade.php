@@ -61,7 +61,7 @@
                 display: none !important;
             }
 
-            .mobile-cards {
+            .mobile-table {
                 display: block !important;
             }
 
@@ -87,7 +87,7 @@
 
         /* Desktop: Show table, hide cards */
         @media (min-width: 769px) {
-            .mobile-cards {
+            .mobile-table {
                 display: none !important;
             }
 
@@ -347,59 +347,73 @@
         </div>
     </div>
 
-    <!-- Mobile Cards View (hidden on desktop) -->
-    <div class="mobile-cards" style="display: none;">
-        @forelse($cursos as $curso)
-            <div class="card mb-sm curso-item" style="cursor: pointer; padding: var(--spacing-sm);" onclick="window.location='{{ route('courses.show', $curso->id) }}'" 
-                data-search="{{ strtolower($curso->nombre . ' ' . $curso->nivel) }}"
-                data-nivel="{{ $curso->nivel }}"
-                data-profesor="{{ $curso->profesor_id ?? '' }}">
-                <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-sm);">
-                    <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.875rem; flex-shrink: 0;">
-                        @if($curso->nivel === 'pre-kinder' || $curso->nivel === 'kinder')
-                            {{ strtoupper(substr($curso->nivel, 0, 2)) }}{{ $curso->letra }}
-                        @else
-                            {{ $curso->grado }}{{ $curso->letra }}
-                        @endif
-                    </div>
-                    <div style="flex: 1; min-width: 0;">
-                        <div style="font-weight: 700; color: var(--gray-900); font-size: 1rem; margin-bottom: 2px;">{{ $curso->nombre }}</div>
-                        <div style="font-size: 0.8125rem; color: var(--gray-600); display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
-                            @if($curso->profesor)
-                                <span style="display: flex; align-items: center; gap: 4px;">
-                                    <i class="fas fa-user" style="font-size: 0.75rem;"></i>
-                                    {{ $curso->profesor->nombre }} {{ $curso->profesor->apellido }}
-                                </span>
-                                <span style="color: var(--gray-400);">•</span>
+    <!-- Mobile Table View (hidden on desktop) -->
+    <div class="mobile-table" style="display: none;">
+        <div class="mobile-table-container" style="background: white; border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            @forelse($cursos as $curso)
+                <div class="curso-item mobile-table-row" 
+                    style="border-bottom: 1px solid var(--gray-200); padding: var(--spacing-sm) var(--spacing-md); cursor: pointer; transition: background 0.2s;"
+                    onclick="window.location='{{ route('courses.show', $curso->id) }}'" 
+                    data-search="{{ strtolower($curso->nombre . ' ' . $curso->nivel) }}"
+                    data-nivel="{{ $curso->nivel }}"
+                    data-profesor="{{ $curso->profesor_id ?? '' }}"
+                    onmouseover="this.style.background='var(--gray-50)'"
+                    onmouseout="this.style.background='white'">
+                    
+                    <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                        <!-- Avatar -->
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.75rem; flex-shrink: 0;">
+                            @if($curso->nivel === 'pre-kinder' || $curso->nivel === 'kinder')
+                                {{ strtoupper(substr($curso->nivel, 0, 2)) }}{{ $curso->letra }}
+                            @else
+                                {{ $curso->grado }}{{ $curso->letra }}
                             @endif
-                            <span style="display: flex; align-items: center; gap: 4px;">
-                                <i class="fas fa-users" style="font-size: 0.75rem; color: var(--theme-color);"></i>
-                                {{ $curso->estudiantes_count ?? 0 }}
-                            </span>
+                        </div>
+                        
+                        <!-- Course Info -->
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 700; color: var(--gray-900); font-size: 0.9375rem; line-height: 1.3;">{{ $curso->nombre }}</div>
+                            <div style="font-size: 0.75rem; color: var(--gray-600); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 2px;">
+                                @if($curso->profesor)
+                                    <span style="display: flex; align-items: center; gap: 3px;">
+                                        <i class="fas fa-user" style="font-size: 0.625rem;"></i>
+                                        {{ $curso->profesor->nombre }}
+                                    </span>
+                                    <span style="color: var(--gray-400);">•</span>
+                                @endif
+                                <span style="display: flex; align-items: center; gap: 3px;">
+                                    <i class="fas fa-users" style="font-size: 0.625rem; color: var(--theme-color);"></i>
+                                    {{ $curso->estudiantes_count ?? 0 }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div style="display: flex; gap: 4px; flex-shrink: 0;" onclick="event.stopPropagation();">
+                            <a href="{{ route('courses.edit', $curso->id) }}" 
+                                style="width: 32px; height: 32px; border-radius: var(--radius-md); background: var(--theme-color); color: white; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.75rem;"
+                                title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route('courses.destroy', $curso->id) }}" method="POST" style="margin: 0;" onsubmit="return confirm('¿Está seguro de eliminar este curso?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                    style="width: 32px; height: 32px; border-radius: var(--radius-md); background: white; color: var(--error); border: 1px solid var(--error); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem;"
+                                    title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
-                
-                <div style="display: flex; gap: var(--spacing-xs);" onclick="event.stopPropagation();">
-                    <a href="{{ route('courses.edit', $curso->id) }}" class="btn btn-primary btn-sm" style="flex: 1; color: white; font-size: 0.8125rem; padding: 6px 12px;">
-                        <i class="fas fa-edit"></i> Editar
-                    </a>
-                    <form action="{{ route('courses.destroy', $curso->id) }}" method="POST" style="flex: 1;" onsubmit="return confirm('¿Está seguro de eliminar este curso?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-outline btn-sm" style="width: 100%; color: var(--error); border-color: var(--error); font-size: 0.8125rem; padding: 6px 12px;">
-                            <i class="fas fa-trash"></i> Eliminar
-                        </button>
-                    </form>
+            @empty
+                <div style="padding: var(--spacing-xl); text-align: center; color: var(--gray-500);">
+                    <i class="fas fa-graduation-cap" style="font-size: 2rem; margin-bottom: var(--spacing-sm); opacity: 0.3;"></i>
+                    <p style="margin: 0; font-size: 0.9375rem;">No hay cursos registrados</p>
                 </div>
-            </div>
-        @empty
-            <div class="card text-center" style="padding: var(--spacing-2xl);">
-                <i class="fas fa-graduation-cap" style="font-size: 3rem; margin-bottom: var(--spacing-md); opacity: 0.3; color: var(--gray-300);"></i>
-                <p style="margin: 0; font-size: 1.125rem; color: var(--gray-500);">No hay cursos registrados</p>
-                <p style="margin: var(--spacing-sm) 0 0 0; font-size: 0.875rem; color: var(--gray-500);">Haz clic en "Nuevo Curso" para comenzar</p>
-            </div>
-        @endforelse
+            @endforelse
+        </div>
     </div>
 
     <!-- Desktop Table View (hidden on mobile) -->
@@ -616,11 +630,25 @@
         }
         
         function clearFilters() {
+            // Clear mobile filters
+            const searchInputMobile = document.getElementById('searchInputMobile');
+            const nivelFilterMobile = document.getElementById('nivelFilterMobile');
+            const profesorFilterMobile = document.getElementById('profesorFilterMobile');
+            
+            if (searchInputMobile) searchInputMobile.value = '';
             if (nivelFilterMobile) nivelFilterMobile.value = '';
             if (profesorFilterMobile) profesorFilterMobile.value = '';
+            
+            // Clear desktop filters
+            const searchInput = document.getElementById('searchInput');
+            const nivelFilter = document.getElementById('nivelFilter');
+            const profesorFilter = document.getElementById('profesorFilter');
+            
+            if (searchInput) searchInput.value = '';
             if (nivelFilter) nivelFilter.value = '';
             if (profesorFilter) profesorFilter.value = '';
             
+            // Apply the cleared filters
             filterCursos();
             closeFiltersModal();
         }

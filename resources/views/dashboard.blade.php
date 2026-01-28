@@ -231,7 +231,7 @@
 
         .speed-dial-label {
             background: white;
-            color: var(--gray-900);
+            color: var(--theme-color);
             padding: 10px 16px;
             border-radius: 24px;
             font-size: 1rem;

@@ -56,30 +56,146 @@
                 display: inline !important;
             }
 
-            /* Hide table on mobile, show cards */
+            /* Hide filters card on mobile */
+            .filters-card {
+                display: none !important;
+            }
+
+            /* Show mobile filter button */
+            .mobile-filter-button {
+                display: block !important;
+            }
+
+            /* Hide table on mobile, show table */
             .table-container {
                 display: none !important;
             }
 
-            .mobile-cards {
+            .mobile-table {
                 display: block !important;
             }
         }
 
-        /* Desktop: Show table, hide cards */
+        /* Desktop: Show table, hide mobile elements */
         @media (min-width: 769px) {
-            .mobile-cards {
+            .mobile-table {
                 display: none !important;
             }
 
             .table-container {
                 display: block !important;
             }
+
+            .mobile-filter-button,
+            .filters-modal {
+                display: none !important;
+            }
+        }
+
+        /* Filter Badge */
+        .filter-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--error);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Filters Modal */
+        .filters-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .filters-modal.active {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .filters-modal-content {
+            background: white;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            width: 100%;
+            max-height: 70vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .filters-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1;
+        }
+
+        .filters-modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            border: none;
+            color: var(--gray-600);
+            font-size: 1.125rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .filters-modal-close:hover {
+            background: var(--gray-200);
+            color: var(--gray-900);
+        }
+
+        .filters-modal-body {
+            padding: var(--spacing-lg);
+        }
+
+        .filters-modal-footer {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: var(--spacing-sm);
+            position: sticky;
+            bottom: 0;
+            background: white;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
         }
     </style>
 
     <!-- Search and Filters -->
-    <div class="card mb-xl" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+    <div class="card mb-xl filters-card" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
         <div class="card-body" style="padding: var(--spacing-lg);">
             <div class="grid" style="grid-template-columns: 2fr 1fr; gap: var(--spacing-md); align-items: center;">
                 <!-- Search Input -->
@@ -104,69 +220,115 @@
                         onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
                         onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                         <option value="">Todos los niveles</option>
-                        @foreach($profesores->unique('nivel_ensenanza')->filter(fn($p) => $p->nivel_ensenanza) as $profesor)
-                            <option value="{{ $profesor->nivel_ensenanza }}">{{ $profesor->nivel_ensenanza }}</option>
-                        @endforeach
+                        <option value="Básica">Básica</option>
+                        <option value="Media">Media</option>
                     </select>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Mobile Cards View (hidden on desktop) -->
-    <div class="mobile-cards" style="display: none;">
-        @forelse($profesores as $profesor)
-            <div class="card mb-md profesor-item" style="cursor: pointer;" onclick="window.location='{{ route('teachers.show', $profesor->id) }}'" 
-                data-search="{{ strtolower($profesor->nombre . ' ' . $profesor->apellido . ' ' . $profesor->rut) }}"
-                data-nivel="{{ $profesor->nivel_ensenanza ?? '' }}">
-                <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-md);">
-                    <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem;">
-                        {{ strtoupper(substr($profesor->nombre, 0, 1) . substr($profesor->apellido, 0, 1)) }}
-                    </div>
-                    <div style="flex: 1;">
-                        <div style="font-weight: 700; color: var(--gray-900); font-size: 1.125rem;">{{ $profesor->nombre }} {{ $profesor->apellido }}</div>
-                        <div style="font-size: 0.875rem; color: var(--gray-500);">{{ $profesor->rut }}</div>
-                    </div>
+    <!-- Mobile: Standalone Filter Button -->
+    <div class="mobile-filter-button" style="display: none; margin-bottom: var(--spacing-lg);">
+        <button class="btn btn-primary" onclick="openFiltersModal()" 
+            style="width: 100%; height: 48px; border-radius: var(--radius-lg); position: relative; display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); color: white;">
+            <i class="fas fa-search"></i>
+            <span>Buscar y Filtrar</span>
+            <span id="filterBadgeMobile" class="filter-badge" style="display: none;">0</span>
+        </button>
+    </div>
+
+    <!-- Filters Modal (Mobile only) -->
+    <div id="filtersModal" class="filters-modal" onclick="closeFiltersModal()">
+        <div class="filters-modal-content" onclick="event.stopPropagation()">
+            <div class="filters-modal-header">
+                <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--gray-900);">
+                    <i class="fas fa-search" style="color: var(--theme-color); margin-right: var(--spacing-sm);"></i>
+                    Buscar y Filtrar
+                </h3>
+                <button onclick="closeFiltersModal()" class="filters-modal-close" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="filters-modal-body">
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">
+                        <i class="fas fa-search" style="color: var(--theme-color);"></i> Buscar
+                    </label>
+                    <input type="text" id="searchInputMobile" class="form-input" 
+                        placeholder="Buscar profesores..." 
+                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;">
                 </div>
-                
-                <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-md); margin-bottom: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Email</div>
-                        <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem; word-break: break-word;">{{ $profesor->email ?? 'Sin email' }}</div>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Nivel</div>
-                        <div>
-                            @if($profesor->nivel_ensenanza)
-                                <span class="badge badge-primary">{{ $profesor->nivel_ensenanza }}</span>
-                            @else
-                                <span class="badge">Sin nivel</span>
-                            @endif
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">
+                        <i class="fas fa-layer-group" style="color: var(--theme-color);"></i> Nivel
+                    </label>
+                    <select id="nivelFilterMobile" class="form-select" 
+                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;">
+                        <option value="">Todos los niveles</option>
+                        <option value="Básica">Básica</option>
+                        <option value="Media">Media</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filters-modal-footer">
+                <button onclick="clearFilters()" class="btn btn-outline" style="flex: 1;">Limpiar</button>
+                <button onclick="applyFilters()" class="btn btn-primary" style="flex: 1; color: white;">Aplicar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Table View (hidden on desktop) -->
+    <div class="mobile-table" style="display: none;">
+        <div class="mobile-table-container" style="background: white; border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            @forelse($profesores as $profesor)
+                <div class="profesor-item mobile-table-row" 
+                    style="border-bottom: 1px solid var(--gray-200); padding: var(--spacing-sm) var(--spacing-md); cursor: pointer; transition: background 0.2s;"
+                    onclick="window.location='{{ route('teachers.show', $profesor->id) }}'" 
+                    data-search="{{ strtolower($profesor->nombre . ' ' . $profesor->apellido . ' ' . $profesor->rut) }}"
+                    data-nivel="{{ $profesor->nivel_ensenanza ?? '' }}"
+                    onmouseover="this.style.background='var(--gray-50)'"
+                    onmouseout="this.style.background='white'">
+                    
+                    <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.75rem; flex-shrink: 0;">
+                            {{ strtoupper(substr($profesor->nombre, 0, 1) . substr($profesor->apellido, 0, 1)) }}
+                        </div>
+                        
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 700; color: var(--gray-900); font-size: 0.9375rem; line-height: 1.3;">{{ $profesor->nombre }} {{ $profesor->apellido }}</div>
+                            <div style="font-size: 0.75rem; color: var(--gray-600); margin-top: 2px;">
+                                <i class="fas fa-envelope" style="font-size: 0.625rem;"></i> {{ $profesor->email ?? 'Sin email' }}
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 4px; flex-shrink: 0;" onclick="event.stopPropagation();">
+                            <a href="{{ route('teachers.edit', $profesor->id) }}" 
+                                style="width: 32px; height: 32px; border-radius: var(--radius-md); background: var(--theme-color); color: white; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.75rem;"
+                                title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route('teachers.destroy', $profesor->id) }}" method="POST" style="margin: 0;" onsubmit="return confirm('¿Está seguro de eliminar este profesor?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                    style="width: 32px; height: 32px; border-radius: var(--radius-md); background: white; color: var(--error); border: 1px solid var(--error); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem;"
+                                    title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
-
-                <div style="display: flex; gap: var(--spacing-sm);" onclick="event.stopPropagation();">
-                    <a href="{{ route('teachers.edit', $profesor->id) }}" class="btn btn-primary btn-sm" style="flex: 1; color: white;">
-                        <i class="fas fa-edit"></i> Editar
-                    </a>
-                    <form action="{{ route('teachers.destroy', $profesor->id) }}" method="POST" style="flex: 1;" onsubmit="return confirm('¿Está seguro de eliminar este profesor?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-outline btn-sm" style="width: 100%; color: var(--error); border-color: var(--error);">
-                            <i class="fas fa-trash"></i> Eliminar
-                        </button>
-                    </form>
+            @empty
+                <div style="padding: var(--spacing-xl); text-align: center; color: var(--gray-500);">
+                    <i class="fas fa-chalkboard-teacher" style="font-size: 2rem; margin-bottom: var(--spacing-sm); opacity: 0.3;"></i>
+                    <p style="margin: 0; font-size: 0.9375rem;">No hay profesores registrados</p>
                 </div>
-            </div>
-        @empty
-            <div class="card text-center" style="padding: var(--spacing-2xl);">
-                <i class="fas fa-chalkboard-teacher" style="font-size: 3rem; margin-bottom: var(--spacing-md); opacity: 0.3; color: var(--gray-300);"></i>
-                <p style="margin: 0; font-size: 1.125rem; color: var(--gray-500);">No hay profesores registrados</p>
-                <p style="margin: var(--spacing-sm) 0 0 0; font-size: 0.875rem; color: var(--gray-500);">Haz clic en "Nuevo Profesor" para comenzar</p>
-            </div>
-        @endforelse
+            @endforelse
+        </div>
     </div>
+
 
     <!-- Desktop Table View (hidden on mobile) -->
     <div class="table-container">
@@ -252,21 +414,22 @@
     </div>
 
     <script>
-        // Real-time search and filter functionality
         const searchInput = document.getElementById('searchInput');
+        const searchInputMobile = document.getElementById('searchInputMobile');
         const nivelFilter = document.getElementById('nivelFilter');
+        const nivelFilterMobile = document.getElementById('nivelFilterMobile');
         const noResults = document.getElementById('noResults');
+        const filterBadge = document.getElementById('filterBadgeMobile');
         
         function filterProfesores() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const selectedNivel = nivelFilter.value;
+            const searchTerm = (searchInput?.value || searchInputMobile?.value || '').toLowerCase();
+            const selectedNivel = nivelFilter?.value || nivelFilterMobile?.value || '';
             const items = document.querySelectorAll('.profesor-item');
             let visibleCount = 0;
             
             items.forEach(item => {
                 const searchText = item.dataset.search || '';
                 const nivel = item.dataset.nivel || '';
-                
                 const matchesSearch = searchText.includes(searchTerm);
                 const matchesNivel = !selectedNivel || nivel === selectedNivel;
                 
@@ -278,10 +441,86 @@
                 }
             });
             
-            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+            if (noResults) {
+                noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+            updateFilterBadge();
         }
         
-        searchInput.addEventListener('input', filterProfesores);
-        nivelFilter.addEventListener('change', filterProfesores);
+        function updateFilterBadge() {
+            const nivelValue = nivelFilterMobile?.value || '';
+            const activeFilters = nivelValue ? 1 : 0;
+            if (filterBadge) {
+                filterBadge.textContent = activeFilters;
+                filterBadge.style.display = activeFilters > 0 ? 'flex' : 'none';
+            }
+        }
+        
+        // Sync search and filters
+        if (searchInput && searchInputMobile) {
+            searchInput.addEventListener('input', () => {
+                searchInputMobile.value = searchInput.value;
+                filterProfesores();
+            });
+            searchInputMobile.addEventListener('input', () => {
+                searchInput.value = searchInputMobile.value;
+                filterProfesores();
+            });
+        }
+        if (nivelFilter) nivelFilter.addEventListener('change', filterProfesores);
+        
+        // Modal functions
+        function openFiltersModal() {
+            const modal = document.getElementById('filtersModal');
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeFiltersModal() {
+            const modal = document.getElementById('filtersModal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+        
+        function applyFilters() {
+            if (nivelFilter && nivelFilterMobile) {
+                nivelFilter.value = nivelFilterMobile.value;
+            }
+            filterProfesores();
+            closeFiltersModal();
+        }
+        
+        function clearFilters() {
+            // Clear mobile filters
+            const searchInputMobile = document.getElementById('searchInputMobile');
+            const nivelFilterMobile = document.getElementById('nivelFilterMobile');
+            
+            if (searchInputMobile) searchInputMobile.value = '';
+            if (nivelFilterMobile) nivelFilterMobile.value = '';
+            
+            // Clear desktop filters
+            const searchInput = document.getElementById('searchInput');
+            const nivelFilter = document.getElementById('nivelFilter');
+            
+            if (searchInput) searchInput.value = '';
+            if (nivelFilter) nivelFilter.value = '';
+            
+            // Apply the cleared filters
+            filterProfesores();
+            closeFiltersModal();
+        }
+        
+        // Close on escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeFiltersModal();
+            }
+        });
+        
+        updateFilterBadge();
     </script>
 </x-app-layout>

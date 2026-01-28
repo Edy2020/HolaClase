@@ -56,33 +56,148 @@
                 display: inline !important;
             }
 
-            /* Hide table on mobile, show cards */
+            /* Hide filters card on mobile */
+            .filters-card {
+                display: none !important;
+            }
+
+            /* Show mobile filter button */
+            .mobile-filter-button {
+                display: block !important;
+            }
+
+            /* Hide table on mobile, show table */
             .table-container {
                 display: none !important;
             }
 
-            .mobile-cards {
+            .mobile-table {
                 display: block !important;
             }
         }
 
-        /* Desktop: Show table, hide cards */
+        /* Desktop: Show table, hide mobile elements */
         @media (min-width: 769px) {
-            .mobile-cards {
+            .mobile-table {
                 display: none !important;
             }
 
             .table-container {
                 display: block !important;
             }
+
+            .mobile-filter-button,
+            .filters-modal {
+                display: none !important;
+            }
+        }
+
+        /* Filter Badge */
+        .filter-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--error);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Filters Modal */
+        .filters-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .filters-modal.active {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .filters-modal-content {
+            background: white;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            width: 100%;
+            max-height: 70vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .filters-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1;
+        }
+
+        .filters-modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            border: none;
+            color: var(--gray-600);
+            font-size: 1.125rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .filters-modal-close:hover {
+            background: var(--gray-200);
+            color: var(--gray-900);
+        }
+
+        .filters-modal-body {
+            padding: var(--spacing-lg);
+        }
+
+        .filters-modal-footer {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: var(--spacing-sm);
+            position: sticky;
+            bottom: 0;
+            background: white;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
         }
     </style>
 
     <!-- Search and Filters -->
-    <div class="card mb-xl" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+    <div class="card mb-xl filters-card" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
         <div class="card-body" style="padding: var(--spacing-lg);">
             <div class="grid" style="grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-md); align-items: center;">
-                <!-- Search Input -->
                 <div class="form-group mb-0" style="position: relative;">
                     <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1.125rem;">
                         <i class="fas fa-search"></i>
@@ -93,32 +208,24 @@
                         onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
                         onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                 </div>
-                
-                <!-- Curso Filter -->
                 <div class="form-group mb-0" style="position: relative;">
                     <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
                         <i class="fas fa-graduation-cap"></i>
                     </div>
                     <select id="cursoFilter" class="form-select" 
-                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
-                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
-                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;">
                         <option value="">Todos los cursos</option>
                         @foreach($estudiantes->pluck('curso_actual')->filter()->unique('id') as $curso)
                             <option value="{{ $curso->id }}">{{ $curso->nombre }}</option>
                         @endforeach
                     </select>
                 </div>
-                
-                <!-- Estado Filter -->
                 <div class="form-group mb-0" style="position: relative;">
                     <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <select id="estadoFilter" class="form-select" 
-                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
-                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
-                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;">
                         <option value="">Todos los estados</option>
                         <option value="activo">Activo</option>
                         <option value="inactivo">Inactivo</option>
@@ -129,66 +236,124 @@
         </div>
     </div>
 
-    <!-- Mobile Cards View (hidden on desktop) -->
-    <div class="mobile-cards" style="display: none;">
-        @forelse($estudiantes as $estudiante)
-            <div class="card mb-md estudiante-item" style="cursor: pointer;" onclick="window.location='{{ route('students.show', $estudiante->id) }}'" 
-                data-search="{{ strtolower($estudiante->nombre . ' ' . $estudiante->apellido . ' ' . $estudiante->rut) }}"
-                data-curso="{{ $estudiante->curso_actual->id ?? '' }}"
-                data-estado="{{ $estudiante->estado }}">
-                <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-md);">
-                    <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem;">
-                        {{ strtoupper(substr($estudiante->nombre, 0, 1) . substr($estudiante->apellido, 0, 1)) }}
-                    </div>
-                    <div style="flex: 1;">
-                        <div style="font-weight: 700; color: var(--gray-900); font-size: 1.125rem;">{{ $estudiante->nombre_completo }}</div>
-                        <div style="font-size: 0.875rem; color: var(--gray-500);">{{ $estudiante->rut }}</div>
-                    </div>
-                </div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin-bottom: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Curso</div>
-                        <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;">
-                            @if($estudiante->curso_actual)
-                                {{ $estudiante->curso_actual->nombre }}
-                            @else
-                                Sin curso
-                            @endif
-                        </div>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Estado</div>
-                        <div>
-                            @if($estudiante->estado === 'activo')
-                                <span class="badge badge-success">Activo</span>
-                            @else
-                                <span class="badge badge-warning">{{ ucfirst($estudiante->estado) }}</span>
-                            @endif
-                        </div>
-                    </div>
-                </div>
+    <!-- Mobile: Standalone Filter Button -->
+    <div class="mobile-filter-button" style="display: none; margin-bottom: var(--spacing-lg);">
+        <button class="btn btn-primary" onclick="openFiltersModal()" 
+            style="width: 100%; height: 48px; border-radius: var(--radius-lg); position: relative; display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); color: white;">
+            <i class="fas fa-search"></i>
+            <span>Buscar y Filtrar</span>
+            <span id="filterBadgeMobile" class="filter-badge" style="display: none;">0</span>
+        </button>
+    </div>
 
-                <div style="display: flex; gap: var(--spacing-sm);" onclick="event.stopPropagation();">
-                    <a href="{{ route('students.edit', $estudiante->id) }}" class="btn btn-primary btn-sm" style="flex: 1; color: white;">
-                        <i class="fas fa-edit"></i> Editar
-                    </a>
-                    <form action="{{ route('students.destroy', $estudiante->id) }}" method="POST" style="flex: 1;" onsubmit="return confirm('¿Está seguro de eliminar este estudiante?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-outline btn-sm" style="width: 100%; color: var(--error); border-color: var(--error);">
-                            <i class="fas fa-trash"></i> Eliminar
-                        </button>
-                    </form>
+    <!-- Filters Modal (Mobile only) -->
+    <div id="filtersModal" class="filters-modal" onclick="closeFiltersModal()">
+        <div class="filters-modal-content" onclick="event.stopPropagation()">
+            <div class="filters-modal-header">
+                <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--gray-900);">
+                    <i class="fas fa-search" style="color: var(--theme-color); margin-right: var(--spacing-sm);"></i>
+                    Buscar y Filtrar
+                </h3>
+                <button onclick="closeFiltersModal()" class="filters-modal-close" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="filters-modal-body">
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">
+                        <i class="fas fa-search" style="color: var(--theme-color);"></i> Buscar
+                    </label>
+                    <input type="text" id="searchInputMobile" class="form-input" 
+                        placeholder="Buscar estudiantes..." 
+                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">
+                        <i class="fas fa-graduation-cap" style="color: var(--theme-color);"></i> Curso
+                    </label>
+                    <select id="cursoFilterMobile" class="form-select" 
+                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;">
+                        <option value="">Todos los cursos</option>
+                        @foreach($estudiantes->pluck('curso_actual')->filter()->unique('id') as $curso)
+                            <option value="{{ $curso->id }}">{{ $curso->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">
+                        <i class="fas fa-check-circle" style="color: var(--theme-color);"></i> Estado
+                    </label>
+                    <select id="estadoFilterMobile" class="form-select" 
+                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;">
+                        <option value="">Todos los estados</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                        <option value="retirado">Retirado</option>
+                    </select>
                 </div>
             </div>
-        @empty
-            <div class="card text-center" style="padding: var(--spacing-2xl);">
-                <i class="fas fa-users" style="font-size: 3rem; margin-bottom: var(--spacing-md); opacity: 0.3; color: var(--gray-300);"></i>
-                <p style="margin: 0; font-size: 1.125rem; color: var(--gray-500);">No hay estudiantes registrados</p>
-                <p style="margin: var(--spacing-sm) 0 0 0; font-size: 0.875rem; color: var(--gray-500);">Haz clic en "Nuevo Estudiante" para comenzar</p>
+            <div class="filters-modal-footer">
+                <button onclick="clearFilters()" class="btn btn-outline" style="flex: 1;">Limpiar</button>
+                <button onclick="applyFilters()" class="btn btn-primary" style="flex: 1; color: white;">Aplicar</button>
             </div>
-        @endforelse
+        </div>
+    </div>
+
+    <!-- Mobile Table View (hidden on desktop) -->
+    <div class="mobile-table" style="display: none;">
+        <div class="mobile-table-container" style="background: white; border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            @forelse($estudiantes as $estudiante)
+                <div class="estudiante-item mobile-table-row" 
+                    style="border-bottom: 1px solid var(--gray-200); padding: var(--spacing-sm) var(--spacing-md); cursor: pointer; transition: background 0.2s;"
+                    onclick="window.location='{{ route('students.show', $estudiante->id) }}'" 
+                    data-search="{{ strtolower($estudiante->nombre . ' ' . $estudiante->apellido . ' ' . $estudiante->rut) }}"
+                    data-curso="{{ $estudiante->curso_actual->id ?? '' }}"
+                    data-estado="{{ $estudiante->estado }}"
+                    onmouseover="this.style.background='var(--gray-50)'"
+                    onmouseout="this.style.background='white'">
+                    
+                    <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.75rem; flex-shrink: 0;">
+                            {{ strtoupper(substr($estudiante->nombre, 0, 1) . substr($estudiante->apellido, 0, 1)) }}
+                        </div>
+                        
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 700; color: var(--gray-900); font-size: 0.9375rem; line-height: 1.3;">{{ $estudiante->nombre_completo }}</div>
+                            <div style="font-size: 0.75rem; color: var(--gray-600); margin-top: 2px;">
+                                <i class="fas fa-graduation-cap" style="font-size: 0.625rem;"></i> 
+                                @if($estudiante->curso_actual)
+                                    {{ $estudiante->curso_actual->nombre }}
+                                @else
+                                    Sin curso
+                                @endif
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 4px; flex-shrink: 0;" onclick="event.stopPropagation();">
+                            <a href="{{ route('students.edit', $estudiante->id) }}" 
+                                style="width: 32px; height: 32px; border-radius: var(--radius-md); background: var(--theme-color); color: white; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.75rem;"
+                                title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route('students.destroy', $estudiante->id) }}" method="POST" style="margin: 0;" onsubmit="return confirm('¿Está seguro de eliminar este estudiante?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                    style="width: 32px; height: 32px; border-radius: var(--radius-md); background: white; color: var(--error); border: 1px solid var(--error); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem;"
+                                    title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div style="padding: var(--spacing-xl); text-align: center; color: var(--gray-500);">
+                    <i class="fas fa-users" style="font-size: 2rem; margin-bottom: var(--spacing-sm); opacity: 0.3;"></i>
+                    <p style="margin: 0; font-size: 0.9375rem;">No hay estudiantes registrados</p>
+                </div>
+            @endforelse
+        </div>
     </div>
 
     <!-- Desktop Table View (hidden on mobile) -->
@@ -333,5 +498,76 @@
         searchInput.addEventListener('input', filterEstudiantes);
         cursoFilter.addEventListener('change', filterEstudiantes);
         estadoFilter.addEventListener('change', filterEstudiantes);
+        
+        // Filter Modal Functions
+        function openFiltersModal() {
+            const modal = document.getElementById('filtersModal');
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeFiltersModal() {
+            const modal = document.getElementById('filtersModal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+        
+        // Apply filters function
+        function applyFilters() {
+            const searchInput = document.getElementById('searchInputMobile');
+            const cursoFilter = document.getElementById('cursoFilterMobile');
+            const estadoFilter = document.getElementById('estadoFilterMobile');
+            
+            // Sync with desktop filters
+            document.getElementById('searchInput').value = searchInput.value;
+            document.getElementById('cursoFilter').value = cursoFilter.value;
+            document.getElementById('estadoFilter').value = estadoFilter.value;
+            
+            // Apply the filters
+            filterEstudiantes();
+            
+            // Close the modal
+            closeFiltersModal();
+        }
+        
+        // Clear filters function
+        function clearFilters() {
+            // Clear mobile filters
+            document.getElementById('searchInputMobile').value = '';
+            document.getElementById('cursoFilterMobile').value = '';
+            document.getElementById('estadoFilterMobile').value = '';
+            
+            // Clear desktop filters
+            document.getElementById('searchInput').value = '';
+            document.getElementById('cursoFilter').value = '';
+            document.getElementById('estadoFilter').value = '';
+            
+            // Apply the cleared filters
+            filterEstudiantes();
+            
+            // Close the modal
+            closeFiltersModal();
+        }
+        
+        // Responsive table switching
+        function updateTableView() {
+            const mobileTable = document.querySelector('.mobile-table');
+            const desktopTable = document.querySelector('.table-container');
+            
+            if (window.innerWidth <= 768) {
+                if (mobileTable) mobileTable.style.display = 'block';
+                if (desktopTable) desktopTable.style.display = 'none';
+            } else {
+                if (mobileTable) mobileTable.style.display = 'none';
+                if (desktopTable) desktopTable.style.display = 'block';
+            }
+        }
+        
+        updateTableView();
+        window.addEventListener('resize', updateTableView);
     </script>
 </x-app-layout>
