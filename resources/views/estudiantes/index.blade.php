@@ -129,14 +129,6 @@
         </div>
     </div>
 
-    <!-- No Results Message (hidden by default) -->
-    <div id="noResults" class="card mb-xl" style="display: none;">
-        <div class="card-body text-center" style="padding: var(--spacing-2xl);">
-            <i class="fas fa-search" style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
-            <p style="color: var(--gray-600); margin: 0;">No se encontraron estudiantes que coincidan con tu búsqueda</p>
-        </div>
-    </div>
-
     <!-- Mobile Cards View (hidden on desktop) -->
     <div class="mobile-cards" style="display: none;">
         @forelse($estudiantes as $estudiante)
@@ -293,6 +285,15 @@
                     </tr>
                 @endforelse
             </tbody>
+        </table>
+    </div>
+
+    <!-- No Results Message (hidden by default) -->
+    <div id="noResults" class="card mb-xl" style="display: none;">
+        <div class="card-body text-center" style="padding: var(--spacing-2xl);">
+            <i class="fas fa-search" style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
+            <p style="color: var(--gray-600); margin: 0;">No se encontraron estudiantes que coincidan con tu búsqueda</p>
+        </div>
     </div>
 
     <script>

@@ -41,7 +41,7 @@
                     Gestiona y monitorea la asistencia de los estudiantes
                 </p>
             </div>
-            <a href="<?php echo e(route('attendance.create')); ?>" class="btn btn-accent" style="color: white;">
+            <a href="<?php echo e(route('attendance.create')); ?>" class="btn" style="background: #10b981; color: white; border: none;">
                 <i class="fas fa-plus"></i> Tomar Asistencia
             </a>
         </div>
@@ -343,8 +343,8 @@
                     <i class="fas fa-calendar-times"
                         style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
                     <p style="color: var(--gray-600);">No hay registros de asistencia</p>
-                    <a href="<?php echo e(route('attendance.create')); ?>" class="btn btn-primary"
-                        style="margin-top: var(--spacing-md); color: white;">
+                    <a href="<?php echo e(route('attendance.create')); ?>" class="btn"
+                        style="margin-top: var(--spacing-md); background: #10b981; color: white; border: none;">
                         <i class="fas fa-plus"></i> Tomar Asistencia
                     </a>
                 </div>

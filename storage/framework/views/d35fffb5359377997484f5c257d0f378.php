@@ -106,14 +106,6 @@
         </div>
     </div>
 
-    <!-- No Results Message (hidden by default) -->
-    <div id="noResults" class="card mb-xl" style="display: none;">
-        <div class="card-body text-center" style="padding: var(--spacing-2xl);">
-            <i class="fas fa-search" style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
-            <p style="color: var(--gray-600); margin: 0;">No se encontraron asignaturas que coincidan con tu búsqueda</p>
-        </div>
-    </div>
-
     <!-- Mobile Cards View (hidden on desktop) -->
     <div class="mobile-cards" style="display: none;">
         <?php $__empty_1 = true; $__currentLoopData = $asignaturas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $asignatura): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
@@ -224,13 +216,13 @@
         </table>
     </div>
 
-    <!-- Pagination -->
-    <?php if($asignaturas->hasPages()): ?>
-        <div style="margin-top: var(--spacing-xl);">
-            <?php echo e($asignaturas->links()); ?>
-
+    <!-- No Results Message (hidden by default) -->
+    <div id="noResults" class="card mb-xl" style="display: none;">
+        <div class="card-body text-center" style="padding: var(--spacing-2xl);">
+            <i class="fas fa-search" style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
+            <p style="color: var(--gray-600); margin: 0;">No se encontraron asignaturas que coincidan con tu búsqueda</p>
         </div>
-    <?php endif; ?>
+    </div>
 
     <script>
         // Real-time search functionality

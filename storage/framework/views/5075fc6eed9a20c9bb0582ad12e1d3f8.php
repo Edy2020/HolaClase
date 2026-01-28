@@ -73,6 +73,25 @@
             .mobile-cards {
                 display: block !important;
             }
+
+            /* Show mobile filters, hide desktop */
+            .filters-desktop {
+                display: none !important;
+            }
+
+            .filters-mobile {
+                display: flex !important;
+            }
+
+            /* Hide entire filters card on mobile */
+            .filters-card {
+                display: none !important;
+            }
+
+            /* Show mobile filter button */
+            .mobile-filter-button {
+                display: block !important;
+            }
         }
 
         /* Desktop: Show table, hide cards */
@@ -84,13 +103,124 @@
             .table-container {
                 display: block !important;
             }
+
+            .filters-mobile,
+            .filters-modal {
+                display: none !important;
+            }
+        }
+
+        /* Filter Badge */
+        .filter-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--error);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Filters Modal */
+        .filters-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .filters-modal.active {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .filters-modal-content {
+            background: white;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .filters-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1;
+        }
+
+        .filters-modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            border: none;
+            color: var(--gray-600);
+            font-size: 1.125rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .filters-modal-close:hover {
+            background: var(--gray-200);
+            color: var(--gray-900);
+        }
+
+        .filters-modal-body {
+            padding: var(--spacing-lg);
+        }
+
+        .filters-modal-footer {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: var(--spacing-sm);
+            position: sticky;
+            bottom: 0;
+            background: white;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
         }
     </style>
 
     <!-- Search and Filters -->
-    <div class="card mb-xl" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+    <div class="card mb-xl filters-card" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
         <div class="card-body" style="padding: var(--spacing-lg);">
-            <div class="grid" style="grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-md); align-items: center;">
+            <!-- Desktop: 3 columns -->
+            <div class="filters-desktop" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-md); align-items: center;">
                 <!-- Search Input -->
                 <div class="form-group mb-0" style="position: relative;">
                     <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1.125rem;">
@@ -136,26 +266,105 @@
                     </select>
                 </div>
             </div>
+
+            <!-- Mobile: Filter Button Only -->
+            <div class="filters-mobile" style="display: none;">
+                <!-- Filter/Search Button -->
+                <button id="filterButton" class="btn btn-primary" onclick="openFiltersModal()" 
+                    style="width: 100%; height: 48px; border-radius: var(--radius-lg); position: relative; display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); color: white;">
+                    <i class="fas fa-search"></i>
+                    <span>Buscar y Filtrar</span>
+                    <span id="filterBadge" class="filter-badge" style="display: none;">0</span>
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- No Results Message (hidden by default) -->
-    <div id="noResults" class="card mb-xl" style="display: none;">
-        <div class="card-body text-center" style="padding: var(--spacing-2xl);">
-            <i class="fas fa-search" style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
-            <p style="color: var(--gray-600); margin: 0;">No se encontraron cursos que coincidan con tu búsqueda</p>
+    <!-- Mobile: Standalone Filter Button (outside card) -->
+    <div class="mobile-filter-button" style="display: none; margin-bottom: var(--spacing-lg);" >
+        <button class="btn btn-primary" onclick="openFiltersModal()" 
+            style="width: 100%; height: 48px; border-radius: var(--radius-lg); position: relative; display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); color: white;">
+            <i class="fas fa-search"></i>
+            <span>Buscar y Filtrar</span>
+            <span id="filterBadgeMobile" class="filter-badge" style="display: none;">0</span>
+        </button>
+    </div>
+
+    <!-- Filters Modal (Mobile only) -->
+    <div id="filtersModal" class="filters-modal" onclick="closeFiltersModal()">
+        <div class="filters-modal-content" onclick="event.stopPropagation()">
+            <div class="filters-modal-header">
+                <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--gray-900);">
+                    <i class="fas fa-search" style="color: var(--theme-color); margin-right: var(--spacing-sm);"></i>
+                    Buscar y Filtrar
+                </h3>
+                <button onclick="closeFiltersModal()" class="filters-modal-close" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="filters-modal-body">
+                <!-- Search Input -->
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs); display: flex; align-items: center; gap: var(--spacing-xs);">
+                        <i class="fas fa-search" style="color: var(--theme-color);"></i>
+                        Buscar
+                    </label>
+                    <input type="text" id="searchInputMobile" class="form-input" 
+                        placeholder="Buscar cursos..." 
+                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;">
+                </div>
+                
+                <!-- Nivel Filter -->
+                <div class="form-group">
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs); display: flex; align-items: center; gap: var(--spacing-xs);">
+                        <i class="fas fa-layer-group" style="color: var(--theme-color);"></i>
+                        Nivel
+                    </label>
+                    <select id="nivelFilterMobile" class="form-select" 
+                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;">
+                        <option value="">Todos los niveles</option>
+                        <option value="pre-kinder">Pre-Kinder</option>
+                        <option value="kinder">Kinder</option>
+                        <option value="basica">Básica</option>
+                        <option value="media">Media</option>
+                    </select>
+                </div>
+                
+                <!-- Profesor Filter -->
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs); display: flex; align-items: center; gap: var(--spacing-xs);">
+                        <i class="fas fa-chalkboard-teacher" style="color: var(--theme-color);"></i>
+                        Profesor
+                    </label>
+                    <select id="profesorFilterMobile" class="form-select" 
+                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;">
+                        <option value="">Todos los profesores</option>
+                        <?php $__currentLoopData = $cursos->unique('profesor_id')->filter(fn($c) => $c->profesor); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $curso): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($curso->profesor->id); ?>"><?php echo e($curso->profesor->nombre); ?> <?php echo e($curso->profesor->apellido); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </select>
+                </div>
+            </div>
+            <div class="filters-modal-footer">
+                <button onclick="clearFilters()" class="btn btn-outline" style="flex: 1;">
+                    Limpiar
+                </button>
+                <button onclick="applyFilters()" class="btn btn-primary" style="flex: 1; color: white;">
+                    Aplicar
+                </button>
+            </div>
         </div>
     </div>
 
     <!-- Mobile Cards View (hidden on desktop) -->
     <div class="mobile-cards" style="display: none;">
         <?php $__empty_1 = true; $__currentLoopData = $cursos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $curso): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-            <div class="card mb-md curso-item" style="cursor: pointer;" onclick="window.location='<?php echo e(route('courses.show', $curso->id)); ?>'" 
+            <div class="card mb-sm curso-item" style="cursor: pointer; padding: var(--spacing-sm);" onclick="window.location='<?php echo e(route('courses.show', $curso->id)); ?>'" 
                 data-search="<?php echo e(strtolower($curso->nombre . ' ' . $curso->nivel)); ?>"
                 data-nivel="<?php echo e($curso->nivel); ?>"
                 data-profesor="<?php echo e($curso->profesor_id ?? ''); ?>">
-                <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-md);">
-                    <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem;">
+                <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-sm);">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.875rem; flex-shrink: 0;">
                         <?php if($curso->nivel === 'pre-kinder' || $curso->nivel === 'kinder'): ?>
                             <?php echo e(strtoupper(substr($curso->nivel, 0, 2))); ?><?php echo e($curso->letra); ?>
 
@@ -164,42 +373,34 @@
 
                         <?php endif; ?>
                     </div>
-                    <div style="flex: 1;">
-                        <div style="font-weight: 700; color: var(--gray-900); font-size: 1.125rem;"><?php echo e($curso->nombre); ?></div>
-                        <span class="badge badge-primary" style="margin-top: var(--spacing-xs);"><?php echo e(ucfirst($curso->nivel)); ?></span>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-weight: 700; color: var(--gray-900); font-size: 1rem; margin-bottom: 2px;"><?php echo e($curso->nombre); ?></div>
+                        <div style="font-size: 0.8125rem; color: var(--gray-600); display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+                            <?php if($curso->profesor): ?>
+                                <span style="display: flex; align-items: center; gap: 4px;">
+                                    <i class="fas fa-user" style="font-size: 0.75rem;"></i>
+                                    <?php echo e($curso->profesor->nombre); ?> <?php echo e($curso->profesor->apellido); ?>
+
+                                </span>
+                                <span style="color: var(--gray-400);">•</span>
+                            <?php endif; ?>
+                            <span style="display: flex; align-items: center; gap: 4px;">
+                                <i class="fas fa-users" style="font-size: 0.75rem; color: var(--theme-color);"></i>
+                                <?php echo e($curso->estudiantes_count ?? 0); ?>
+
+                            </span>
+                        </div>
                     </div>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin-bottom: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Profesor Jefe</div>
-                        <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;">
-                            <?php if($curso->profesor): ?>
-                                <?php echo e($curso->profesor->nombre); ?> <?php echo e($curso->profesor->apellido); ?>
-
-                            <?php else: ?>
-                                Sin asignar
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; margin-bottom: var(--spacing-xs);">Estudiantes</div>
-                        <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;">
-                            <i class="fas fa-users" style="color: var(--theme-color); margin-right: var(--spacing-xs);"></i>
-                            <?php echo e($curso->estudiantes_count ?? 0); ?>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: var(--spacing-sm);" onclick="event.stopPropagation();">
-                    <a href="<?php echo e(route('courses.edit', $curso->id)); ?>" class="btn btn-primary btn-sm" style="flex: 1; color: white;">
+                <div style="display: flex; gap: var(--spacing-xs);" onclick="event.stopPropagation();">
+                    <a href="<?php echo e(route('courses.edit', $curso->id)); ?>" class="btn btn-primary btn-sm" style="flex: 1; color: white; font-size: 0.8125rem; padding: 6px 12px;">
                         <i class="fas fa-edit"></i> Editar
                     </a>
                     <form action="<?php echo e(route('courses.destroy', $curso->id)); ?>" method="POST" style="flex: 1;" onsubmit="return confirm('¿Está seguro de eliminar este curso?');">
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('DELETE'); ?>
-                        <button type="submit" class="btn btn-outline btn-sm" style="width: 100%; color: var(--error); border-color: var(--error);">
+                        <button type="submit" class="btn btn-outline btn-sm" style="width: 100%; color: var(--error); border-color: var(--error); font-size: 0.8125rem; padding: 6px 12px;">
                             <i class="fas fa-trash"></i> Eliminar
                         </button>
                     </form>
@@ -311,17 +512,29 @@
         </table>
     </div>
 
+    <!-- No Results Message (hidden by default) -->
+    <div id="noResults" class="card mb-xl" style="display: none;">
+        <div class="card-body text-center" style="padding: var(--spacing-2xl);">
+            <i class="fas fa-search" style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
+            <p style="color: var(--gray-600); margin: 0;">No se encontraron cursos que coincidan con tu búsqueda</p>
+        </div>
+    </div>
+
     <script>
         // Real-time search and filter functionality
         const searchInput = document.getElementById('searchInput');
+        const searchInputMobile = document.getElementById('searchInputMobile');
         const nivelFilter = document.getElementById('nivelFilter');
         const profesorFilter = document.getElementById('profesorFilter');
+        const nivelFilterMobile = document.getElementById('nivelFilterMobile');
+        const profesorFilterMobile = document.getElementById('profesorFilterMobile');
         const noResults = document.getElementById('noResults');
+        const filterBadge = document.getElementById('filterBadge');
         
         function filterCursos() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const selectedNivel = nivelFilter.value.toLowerCase();
-            const selectedProfesor = profesorFilter.value;
+            const searchTerm = (searchInput?.value || searchInputMobile?.value || '').toLowerCase();
+            const selectedNivel = (nivelFilter?.value || nivelFilterMobile?.value || '').toLowerCase();
+            const selectedProfesor = profesorFilter?.value || profesorFilterMobile?.value || '';
             
             const items = document.querySelectorAll('.curso-item');
             let visibleCount = 0;
@@ -344,13 +557,99 @@
             });
             
             // Show/hide no results message
-            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+            if (noResults) {
+                noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+            
+            // Update filter badge
+            updateFilterBadge();
         }
         
-        // Add event listeners for real-time filtering
-        searchInput.addEventListener('input', filterCursos);
-        nivelFilter.addEventListener('change', filterCursos);
-        profesorFilter.addEventListener('change', filterCursos);
+        function updateFilterBadge() {
+            const nivelValue = nivelFilterMobile?.value || '';
+            const profesorValue = profesorFilterMobile?.value || '';
+            const activeFilters = (nivelValue ? 1 : 0) + (profesorValue ? 1 : 0);
+            
+            const filterBadgeMobile = document.getElementById('filterBadgeMobile');
+            
+            // Update both badges
+            [filterBadge, filterBadgeMobile].forEach(badge => {
+                if (badge) {
+                    if (activeFilters > 0) {
+                        badge.textContent = activeFilters;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            });
+        }
+        
+        // Sync search between desktop and mobile
+        if (searchInput && searchInputMobile) {
+            searchInput.addEventListener('input', () => {
+                searchInputMobile.value = searchInput.value;
+                filterCursos();
+            });
+            searchInputMobile.addEventListener('input', () => {
+                searchInput.value = searchInputMobile.value;
+                filterCursos();
+            });
+        }
+        
+        // Add event listeners for desktop filters
+        if (nivelFilter) nivelFilter.addEventListener('change', filterCursos);
+        if (profesorFilter) profesorFilter.addEventListener('change', filterCursos);
+        
+        // Modal functions
+        function openFiltersModal() {
+            const modal = document.getElementById('filtersModal');
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeFiltersModal() {
+            const modal = document.getElementById('filtersModal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+        
+        function applyFilters() {
+            // Sync mobile filters to desktop
+            if (nivelFilter && nivelFilterMobile) {
+                nivelFilter.value = nivelFilterMobile.value;
+            }
+            if (profesorFilter && profesorFilterMobile) {
+                profesorFilter.value = profesorFilterMobile.value;
+            }
+            
+            filterCursos();
+            closeFiltersModal();
+        }
+        
+        function clearFilters() {
+            if (nivelFilterMobile) nivelFilterMobile.value = '';
+            if (profesorFilterMobile) profesorFilterMobile.value = '';
+            if (nivelFilter) nivelFilter.value = '';
+            if (profesorFilter) profesorFilter.value = '';
+            
+            filterCursos();
+            closeFiltersModal();
+        }
+        
+        // Close modal on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeFiltersModal();
+            }
+        });
+        
+        // Initialize filter badge
+        updateFilterBadge();
     </script>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>

@@ -12,7 +12,7 @@ class AsignaturaController extends Controller
      */
     public function index()
     {
-        $asignaturas = Asignatura::orderBy('nombre')->paginate(12);
+        $asignaturas = Asignatura::orderBy('nombre')->get();
         return view('asignaturas.index', compact('asignaturas'));
     }
 

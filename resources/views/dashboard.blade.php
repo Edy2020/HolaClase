@@ -48,8 +48,8 @@
         </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="card mb-2xl">
+    <!-- Quick Actions (Hidden on mobile) -->
+    <div class="card mb-2xl quick-actions-card">
         <div class="card-header">
             <h3 class="card-title"><i class="fas fa-bolt"></i> Acciones Rápidas</h3>
         </div>
@@ -83,44 +83,329 @@
         </div>
     </div>
 
+    <!-- Floating Action Button (Mobile only) -->
+    <button id="fabButton" class="fab-button" onclick="toggleSpeedDial()" aria-label="Acciones Rápidas">
+        <i id="fabIcon" class="fas fa-bolt"></i>
+    </button>
+
+    <!-- Speed Dial Actions (Mobile only) -->
+    <div id="speedDialActions" class="speed-dial-actions">
+        <a href="{{ route('courses.create') }}" class="speed-dial-item" style="text-decoration: none;">
+            <span class="speed-dial-label">Crear Curso</span>
+            <div class="speed-dial-button" style="background: white; color: var(--theme-color);">
+                <i class="fas fa-book"></i>
+            </div>
+        </a>
+        <a href="{{ route('students.create') }}" class="speed-dial-item" style="text-decoration: none;">
+            <span class="speed-dial-label">Añadir Estudiante</span>
+            <div class="speed-dial-button" style="background: white; color: var(--theme-color);">
+                <i class="fas fa-user-plus"></i>
+            </div>
+        </a>
+        <a href="{{ route('attendance.create') }}" class="speed-dial-item" style="text-decoration: none;">
+            <span class="speed-dial-label">Tomar Asistencia</span>
+            <div class="speed-dial-button" style="background: #10b981;">
+                <i class="fas fa-clipboard-check" style="color: white;"></i>
+            </div>
+        </a>
+        <a href="{{ route('grades.index') }}" class="speed-dial-item" style="text-decoration: none;">
+            <span class="speed-dial-label">Registrar Notas</span>
+            <div class="speed-dial-button">
+                <i class="fas fa-star"></i>
+            </div>
+        </a>
+        <a href="{{ route('dashboard') }}" class="speed-dial-item" style="text-decoration: none;">
+            <span class="speed-dial-label">Ver Reportes</span>
+            <div class="speed-dial-button">
+                <i class="fas fa-chart-line"></i>
+            </div>
+        </a>
+        <a href="{{ route('settings.index') }}" class="speed-dial-item" style="text-decoration: none;">
+            <span class="speed-dial-label">Configuración</span>
+            <div class="speed-dial-button">
+                <i class="fas fa-cog"></i>
+            </div>
+        </a>
+    </div>
+
+    <!-- Backdrop overlay -->
+    <div id="speedDialBackdrop" class="speed-dial-backdrop" onclick="closeSpeedDial()"></div>
+
     <style>
+        /* Floating Action Button */
+        .fab-button {
+            display: none;
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--theme-color);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            z-index: 999;
+            font-size: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fab-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .fab-button:active {
+            transform: scale(0.95);
+        }
+
+        .fab-button.active {
+            background: var(--error);
+        }
+
+        .fab-button.active #fabIcon::before {
+            content: "\f00d";
+        }
+
+        #fabIcon {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Speed Dial Actions */
+        .speed-dial-actions {
+            display: none;
+            position: fixed;
+            bottom: 92px;
+            right: 24px;
+            z-index: 998;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .speed-dial-actions.active {
+            display: flex;
+        }
+
+        .speed-dial-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            transform: translateY(20px) scale(0.8);
+            animation: speedDialItemIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .speed-dial-item:nth-child(1) { animation-delay: 0.05s; }
+        .speed-dial-item:nth-child(2) { animation-delay: 0.1s; }
+        .speed-dial-item:nth-child(3) { animation-delay: 0.15s; }
+        .speed-dial-item:nth-child(4) { animation-delay: 0.2s; }
+        .speed-dial-item:nth-child(5) { animation-delay: 0.25s; }
+        .speed-dial-item:nth-child(6) { animation-delay: 0.3s; }
+
+        .speed-dial-button {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--theme-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.375rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15), 0 1px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .speed-dial-button i {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .speed-dial-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .speed-dial-label {
+            background: white;
+            color: var(--gray-900);
+            padding: 10px 16px;
+            border-radius: 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Backdrop */
+        .speed-dial-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 997;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .speed-dial-backdrop.active {
+            display: block;
+        }
+
+        @keyframes speedDialItemIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         /* Mobile Responsive Styles for Dashboard */
         @media (max-width: 768px) {
-            /* Stack grid columns vertically on mobile */
+            /* Hide quick actions card on mobile */
+            .quick-actions-card {
+                display: none !important;
+            }
+
+            /* Show FAB on mobile */
+            .fab-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Stack grid columns on mobile */
             .grid.grid-cols-2,
-            .grid.grid-cols-3,
-            .grid.grid-cols-4 {
+            .grid.grid-cols-3 {
                 grid-template-columns: 1fr !important;
                 gap: var(--spacing-md) !important;
             }
 
-            /* Adjust activity items on mobile */
+            /* Statistics grid - 2 columns on mobile */
+            .grid.grid-cols-4 {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: var(--spacing-md) !important;
+            }
+
+            /* Make activity items more compact on mobile */
             .activity-item {
-                flex-direction: column !important;
-                align-items: flex-start !important;
+                gap: var(--spacing-sm) !important;
+                padding: var(--spacing-sm) !important;
+                align-items: center !important;
             }
 
             .activity-item .activity-icon {
-                margin-bottom: var(--spacing-sm) !important;
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 1rem !important;
             }
 
-            /* Adjust task items on mobile */
+            /* Optimize task items for mobile */
             .task-item-header {
-                flex-direction: column !important;
-                align-items: flex-start !important;
+                flex-direction: row !important;
+                align-items: center !important;
                 gap: var(--spacing-xs) !important;
+                flex-wrap: wrap !important;
             }
 
             .task-item-title {
-                font-size: 0.875rem !important;
+                font-size: 0.9375rem !important;
                 word-break: break-word !important;
+                line-height: 1.4 !important;
             }
 
             .task-item-details {
                 font-size: 0.8125rem !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: var(--spacing-xs) !important;
+                flex-wrap: wrap !important;
+            }
+
+            /* Make task cards more compact */
+            .task-item-header + .task-item-details {
+                margin-top: var(--spacing-xs) !important;
+            }
+
+            /* Smaller badges in tasks */
+            .task-item-header .badge {
+                font-size: 0.6875rem !important;
+                padding: 2px 8px !important;
+                font-weight: 600 !important;
+            }
+
+            /* Compact task cards container */
+            .card-body > div {
+                gap: var(--spacing-sm) !important;
+            }
+
+            /* Reduce padding in task cards */
+            .card-body > div > div[style*="padding"] {
+                padding: var(--spacing-sm) !important;
+            }
+        }
+
+        /* Desktop: Hide FAB and speed dial */
+        @media (min-width: 769px) {
+            .fab-button,
+            .speed-dial-actions,
+            .speed-dial-backdrop {
+                display: none !important;
             }
         }
     </style>
+
+    <script>
+        let speedDialOpen = false;
+
+        function toggleSpeedDial() {
+            speedDialOpen = !speedDialOpen;
+            const fabButton = document.getElementById('fabButton');
+            const fabIcon = document.getElementById('fabIcon');
+            const speedDialActions = document.getElementById('speedDialActions');
+            const backdrop = document.getElementById('speedDialBackdrop');
+
+            if (speedDialOpen) {
+                fabButton.classList.add('active');
+                fabIcon.className = 'fas fa-times';
+                speedDialActions.classList.add('active');
+                backdrop.classList.add('active');
+            } else {
+                closeSpeedDial();
+            }
+        }
+
+        function closeSpeedDial() {
+            speedDialOpen = false;
+            const fabButton = document.getElementById('fabButton');
+            const fabIcon = document.getElementById('fabIcon');
+            const speedDialActions = document.getElementById('speedDialActions');
+            const backdrop = document.getElementById('speedDialBackdrop');
+
+            fabButton.classList.remove('active');
+            fabIcon.className = 'fas fa-bolt';
+            speedDialActions.classList.remove('active');
+            backdrop.classList.remove('active');
+        }
+
+        // Close on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && speedDialOpen) {
+                closeSpeedDial();
+            }
+        });
+    </script>
 
     <div class="grid grid-cols-2" style="gap: var(--spacing-lg);">
         <!-- Recent Activity -->
