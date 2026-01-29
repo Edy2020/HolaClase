@@ -168,6 +168,16 @@
             padding: var(--spacing-lg);
         }
 
+        .search-modal-footer {
+            padding: var(--spacing-lg);
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: var(--spacing-sm);
+            position: sticky;
+            bottom: 0;
+            background: white;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -227,11 +237,18 @@
                 </button>
             </div>
             <div class="search-modal-body">
-                <div class="form-group mb-0" style="position: relative;">
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">
+                        <i class="fas fa-search" style="color: var(--theme-color);"></i> Buscar
+                    </label>
                     <input type="text" id="searchInputMobile" class="form-input" 
                         placeholder="Buscar por nombre o código..." 
                         style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;">
                 </div>
+            </div>
+            <div class="search-modal-footer">
+                <button onclick="clearFilters()" class="btn btn-outline" style="flex: 1;">Limpiar</button>
+                <button onclick="applySearch()" class="btn btn-primary" style="flex: 1; color: white;">Aplicar</button>
             </div>
         </div>
     </div>
@@ -426,6 +443,11 @@
                 modal.classList.remove('active');
                 document.body.style.overflow = '';
             }
+        }
+        
+        function applySearch() {
+            filterAsignaturas();
+            closeSearchModal();
         }
         
         // Close on escape
