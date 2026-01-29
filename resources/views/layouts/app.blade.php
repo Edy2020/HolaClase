@@ -86,7 +86,7 @@
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('grades.index') }}"
+                        <a href="{{ route('grades.dashboard') }}"
                             class="sidebar-nav-link {{ request()->routeIs('grades.*') ? 'active' : '' }}">
                             <span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span>
                             <span>Notas</span>
@@ -166,7 +166,7 @@
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('grades.index') }}"
+                        <a href="{{ route('grades.dashboard') }}"
                             class="sidebar-nav-link {{ request()->routeIs('grades.*') ? 'active' : '' }}">
                             <span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span>
                             <span>Notas</span>

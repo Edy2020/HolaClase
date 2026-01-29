@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Clear existing data (MySQL compatible)
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // Clear existing data (SQLite compatible)
+        DB::statement('PRAGMA foreign_keys = OFF;');
         Prueba::truncate();
         EventoAcademico::truncate();
         DB::table('curso_asignatura')->truncate();
@@ -35,13 +35,13 @@ class DatabaseSeeder extends Seeder
         Curso::truncate();
         Profesor::truncate();
         User::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('PRAGMA foreign_keys = ON;');
 
         // Create admin user
         User::create([
             'name' => 'Administrador',
-            'email' => 'admin@holaclase.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('admin1234'),
+            'email' => 'admin@admin.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('admin'),
             'email_verified_at' => now(),
         ]);
 
@@ -377,6 +377,61 @@ class DatabaseSeeder extends Seeder
             }
         }
 
+        // Create Notas (Grades) - 150 grades distributed across students
+        $notas = [];
+        $tiposEvaluacion = ['Prueba', 'Trabajo', 'Examen', 'Taller', 'Proyecto', 'Participación', 'Control'];
+        $periodos = ['Semestre 1', 'Semestre 2'];
+        $notaCount = 0;
+        $targetNotas = 150;
+
+        foreach ($cursos as $curso) {
+            if ($notaCount >= $targetNotas)
+                break;
+
+            $estudiantesCurso = $curso->estudiantes;
+            $asignaturasCurso = $curso->asignaturas;
+
+            if ($estudiantesCurso->isEmpty() || $asignaturasCurso->isEmpty())
+                continue;
+
+            // Each student in the course gets 2-4 grades
+            foreach ($estudiantesCurso as $estudiante) {
+                if ($notaCount >= $targetNotas)
+                    break;
+
+                $numNotas = rand(2, 4);
+                for ($i = 0; $i < $numNotas && $notaCount < $targetNotas; $i++) {
+                    $asignatura = $asignaturasCurso->random();
+
+                    // Generate realistic grades (weighted towards passing)
+                    $random = rand(1, 100);
+                    if ($random <= 60) {
+                        // 60% chance of good grade (5.0-7.0)
+                        $nota = rand(50, 70) / 10;
+                    } elseif ($random <= 85) {
+                        // 25% chance of passing grade (4.0-4.9)
+                        $nota = rand(40, 49) / 10;
+                    } else {
+                        // 15% chance of failing grade (2.0-3.9)
+                        $nota = rand(20, 39) / 10;
+                    }
+
+                    $notas[] = \App\Models\Nota::create([
+                        'estudiante_id' => $estudiante->id,
+                        'curso_id' => $curso->id,
+                        'asignatura_id' => $asignatura->id,
+                        'nota' => $nota,
+                        'tipo_evaluacion' => $tiposEvaluacion[array_rand($tiposEvaluacion)],
+                        'periodo' => $periodos[array_rand($periodos)],
+                        'fecha' => now()->subDays(rand(1, 120))->format('Y-m-d'),
+                        'ponderacion' => [0.2, 0.3, 0.4, 0.5, 1.0][array_rand([0.2, 0.3, 0.4, 0.5, 1.0])],
+                        'observaciones' => rand(1, 10) > 7 ? 'Buen desempeño' : null,
+                    ]);
+                    $notaCount++;
+                }
+            }
+        }
+
         $this->command->info('✅ Database seeded successfully!');
         $this->command->info('📊 Created:');
         $this->command->info('   - ' . count($profesores) . ' Profesores');
@@ -386,6 +441,7 @@ class DatabaseSeeder extends Seeder
         $this->command->info('   - ' . count($estudiantes) . ' Estudiantes');
         $this->command->info('   - 20 Eventos Académicos');
         $this->command->info('   - ' . $pruebaCount . ' Pruebas');
+        $this->command->info('   - ' . count($notas) . ' Notas');
     }
 
     /**

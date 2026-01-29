@@ -98,6 +98,11 @@ Route::middleware('auth')->group(function () {
 
 
     // Grades Routes
+    Route::get('notas/dashboard', [App\Http\Controllers\NotaController::class, 'dashboard'])->name('grades.dashboard');
+    Route::get('notas/estadisticas', [App\Http\Controllers\NotaController::class, 'estadisticas'])->name('grades.estadisticas');
+    Route::get('notas/export/pdf', [App\Http\Controllers\NotaController::class, 'exportPDF'])->name('grades.export.pdf');
+    Route::get('notas/export/excel', [App\Http\Controllers\NotaController::class, 'exportExcel'])->name('grades.export.excel');
+
     Route::resource('notas', App\Http\Controllers\NotaController::class)->names([
         'index' => 'grades.index',
         'create' => 'grades.create',

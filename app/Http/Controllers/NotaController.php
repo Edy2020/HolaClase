@@ -105,12 +105,15 @@ class NotaController extends Controller
             'tipo_evaluacion' => 'required|string|max:255',
             'periodo' => 'required|string|max:255',
             'fecha' => 'required|date|before_or_equal:today',
-            'ponderacion' => 'required|numeric|min:0.01|max:1',
+            'ponderacion' => 'required|numeric|min:1|max:100',
             'notas' => 'required|array',
             'notas.*.estudiante_id' => 'required|exists:estudiantes,id',
             'notas.*.nota' => 'required|numeric|min:1.0|max:7.0',
             'notas.*.observaciones' => 'nullable|string|max:500',
         ]);
+
+        // Convert percentage to decimal (30% -> 0.3)
+        $ponderacionDecimal = $validated['ponderacion'] / 100;
 
         DB::beginTransaction();
         try {
@@ -124,12 +127,11 @@ class NotaController extends Controller
                         'tipo_evaluacion' => $validated['tipo_evaluacion'],
                         'periodo' => $validated['periodo'],
                         'fecha' => $validated['fecha'],
-                        'ponderacion' => $validated['ponderacion'],
+                        'ponderacion' => $ponderacionDecimal,
                         'observaciones' => $notaData['observaciones'] ?? null,
                     ]);
                 }
             }
-
             DB::commit();
             return redirect()->route('grades.index')
                 ->with('success', 'Notas registradas exitosamente.');
@@ -333,4 +335,238 @@ class NotaController extends Controller
 
         return view('notas.libreta', compact('estudiante', 'libreta', 'promedioFinal'));
     }
+
+    /**
+     * Display the grades dashboard with statistics.
+     */
+    public function dashboard(Request $request)
+    {
+        // Get filter parameters
+        $filtroPeriodo = $request->get('periodo', '');
+        $filtroNivel = $request->get('nivel', '');
+
+        // Build base query for notas with filters
+        $notasQuery = Nota::query();
+        if ($filtroPeriodo) {
+            $notasQuery->where('periodo', $filtroPeriodo);
+        }
+
+        // General statistics
+        $totalEstudiantes = Estudiante::count();
+        $totalNotas = (clone $notasQuery)->count();
+        $promedioGeneral = round((clone $notasQuery)->avg('nota'), 1) ?? 0;
+        $aprobados = (clone $notasQuery)->where('nota', '>=', 4.0)->count();
+        $reprobados = (clone $notasQuery)->where('nota', '<', 4.0)->count();
+        $porcentajeAprobacion = $totalNotas > 0 ? round(($aprobados / $totalNotas) * 100, 1) : 0;
+
+        // Statistics by education level
+        $cursosBasica = Curso::where('nivel', 'basica')->pluck('id');
+        $cursosMedia = Curso::where('nivel', 'media')->pluck('id');
+
+        $notasBasicaQuery = (clone $notasQuery)->whereIn('curso_id', $cursosBasica);
+        $notasMediaQuery = (clone $notasQuery)->whereIn('curso_id', $cursosMedia);
+
+        $notasBasica = $notasBasicaQuery->get();
+        $notasMedia = $notasMediaQuery->get();
+
+        $estadisticasBasica = [
+            'total' => $notasBasica->count(),
+            'aprobados' => $notasBasica->where('nota', '>=', 4.0)->count(),
+            'reprobados' => $notasBasica->where('nota', '<', 4.0)->count(),
+            'promedio' => round($notasBasica->avg('nota'), 1) ?? 0,
+            'porcentaje_aprobacion' => $notasBasica->count() > 0
+                ? round(($notasBasica->where('nota', '>=', 4.0)->count() / $notasBasica->count()) * 100, 1)
+                : 0,
+        ];
+
+        $estadisticasMedia = [
+            'total' => $notasMedia->count(),
+            'aprobados' => $notasMedia->where('nota', '>=', 4.0)->count(),
+            'reprobados' => $notasMedia->where('nota', '<', 4.0)->count(),
+            'promedio' => round($notasMedia->avg('nota'), 1) ?? 0,
+            'porcentaje_aprobacion' => $notasMedia->count() > 0
+                ? round(($notasMedia->where('nota', '>=', 4.0)->count() / $notasMedia->count()) * 100, 1)
+                : 0,
+        ];
+
+        // Course summary with statistics (apply nivel filter)
+        $cursosQuery = Curso::with(['estudiantes', 'asignaturas']);
+        if ($filtroNivel) {
+            $cursosQuery->where('nivel', $filtroNivel);
+        }
+
+        $cursos = $cursosQuery->get()->map(function ($curso) use ($filtroPeriodo) {
+            $notasQuery = Nota::where('curso_id', $curso->id);
+            if ($filtroPeriodo) {
+                $notasQuery->where('periodo', $filtroPeriodo);
+            }
+            $notas = $notasQuery->get();
+            $aprobados = $notas->where('nota', '>=', 4.0)->count();
+
+            return [
+                'id' => $curso->id,
+                'nombre' => $curso->nombre,
+                'nivel' => $curso->nivel,
+                'total_estudiantes' => $curso->estudiantes->count(),
+                'total_notas' => $notas->count(),
+                'promedio' => round($notas->avg('nota'), 1) ?? 0,
+                'aprobados' => $aprobados,
+                'reprobados' => $notas->count() - $aprobados,
+                'porcentaje_aprobacion' => $notas->count() > 0
+                    ? round(($aprobados / $notas->count()) * 100, 1)
+                    : 0,
+            ];
+        });
+
+        // Data for charts
+        $chartCursos = $cursos->take(10)->pluck('nombre')->toArray();
+        $chartPromedios = $cursos->take(10)->pluck('promedio')->toArray();
+
+        // Data for filters and exports
+        $cursosSelect = Curso::orderBy('nombre')->get();
+        $periodos = ['Semestre 1', 'Semestre 2', 'Anual'];
+        $niveles = ['basica' => 'Básica', 'media' => 'Media'];
+
+        return view('notas.dashboard', compact(
+            'totalEstudiantes',
+            'totalNotas',
+            'promedioGeneral',
+            'aprobados',
+            'reprobados',
+            'porcentajeAprobacion',
+            'estadisticasBasica',
+            'estadisticasMedia',
+            'cursos',
+            'cursosSelect',
+            'periodos',
+            'niveles',
+            'filtroPeriodo',
+            'filtroNivel',
+            'chartCursos',
+            'chartPromedios'
+        ));
+    }
+
+    /**
+     * Get statistics for AJAX requests.
+     */
+    public function estadisticas(Request $request)
+    {
+        $nivel = $request->get('nivel');
+
+        $query = Nota::query();
+
+        if ($nivel) {
+            $cursos = Curso::where('nivel', $nivel)->pluck('id');
+            $query->whereIn('curso_id', $cursos);
+        }
+
+        $notas = $query->get();
+
+        return response()->json([
+            'total' => $notas->count(),
+            'aprobados' => $notas->where('nota', '>=', 4.0)->count(),
+            'reprobados' => $notas->where('nota', '<', 4.0)->count(),
+            'promedio' => round($notas->avg('nota'), 1) ?? 0,
+            'porcentaje_aprobacion' => $notas->count() > 0
+                ? round(($notas->where('nota', '>=', 4.0)->count() / $notas->count()) * 100, 1)
+                : 0,
+        ]);
+    }
+
+    /**
+     * Export grades to PDF.
+     */
+    public function exportPDF(Request $request)
+    {
+        $cursoId = $request->get('curso_id');
+        $periodo = $request->get('periodo');
+
+        $query = Nota::with(['estudiante', 'curso', 'asignatura']);
+
+        if ($cursoId) {
+            $query->where('curso_id', $cursoId);
+        }
+
+        if ($periodo) {
+            $query->where('periodo', $periodo);
+        }
+
+        $notas = $query->orderBy('curso_id')
+            ->orderBy('estudiante_id')
+            ->orderBy('asignatura_id')
+            ->get();
+
+        $stats = [
+            'total' => $notas->count(),
+            'promedio' => round($notas->avg('nota'), 1) ?? 0,
+            'aprobados' => $notas->where('nota', '>=', 4.0)->count(),
+            'reprobados' => $notas->where('nota', '<', 4.0)->count(),
+        ];
+
+        // For now, return a simple view that can be converted to PDF
+        // Once dompdf is installed, we'll use: $pdf = PDF::loadView('notas.pdf', compact('notas', 'stats'));
+        return view('notas.pdf', compact('notas', 'stats'));
+    }
+
+    /**
+     * Export grades to Excel.
+     */
+    public function exportExcel(Request $request)
+    {
+        $cursoId = $request->get('curso_id');
+        $periodo = $request->get('periodo');
+
+        $query = Nota::with(['estudiante', 'curso', 'asignatura']);
+
+        if ($cursoId) {
+            $query->where('curso_id', $cursoId);
+        }
+
+        if ($periodo) {
+            $query->where('periodo', $periodo);
+        }
+
+        $notas = $query->orderBy('curso_id')
+            ->orderBy('estudiante_id')
+            ->orderBy('asignatura_id')
+            ->get();
+
+        // For now, return CSV format
+        // Once maatwebsite/excel is installed, we'll use proper Excel export
+        $filename = 'notas_' . date('Y-m-d_His') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function () use ($notas) {
+            $file = fopen('php://output', 'w');
+
+            // Header row
+            fputcsv($file, ['ID', 'Estudiante', 'RUT', 'Curso', 'Asignatura', 'Nota', 'Tipo Evaluación', 'Período', 'Fecha', 'Estado']);
+
+            // Data rows
+            foreach ($notas as $nota) {
+                fputcsv($file, [
+                    $nota->id,
+                    $nota->estudiante->nombre . ' ' . $nota->estudiante->apellido,
+                    $nota->estudiante->rut,
+                    $nota->curso->nombre,
+                    $nota->asignatura->nombre,
+                    $nota->nota,
+                    $nota->tipo_evaluacion,
+                    $nota->periodo,
+                    $nota->fecha->format('Y-m-d'),
+                    $nota->nota >= 4.0 ? 'Aprobado' : 'Reprobado',
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }
+

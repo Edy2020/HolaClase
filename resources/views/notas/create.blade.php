@@ -100,12 +100,12 @@
 
                     <div>
                         <label style="display: block; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-sm);">
-                            Ponderación (0.01 - 1.00) *
+                            Ponderación (%) *
                         </label>
                         <input type="number" name="ponderacion" class="form-input" style="width: 100%;" 
-                               step="0.01" min="0.01" max="1" value="0.3" required>
+                               step="1" min="1" max="100" value="30" required>
                         <small style="color: var(--gray-500); font-size: 0.75rem;">
-                            Ejemplo: 0.3 = 30%, 0.5 = 50%, 1.0 = 100%
+                            Ejemplo: 30 = 30%, 50 = 50%, 100 = 100%
                         </small>
                     </div>
                 </div>
