@@ -380,23 +380,33 @@
                     </div>
                 </div>
                 
-                <!-- Estado Filter -->
-                <div class="form-group mb-0">
+                <!-- Estado Filter with Clear Button -->
+                <div class="form-group mb-0" style="position: relative;">
                     <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Estado</label>
-                    <div style="position: relative;">
-                        <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
-                            <i class="fas fa-check-circle"></i>
+                    <div style="display: flex; gap: var(--spacing-xs); align-items: center;">
+                        <div style="position: relative; flex: 1;">
+                            <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <select id="estadoFilter" class="form-select" 
+                                style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                                onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                                onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                                <option value="">Todos</option>
+                                <option value="presente">Presente</option>
+                                <option value="ausente">Ausente</option>
+                                <option value="tarde">Tarde</option>
+                                <option value="justificado">Justificado</option>
+                            </select>
                         </div>
-                        <select id="estadoFilter" class="form-select" 
-                            style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
-                            onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
-                            onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
-                            <option value="">Todos</option>
-                            <option value="presente">Presente</option>
-                            <option value="ausente">Ausente</option>
-                            <option value="tarde">Tarde</option>
-                            <option value="justificado">Justificado</option>
-                        </select>
+                        <!-- Clear Button (only visible when filters are active) -->
+                        <button type="button" id="clearFiltersBtn" onclick="clearFilters()" 
+                            style="display: none; width: 42px; height: 42px; border-radius: var(--radius-lg); background: var(--gray-100); border: 1px solid var(--gray-300); color: var(--gray-600); cursor: pointer; transition: all 0.2s; flex-shrink: 0;"
+                            onmouseover="this.style.background='var(--gray-200)'; this.style.borderColor='var(--gray-400)'"
+                            onmouseout="this.style.background='var(--gray-100)'; this.style.borderColor='var(--gray-300)'"
+                            title="Limpiar filtros">
+                            <i class="fas fa-times" style="font-size: 1.125rem;"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -594,12 +604,14 @@
         }
         
         function updateFilterBadge() {
-            const cursoValue = cursoFilterMobile?.value || '';
-            const asignaturaValue = asignaturaFilterMobile?.value || '';
-            const fechaValue = fechaFilterMobile?.value || '';
-            const estadoValue = estadoFilterMobile?.value || '';
-            const activeFilters = (cursoValue ? 1 : 0) + (asignaturaValue ? 1 : 0) + (fechaValue ? 1 : 0) + (estadoValue ? 1 : 0);
+            const searchValue = searchInput?.value || searchInputMobile?.value || '';
+            const cursoValue = cursoFilter?.value || cursoFilterMobile?.value || '';
+            const asignaturaValue = asignaturaFilter?.value || asignaturaFilterMobile?.value || '';
+            const fechaValue = fechaFilter?.value || fechaFilterMobile?.value || '';
+            const estadoValue = estadoFilter?.value || estadoFilterMobile?.value || '';
+            const activeFilters = (searchValue ? 1 : 0) + (cursoValue ? 1 : 0) + (asignaturaValue ? 1 : 0) + (fechaValue ? 1 : 0) + (estadoValue ? 1 : 0);
             
+            // Update mobile badge
             if (activeFiltersBadge) {
                 if (activeFilters > 0) {
                     activeFiltersBadge.textContent = activeFilters;
@@ -607,6 +619,12 @@
                 } else {
                     activeFiltersBadge.style.display = 'none';
                 }
+            }
+            
+            // Show/hide desktop clear button
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.style.display = activeFilters > 0 ? 'block' : 'none';
             }
         }
         

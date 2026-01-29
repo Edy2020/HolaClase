@@ -182,15 +182,25 @@
     <!-- Search -->
     <div class="card mb-xl search-card" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
         <div class="card-body" style="padding: var(--spacing-lg);">
-            <div class="form-group mb-0" style="position: relative;">
-                <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1.125rem;">
-                    <i class="fas fa-search"></i>
+            <div style="display: flex; gap: var(--spacing-xs); align-items: center;">
+                <div class="form-group mb-0" style="position: relative; flex: 1;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1.125rem;">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <input type="text" id="searchInput" class="form-input" 
+                        placeholder="Buscar por nombre o código..." 
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                 </div>
-                <input type="text" id="searchInput" class="form-input" 
-                    placeholder="Buscar por nombre o código..." 
-                    style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem;"
-                    onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
-                    onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                <!-- Clear Button (only visible when search is active) -->
+                <button type="button" id="clearFiltersBtn" onclick="clearFilters()" 
+                    style="display: none; width: 42px; height: 42px; border-radius: var(--radius-lg); background: var(--gray-100); border: 1px solid var(--gray-300); color: var(--gray-600); cursor: pointer; transition: all 0.2s; flex-shrink: 0;"
+                    onmouseover="this.style.background='var(--gray-200)'; this.style.borderColor='var(--gray-400)'"
+                    onmouseout="this.style.background='var(--gray-100)'; this.style.borderColor='var(--gray-300)'"
+                    title="Limpiar búsqueda">
+                    <i class="fas fa-times" style="font-size: 1.125rem;"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -373,6 +383,18 @@
             if (noResults) {
                 noResults.style.display = visibleCount === 0 ? 'block' : 'none';
             }
+            
+            // Show/hide desktop clear button
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.style.display = searchTerm ? 'block' : 'none';
+            }
+        }
+        
+        function clearFilters() {
+            if (searchInput) searchInput.value = '';
+            if (searchInputMobile) searchInputMobile.value = '';
+            filterAsignaturas();
         }
         
         // Sync search between desktop and mobile
