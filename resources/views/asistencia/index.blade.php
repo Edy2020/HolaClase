@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         Control de Asistencia
     </x-slot>
@@ -30,7 +30,12 @@
                 Gestiona y monitorea la asistencia de los estudiantes
             </p>
         </div>
-        <div class="hero-actions">
+        <div class="hero-actions" style="display: flex; gap: var(--spacing-md);">
+            <a href="{{ route('attendance.dashboard') }}" class="btn btn-outline"
+                style="color: white; border-color: rgba(255,255,255,0.5); text-decoration: none;">
+                <span><i class="fas fa-chart-area"></i></span>
+                <span class="btn-text">Dashboard</span>
+            </a>
             <a href="{{ route('attendance.create') }}" class="btn btn-primary btn-new-attendance"
                 style="background: white; color: var(--theme-dark); text-decoration: none;">
                 <span><i class="fas fa-plus"></i></span>
@@ -499,6 +504,11 @@
                                     </td>
                                     <td>{{ $asistencia->notas ? Str::limit($asistencia->notas, 30) : '-' }}</td>
                                     <td>
+                                        <div style="display: flex; gap: 4px;">
+                                        <a href="{{ route('attendance.show', $asistencia) }}" class="btn btn-sm btn-outline"
+                                            style="color: var(--theme-color); border-color: var(--theme-color);">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
                                         <form action="{{ route('attendance.destroy', $asistencia) }}" method="POST"
                                             style="display: inline;" onsubmit="return confirm('¿Eliminar este registro?');">
                                             @csrf
@@ -508,6 +518,7 @@
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

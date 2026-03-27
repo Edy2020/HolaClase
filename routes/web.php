@@ -82,7 +82,11 @@ Route::middleware('auth')->group(function () {
         'destroy' => 'teachers.destroy',
     ]);
 
-    // Attendance Routes
+    // Attendance Routes — specific routes BEFORE resource to avoid shadowing by {asistencia}
+    Route::get('asistencia/dashboard', [App\Http\Controllers\AsistenciaController::class, 'dashboard'])->name('attendance.dashboard');
+    Route::get('asistencia/reporte/curso/{curso}', [App\Http\Controllers\AsistenciaController::class, 'reportePorCurso'])->name('attendance.reporte.curso');
+    Route::get('asistencia/reporte/estudiante/{estudiante}', [App\Http\Controllers\AsistenciaController::class, 'reportePorEstudiante'])->name('attendance.reporte.estudiante');
+
     Route::resource('asistencia', App\Http\Controllers\AsistenciaController::class)->names([
         'index' => 'attendance.index',
         'create' => 'attendance.create',
@@ -91,11 +95,7 @@ Route::middleware('auth')->group(function () {
         'edit' => 'attendance.edit',
         'update' => 'attendance.update',
         'destroy' => 'attendance.destroy',
-    ]);
-
-    Route::get('asistencia/reporte/curso/{curso}', [App\Http\Controllers\AsistenciaController::class, 'reportePorCurso'])->name('attendance.reporte.curso');
-    Route::get('asistencia/reporte/estudiante/{estudiante}', [App\Http\Controllers\AsistenciaController::class, 'reportePorEstudiante'])->name('attendance.reporte.estudiante');
-
+    ])->parameters(['asistencia' => 'asistencia']);
 
     // Grades Routes
     Route::get('notas/dashboard', [App\Http\Controllers\NotaController::class, 'dashboard'])->name('grades.dashboard');

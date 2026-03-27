@@ -8,6 +8,7 @@ use App\Models\Asignatura;
 use App\Models\Estudiante;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AsistenciaController extends Controller
 {
@@ -203,6 +204,109 @@ class AsistenciaController extends Controller
 
         return redirect()->route('attendance.index')
             ->with('success', 'Registro de asistencia eliminado exitosamente.');
+    }
+
+    /**
+     * Display the attendance dashboard with statistics.
+     */
+    public function dashboard(Request $request)
+    {
+        $filtroCurso = $request->get('curso_id', '');
+        $filtroPeriodo = $request->get('periodo', 'mes'); // mes, trimestre, anio
+
+        // Date range based on filter
+        $endDate = Carbon::today();
+        $startDate = match($filtroPeriodo) {
+            'trimestre' => Carbon::today()->subDays(90),
+            'anio'      => Carbon::today()->startOfYear(),
+            default     => Carbon::today()->startOfMonth(),
+        };
+
+        $baseQuery = Asistencia::whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')]);
+        if ($filtroCurso) {
+            $baseQuery->where('curso_id', $filtroCurso);
+        }
+
+        // Global stats
+        $totalRegistros  = (clone $baseQuery)->count();
+        $totalPresente   = (clone $baseQuery)->where('estado', 'presente')->count();
+        $totalAusente    = (clone $baseQuery)->where('estado', 'ausente')->count();
+        $totalTarde      = (clone $baseQuery)->where('estado', 'tarde')->count();
+        $totalJustificado = (clone $baseQuery)->where('estado', 'justificado')->count();
+        $porcentajeAsistencia = $totalRegistros > 0
+            ? round(($totalPresente + $totalTarde) / $totalRegistros * 100, 1)
+            : 0;
+
+        // Daily trend (last 30 days regardless of filter for chart)
+        $tendenciaDias = Asistencia::selectRaw(
+            'DATE(fecha) as dia,
+             COUNT(*) as total,
+             SUM(CASE WHEN estado IN ("presente","tarde") THEN 1 ELSE 0 END) as asistio'
+        )
+        ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+        ->when($filtroCurso, fn($q) => $q->where('curso_id', $filtroCurso))
+        ->groupBy('dia')
+        ->orderBy('dia')
+        ->get();
+
+        $chartDias      = $tendenciaDias->pluck('dia')->map(fn($d) => Carbon::parse($d)->format('d/m'))->toArray();
+        $chartPorcentajes = $tendenciaDias->map(
+            fn($r) => $r->total > 0 ? round($r->asistio / $r->total * 100, 1) : 0
+        )->toArray();
+
+        // Students with critical attendance (< 75%)
+        $estudiantesCriticos = Asistencia::selectRaw(
+            'estudiante_id,
+             COUNT(*) as total,
+             SUM(CASE WHEN estado IN ("presente","tarde") THEN 1 ELSE 0 END) as asistio'
+        )
+        ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+        ->when($filtroCurso, fn($q) => $q->where('curso_id', $filtroCurso))
+        ->groupBy('estudiante_id')
+        ->havingRaw('total > 0 AND (asistio / total * 100) < 75')
+        ->with('estudiante')
+        ->get()
+        ->map(fn($r) => [
+            'estudiante' => $r->estudiante,
+            'total'      => $r->total,
+            'asistio'    => $r->asistio,
+            'porcentaje' => round($r->asistio / $r->total * 100, 1),
+        ])
+        ->sortBy('porcentaje')
+        ->take(10);
+
+        // Summary by course
+        $resumenCursos = Curso::with('estudiantes')->get()->map(function ($curso) use ($startDate, $endDate) {
+            $stats = Asistencia::selectRaw(
+                'COUNT(*) as total, SUM(CASE WHEN estado IN ("presente","tarde") THEN 1 ELSE 0 END) as asistio'
+            )
+            ->where('curso_id', $curso->id)
+            ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->first();
+
+            $pct = ($stats->total ?? 0) > 0 ? round($stats->asistio / $stats->total * 100, 1) : null;
+            return [
+                'id'         => $curso->id,
+                'nombre'     => $curso->nombre,
+                'nivel'      => $curso->nivel,
+                'estudiantes'=> $curso->estudiantes->count(),
+                'total'      => $stats->total ?? 0,
+                'porcentaje' => $pct,
+                'semaforo'   => is_null($pct) ? 'gray' : ($pct >= 85 ? 'green' : ($pct >= 75 ? 'yellow' : 'red')),
+            ];
+        })->sortByDesc('total');
+
+        $cursos   = Curso::orderBy('nombre')->get();
+        $periodos = ['mes' => 'Este Mes', 'trimestre' => 'Últimos 90 días', 'anio' => 'Este Año'];
+
+        return view('asistencia.dashboard', compact(
+            'totalRegistros', 'totalPresente', 'totalAusente', 'totalTarde',
+            'totalJustificado', 'porcentajeAsistencia',
+            'chartDias', 'chartPorcentajes',
+            'estudiantesCriticos', 'resumenCursos',
+            'cursos', 'periodos', 'filtroCurso', 'filtroPeriodo',
+            'startDate', 'endDate'
+        ));
     }
 
     /**

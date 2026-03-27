@@ -1,398 +1,254 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         Gestión de Notas
     </x-slot>
 
     <!-- Hero Header -->
-    <div style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg);">
-        <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
-            <i class="fas fa-chart-line"></i> Gestión de Notas
-        </h2>
-        <p style="font-size: 1rem; opacity: 0.95; margin: 0;">
-            Registra y administra las notas de tus estudiantes
-        </p>
+    <div style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
+                <i class="fas fa-chart-line"></i> Gestión de Notas
+            </h2>
+            <p style="font-size: 1rem; opacity: 0.85; margin: 0;">
+                Registra y administra las notas de tus estudiantes
+            </p>
+        </div>
+        <div style="display: flex; gap: var(--spacing-md);">
+            <a href="{{ route('grades.dashboard') }}" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.4);">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="{{ route('grades.create') }}" class="btn btn-primary" style="background: white; color: var(--theme-dark); font-weight: 700;">
+                <i class="fas fa-plus"></i> Registrar Notas
+            </a>
+        </div>
     </div>
 
-    <!-- Course Selection -->
-    <div class="card mb-xl">
-        <div class="card-header">
-            <h3 class="card-title">Seleccionar Curso y Evaluación</h3>
+    <!-- Flash Messages -->
+    @if(session('success'))
+        <div class="alert alert-success" style="background: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; padding: var(--spacing-md) var(--spacing-lg); border-radius: var(--radius-lg); margin-bottom: var(--spacing-xl); display: flex; align-items: center; gap: var(--spacing-sm);">
+            <i class="fas fa-check-circle"></i> {{ session('success') }}
         </div>
-        <div class="card-body">
-            <div class="grid grid-cols-3">
-                <div class="form-group mb-0">
-                    <label class="form-label">Curso</label>
-                    <select class="form-select">
-                        <option>Selecciona un curso</option>
-                        <option selected>Matemáticas Avanzadas</option>
-                        <option>Química Orgánica</option>
-                        <option>Historia Universal</option>
-                        <option>Física I</option>
-                    </select>
-                </div>
-                <div class="form-group mb-0">
-                    <label class="form-label">Tipo de Evaluación</label>
-                    <select class="form-select">
-                        <option>Examen Parcial</option>
-                        <option selected>Examen Final</option>
-                        <option>Tarea</option>
-                        <option>Proyecto</option>
-                        <option>Participación</option>
-                    </select>
-                </div>
-                <div class="form-group mb-0">
-                    <label class="form-label">Peso (%)</label>
-                    <input 
-                        type="number" 
-                        class="form-input" 
-                        value="40"
-                        min="0"
-                        max="100"
-                    >
-                </div>
-            </div>
+    @endif
+    @if($errors->any())
+        <div class="alert alert-danger" style="background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: var(--spacing-md) var(--spacing-lg); border-radius: var(--radius-lg); margin-bottom: var(--spacing-xl);">
+            <i class="fas fa-exclamation-circle"></i>
+            @foreach($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
         </div>
-    </div>
+    @endif
 
     <!-- Statistics -->
     <div class="grid grid-cols-4 mb-xl">
         <div class="stat-card">
-            <div class="stat-value" style="color: var(--theme-color);">32</div>
-            <div class="stat-label">Total Estudiantes</div>
+            <div class="stat-value" style="color: var(--theme-color);">{{ $stats['total'] }}</div>
+            <div class="stat-label">Total Notas</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value" style="color: var(--success);">8.5</div>
+            <div class="stat-value" style="color: {{ ($stats['promedio'] ?? 0) >= 4.0 ? 'var(--success)' : 'var(--error)' }};">
+                {{ $stats['promedio'] ?? '–' }}
+            </div>
             <div class="stat-label">Promedio General</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value" style="color: var(--success);">9.8</div>
-            <div class="stat-label">Nota Más Alta</div>
+            <div class="stat-value" style="color: var(--success);">{{ $stats['aprobados'] }}</div>
+            <div class="stat-label">Aprobados</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value" style="color: var(--warning);">6.2</div>
-            <div class="stat-label">Nota Más Baja</div>
+            <div class="stat-value" style="color: var(--error);">{{ $stats['reprobados'] }}</div>
+            <div class="stat-label">Reprobados</div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-xl">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-filter"></i> Filtros</h3>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{{ route('grades.index') }}" id="filterForm">
+                <div class="grid grid-cols-4" style="gap: var(--spacing-md); align-items: end;">
+                    <div class="form-group mb-0">
+                        <label class="form-label">Curso</label>
+                        <select name="curso_id" class="form-select" onchange="this.form.submit()">
+                            <option value="">Todos los cursos</option>
+                            @foreach($cursos as $curso)
+                                <option value="{{ $curso->id }}" {{ request('curso_id') == $curso->id ? 'selected' : '' }}>
+                                    {{ $curso->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group mb-0">
+                        <label class="form-label">Asignatura</label>
+                        <select name="asignatura_id" class="form-select" onchange="this.form.submit()">
+                            <option value="">Todas las asignaturas</option>
+                            @foreach($asignaturas as $asignatura)
+                                <option value="{{ $asignatura->id }}" {{ request('asignatura_id') == $asignatura->id ? 'selected' : '' }}>
+                                    {{ $asignatura->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group mb-0">
+                        <label class="form-label">Período</label>
+                        <select name="periodo" class="form-select" onchange="this.form.submit()">
+                            <option value="">Todos los períodos</option>
+                            <option value="Semestre 1" {{ request('periodo') == 'Semestre 1' ? 'selected' : '' }}>Semestre 1</option>
+                            <option value="Semestre 2" {{ request('periodo') == 'Semestre 2' ? 'selected' : '' }}>Semestre 2</option>
+                            <option value="Anual" {{ request('periodo') == 'Anual' ? 'selected' : '' }}>Anual</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-0">
+                        <label class="form-label">Tipo Evaluación</label>
+                        <select name="tipo_evaluacion" class="form-select" onchange="this.form.submit()">
+                            <option value="">Todos los tipos</option>
+                            @foreach(['Prueba','Trabajo','Examen','Taller','Proyecto','Participación','Control'] as $tipo)
+                                <option value="{{ $tipo }}" {{ request('tipo_evaluacion') == $tipo ? 'selected' : '' }}>{{ $tipo }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                @if(request()->anyFilled(['curso_id','asignatura_id','periodo','tipo_evaluacion','estudiante_id']))
+                    <div style="margin-top: var(--spacing-md);">
+                        <a href="{{ route('grades.index') }}" class="btn btn-sm btn-outline">
+                            <i class="fas fa-times"></i> Limpiar filtros
+                        </a>
+                    </div>
+                @endif
+            </form>
         </div>
     </div>
 
     <!-- Grades Table -->
-    <div class="table-container">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Estudiante</th>
-                    <th>Parcial 1 (20%)</th>
-                    <th>Parcial 2 (20%)</th>
-                    <th>Final (40%)</th>
-                    <th>Tareas (10%)</th>
-                    <th>Participación (10%)</th>
-                    <th>Promedio Final</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="font-weight: 600; color: var(--gray-900);">#001</td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                            <div style="width: 35px; height: 35px; border-radius: var(--radius-full); background: var(--theme-color), var(--theme-color)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.875rem;">
-                                JG
-                            </div>
-                            <div style="font-weight: 600; color: var(--gray-900);">Juan García</div>
-                        </div>
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="9.0"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="8.5"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="9.5"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="9.0"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="10.0"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <div style="font-weight: 700; font-size: 1.125rem; color: var(--success);">9.2</div>
-                    </td>
-                    <td>
-                        <span class="badge badge-success">Aprobado</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="font-weight: 600; color: var(--gray-900);">#002</td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                            <div style="width: 35px; height: 35px; border-radius: var(--radius-full); background: var(--theme-color), var(--theme-color)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.875rem;">
-                                ML
-                            </div>
-                            <div style="font-weight: 600; color: var(--gray-900);">María López</div>
-                        </div>
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="8.5"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="9.0"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="8.8"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="9.5"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="8.0"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <div style="font-weight: 700; font-size: 1.125rem; color: var(--success);">8.8</div>
-                    </td>
-                    <td>
-                        <span class="badge badge-success">Aprobado</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="font-weight: 600; color: var(--gray-900);">#003</td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                            <div style="width: 35px; height: 35px; border-radius: var(--radius-full); background: var(--theme-color), #059669); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.875rem;">
-                                CR
-                            </div>
-                            <div style="font-weight: 600; color: var(--gray-900);">Carlos Rodríguez</div>
-                        </div>
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="7.0"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="7.5"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="8.0"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="7.0"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="8.5"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <div style="font-weight: 700; font-size: 1.125rem; color: var(--warning);">7.5</div>
-                    </td>
-                    <td>
-                        <span class="badge badge-warning">Regular</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="font-weight: 600; color: var(--gray-900);">#004</td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                            <div style="width: 35px; height: 35px; border-radius: var(--radius-full); background: var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.875rem;">
-                                AM
-                            </div>
-                            <div style="font-weight: 600; color: var(--gray-900);">Ana Martínez</div>
-                        </div>
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="9.5"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="9.8"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="9.5"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="10.0"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <input 
-                            type="number" 
-                            class="form-input" 
-                            value="9.0"
-                            min="0"
-                            max="10"
-                            step="0.1"
-                            style="width: 80px; padding: var(--spacing-sm);"
-                        >
-                    </td>
-                    <td>
-                        <div style="font-weight: 700; font-size: 1.125rem; color: var(--success);">9.5</div>
-                    </td>
-                    <td>
-                        <span class="badge badge-success">Aprobado</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Actions -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--spacing-xl);">
-        <button class="btn btn-outline">
-            <i class="fas fa-chart-bar"></i> Exportar Reporte
-        </button>
-        <div style="display: flex; gap: var(--spacing-md);">
-            <button class="btn btn-ghost">Cancelar</button>
-            <button class="btn btn-primary">
-                <i class="fas fa-save"></i> Guardar Notas
-            </button>
+    <div class="card">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 class="card-title"><i class="fas fa-list"></i> Registro de Notas
+                <span style="font-size: 0.85rem; font-weight: 400; color: var(--gray-500); margin-left: 8px;">
+                    ({{ $notas->total() }} registros)
+                </span>
+            </h3>
+            <div style="display: flex; gap: var(--spacing-sm);">
+                <a href="{{ route('grades.export.excel', request()->query()) }}" class="btn btn-sm btn-outline">
+                    <i class="fas fa-file-excel"></i> Exportar CSV
+                </a>
+                <a href="{{ route('grades.export.pdf', request()->query()) }}" class="btn btn-sm btn-outline" target="_blank">
+                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                </a>
+            </div>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            @if($notas->count() > 0)
+                <div style="overflow-x: auto;">
+                    <table class="table" style="margin: 0;">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Estudiante</th>
+                                <th>Curso</th>
+                                <th>Asignatura</th>
+                                <th>Tipo</th>
+                                <th>Período</th>
+                                <th>Fecha</th>
+                                <th style="text-align: center;">Nota</th>
+                                <th style="text-align: center;">Ponderación</th>
+                                <th style="text-align: center;">Estado</th>
+                                <th style="text-align: center;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($notas as $nota)
+                                <tr>
+                                    <td style="font-weight: 600; color: var(--gray-500); font-size: 0.8rem;">#{{ $nota->id }}</td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                                            <div style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.75rem; flex-shrink: 0;">
+                                                {{ strtoupper(substr($nota->estudiante->nombre ?? '?', 0, 1) . substr($nota->estudiante->apellido ?? '?', 0, 1)) }}
+                                            </div>
+                                            <div>
+                                                <div style="font-weight: 600; color: var(--gray-900); font-size: 0.875rem;">
+                                                    {{ $nota->estudiante->nombre ?? '–' }} {{ $nota->estudiante->apellido ?? '' }}
+                                                </div>
+                                                <div style="font-size: 0.75rem; color: var(--gray-500);">
+                                                    {{ $nota->estudiante->rut ?? '' }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="font-size: 0.875rem;">{{ $nota->curso->nombre ?? '–' }}</td>
+                                    <td style="font-size: 0.875rem;">{{ $nota->asignatura->nombre ?? '–' }}</td>
+                                    <td>
+                                        <span style="background: var(--gray-100); color: var(--gray-700); padding: 2px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">
+                                            {{ $nota->tipo_evaluacion }}
+                                        </span>
+                                    </td>
+                                    <td style="font-size: 0.875rem; color: var(--gray-600);">{{ $nota->periodo }}</td>
+                                    <td style="font-size: 0.875rem; color: var(--gray-600);">
+                                        {{ $nota->fecha ? $nota->fecha->format('d/m/Y') : '–' }}
+                                    </td>
+                                    <td style="text-align: center;">
+                                        @php
+                                            $n = (float) $nota->nota;
+                                            $color = $n >= 6.0 ? 'var(--success)' : ($n >= 5.0 ? '#0ea5e9' : ($n >= 4.0 ? 'var(--warning)' : 'var(--error)'));
+                                        @endphp
+                                        <span style="font-size: 1.2rem; font-weight: 800; color: {{ $color }};">
+                                            {{ number_format($nota->nota, 1) }}
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center; font-size: 0.875rem; color: var(--gray-600);">
+                                        {{ round($nota->ponderacion * 100) }}%
+                                    </td>
+                                    <td style="text-align: center;">
+                                        @if($nota->nota >= 4.0)
+                                            <span class="badge badge-success">Aprobado</span>
+                                        @else
+                                            <span class="badge badge-danger">Reprobado</span>
+                                        @endif
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <div style="display: flex; gap: 4px; justify-content: center;">
+                                            <a href="{{ route('grades.edit', $nota->id) }}"
+                                               class="btn btn-sm btn-outline"
+                                               style="padding: 4px 10px;"
+                                               title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="{{ route('grades.destroy', $nota->id) }}" method="POST"
+                                                  onsubmit="return confirm('¿Eliminar esta nota?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline"
+                                                        style="padding: 4px 10px; border-color: var(--error); color: var(--error);"
+                                                        title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination -->
+                <div style="padding: var(--spacing-lg); border-top: 1px solid var(--gray-100);">
+                    {{ $notas->withQueryString()->links() }}
+                </div>
+            @else
+                <div style="text-align: center; padding: var(--spacing-3xl);">
+                    <i class="fas fa-clipboard-list" style="font-size: 3rem; color: var(--gray-200); margin-bottom: var(--spacing-md);"></i>
+                    <p style="color: var(--gray-500); font-size: 1.125rem; margin-bottom: var(--spacing-sm);">
+                        No hay notas registradas
+                        @if(request()->anyFilled(['curso_id','asignatura_id','periodo','tipo_evaluacion']))
+                            con los filtros seleccionados
+                        @endif
+                    </p>
+                    <a href="{{ route('grades.create') }}" class="btn btn-primary" style="margin-top: var(--spacing-md); color: white;">
+                        <i class="fas fa-plus"></i> Registrar primera nota
+                    </a>
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>
