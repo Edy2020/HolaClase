@@ -60,65 +60,91 @@
         </div>
     </div>
 
-    <!-- Filters -->
-    <div class="card mb-xl">
-        <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-filter"></i> Filtros</h3>
-        </div>
-        <div class="card-body">
-            <form method="GET" action="{{ route('grades.index') }}" id="filterForm">
-                <div class="grid grid-cols-4" style="gap: var(--spacing-md); align-items: end;">
-                    <div class="form-group mb-0">
-                        <label class="form-label">Curso</label>
-                        <select name="curso_id" class="form-select" onchange="this.form.submit()">
-                            <option value="">Todos los cursos</option>
-                            @foreach($cursos as $curso)
-                                <option value="{{ $curso->id }}" {{ request('curso_id') == $curso->id ? 'selected' : '' }}>
-                                    {{ $curso->nombre }}
-                                </option>
-                            @endforeach
-                        </select>
+    <!-- Search and Filters -->
+    <div class="mb-xl filters-card">
+        <form method="GET" action="{{ route('grades.index') }}" id="filterForm">
+            <div class="grid grid-cols-4" style="gap: var(--spacing-md); align-items: center;">
+                
+                <!-- Curso Filter -->
+                <div class="form-group mb-0" style="position: relative;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-graduation-cap"></i>
                     </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">Asignatura</label>
-                        <select name="asignatura_id" class="form-select" onchange="this.form.submit()">
-                            <option value="">Todas las asignaturas</option>
-                            @foreach($asignaturas as $asignatura)
-                                <option value="{{ $asignatura->id }}" {{ request('asignatura_id') == $asignatura->id ? 'selected' : '' }}>
-                                    {{ $asignatura->nombre }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">Período</label>
-                        <select name="periodo" class="form-select" onchange="this.form.submit()">
-                            <option value="">Todos los períodos</option>
-                            <option value="Semestre 1" {{ request('periodo') == 'Semestre 1' ? 'selected' : '' }}>Semestre 1</option>
-                            <option value="Semestre 2" {{ request('periodo') == 'Semestre 2' ? 'selected' : '' }}>Semestre 2</option>
-                            <option value="Anual" {{ request('periodo') == 'Anual' ? 'selected' : '' }}>Anual</option>
-                        </select>
-                    </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">Tipo Evaluación</label>
-                        <select name="tipo_evaluacion" class="form-select" onchange="this.form.submit()">
-                            <option value="">Todos los tipos</option>
-                            @foreach(['Prueba','Trabajo','Examen','Taller','Proyecto','Participación','Control'] as $tipo)
-                                <option value="{{ $tipo }}" {{ request('tipo_evaluacion') == $tipo ? 'selected' : '' }}>{{ $tipo }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <select name="curso_id" class="form-select" onchange="this.form.submit()"
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                        <option value="">Todos los cursos</option>
+                        @foreach($cursos as $curso)
+                            <option value="{{ $curso->id }}" {{ request('curso_id') == $curso->id ? 'selected' : '' }}>
+                                {{ $curso->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-
-                @if(request()->anyFilled(['curso_id','asignatura_id','periodo','tipo_evaluacion','estudiante_id']))
-                    <div style="margin-top: var(--spacing-md);">
-                        <a href="{{ route('grades.index') }}" class="btn btn-sm btn-outline">
-                            <i class="fas fa-times"></i> Limpiar filtros
-                        </a>
+                
+                <!-- Asignatura Filter -->
+                <div class="form-group mb-0" style="position: relative;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-book"></i>
                     </div>
-                @endif
-            </form>
-        </div>
+                    <select name="asignatura_id" class="form-select" onchange="this.form.submit()"
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                        <option value="">Todas las asignaturas</option>
+                        @foreach($asignaturas as $asignatura)
+                            <option value="{{ $asignatura->id }}" {{ request('asignatura_id') == $asignatura->id ? 'selected' : '' }}>
+                                {{ $asignatura->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                <!-- Período Filter -->
+                <div class="form-group mb-0" style="position: relative;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <select name="periodo" class="form-select" onchange="this.form.submit()"
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                        <option value="">Todos los períodos</option>
+                        <option value="Semestre 1" {{ request('periodo') == 'Semestre 1' ? 'selected' : '' }}>Semestre 1</option>
+                        <option value="Semestre 2" {{ request('periodo') == 'Semestre 2' ? 'selected' : '' }}>Semestre 2</option>
+                        <option value="Anual" {{ request('periodo') == 'Anual' ? 'selected' : '' }}>Anual</option>
+                    </select>
+                </div>
+                
+                <!-- Tipo Evaluación Filter -->
+                <div class="form-group mb-0" style="position: relative;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <select name="tipo_evaluacion" class="form-select" onchange="this.form.submit()"
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                        <option value="">Todos los tipos</option>
+                        @foreach(['Prueba','Trabajo','Examen','Taller','Proyecto','Participación','Control'] as $tipo)
+                            <option value="{{ $tipo }}" {{ request('tipo_evaluacion') == $tipo ? 'selected' : '' }}>{{ $tipo }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            @if(request()->anyFilled(['curso_id','asignatura_id','periodo','tipo_evaluacion','estudiante_id']))
+                <div style="margin-top: var(--spacing-sm); display: flex; justify-content: flex-end;">
+                    <a href="{{ route('grades.index') }}" class="btn btn-sm btn-outline"
+                        style="background: var(--gray-100); border: 1px solid var(--gray-300); color: var(--gray-600); cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.background='var(--gray-200)'; this.style.borderColor='var(--gray-400)'"
+                        onmouseout="this.style.background='var(--gray-100)'; this.style.borderColor='var(--gray-300)'">
+                        <i class="fas fa-times"></i> Limpiar filtros
+                    </a>
+                </div>
+            @endif
+        </form>
     </div>
 
     <!-- Grades Table -->

@@ -1,85 +1,71 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         Dashboard
     </x-slot>
 
-    <!-- Welcome Card -->
-    <div style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg);">
-        <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
-            ¡Bienvenido, {{ Auth::user()->name }}! <i class="fas fa-hand-wave"></i>
-        </h2>
-        <p style="font-size: 1rem; opacity: 0.95; margin: 0;">
-            Aquí tienes un resumen de tu actividad y accesos rápidos a las funciones principales
-        </p>
-    </div>
-
-    <!-- Statistics Cards -->
-    <div class="grid grid-cols-4 mb-2xl">
-        <div class="stat-card fade-in" style="animation-delay: 0.1s;">
-            <div class="stat-icon">
-                <i class="fas fa-book"></i>
-            </div>
-            <div class="stat-value">{{ $totalCursos }}</div>
-            <div class="stat-label">CURSOS ACTIVOS</div>
+    <!-- Sleek Header -->
+    <div class="dashboard-main-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; margin-bottom: var(--spacing-xl); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--gray-200); gap: var(--spacing-md);">
+        <div class="dashboard-greeting-box">
+            <h2 class="dashboard-greeting-title" style="font-size: 1.5rem; font-weight: 600; color: var(--gray-800); margin: 0 0 4px 0; letter-spacing: -0.5px;">
+                Bienvenido, {{ Auth::user()->name }}
+            </h2>
+            <p class="dashboard-greeting-subtitle" style="font-size: 0.875rem; color: var(--gray-500); margin: 0;">
+                Panel de control y resumen general del sistema
+            </p>
         </div>
-
-        <div class="stat-card fade-in" style="animation-delay: 0.2s;">
-            <div class="stat-icon">
-                <i class="fas fa-users"></i>
-            </div>
-            <div class="stat-value">{{ $totalEstudiantes }}</div>
-            <div class="stat-label">ESTUDIANTES</div>
-        </div>
-
-        <div class="stat-card fade-in" style="animation-delay: 0.3s;">
-            <div class="stat-icon">
-                <i class="fas fa-check"></i>
-            </div>
-            <div class="stat-value">94%</div>
-            <div class="stat-label">ASISTENCIA PROMEDIO</div>
-        </div>
-
-        <div class="stat-card fade-in" style="animation-delay: 0.4s;">
-            <div class="stat-icon">
-                <i class="fas fa-clipboard"></i>
-            </div>
-            <div class="stat-value">8.5</div>
-            <div class="stat-label">PROMEDIO GENERAL</div>
+        <div class="mobile-date-pill" style="font-size: 0.875rem; font-weight: 500; color: var(--gray-600); background: white; border: 1px solid var(--gray-200); padding: 8px 16px; border-radius: var(--radius-md); display: flex; align-items: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+            <i class="fas fa-calendar-day" style="color: var(--theme-color);"></i> {{ ucfirst(\Carbon\Carbon::now()->translatedFormat('l, d \d\e F, Y')) }}
         </div>
     </div>
 
-    <!-- Quick Actions (Hidden on mobile) -->
-    <div class="card mb-2xl quick-actions-card">
-        <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-bolt"></i> Acciones Rápidas</h3>
-        </div>
-        <div class="card-body">
-            <div class="grid grid-cols-3">
-                <a href="{{ route('courses.create') }}" class="btn btn-primary" style="text-decoration: none;">
-                    <span><i class="fas fa-book" style="color: white;"></i></span>
-                    <span style="color: white;">Crear Curso</span>
-                </a>
-                <a href="{{ route('students.index') }}" class="btn btn-secondary" style="text-decoration: none;">
-                    <span><i class="fas fa-users"></i></span>
-                    <span>Añadir Estudiante</span>
-                </a>
-                <a href="{{ route('attendance.index') }}" class="btn btn-accent" style="text-decoration: none;">
-                    <span><i class="fas fa-check" style="color: white;"></i></span>
-                    <span style="color: white;">Pasar Asistencia</span>
-                </a>
-                <a href="{{ route('grades.index') }}" class="btn btn-outline" style="text-decoration: none;">
-                    <span><i class="fas fa-clipboard"></i></span>
-                    <span>Registrar Notas</span>
-                </a>
-                <a href="{{ route('dashboard') }}" class="btn btn-outline" style="text-decoration: none;">
-                    <span><i class="fas fa-chart-bar"></i></span>
-                    <span>Ver Reportes</span>
-                </a>
-                <a href="{{ route('settings.index') }}" class="btn btn-outline" style="text-decoration: none;">
-                    <span><i class="fas fa-cog"></i></span>
-                    <span>Configuración</span>
-                </a>
+    <!-- Minimal Stats Cards -->
+    <div class="stats-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: var(--spacing-md); margin-bottom: var(--spacing-xl);">
+        @foreach([
+            ['icon' => 'fa-book',      'value' => $totalCursos,      'label' => 'Cursos',      'color' => 'var(--theme-color)', 'delay' => '0.1s'],
+            ['icon' => 'fa-users',     'value' => $totalEstudiantes, 'label' => 'Estudiantes', 'color' => '#3b82f6',          'delay' => '0.2s'],
+            ['icon' => 'fa-check',     'value' => '94%',             'label' => 'Asistencia',  'color' => 'var(--success)',   'delay' => '0.3s'],
+            ['icon' => 'fa-clipboard', 'value' => '8.5',             'label' => 'Promedio',    'color' => 'var(--warning)',    'delay' => '0.4s'],
+        ] as $s)
+            <div class="card stat-dash-card fade-in" style="animation-delay: {{ $s['delay'] }}; padding: 12px; display: flex; flex-direction: row; align-items: center; gap: 12px; border: 1px solid var(--gray-200); box-shadow: 0 2px 4px rgba(0,0,0,0.02); border-radius: var(--radius-lg);">
+                <div class="stat-icon-box" style="width: 38px; height: 38px; border-radius: var(--radius-md); background: {{ $s['color'] }}15; color: {{ $s['color'] }}; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
+                    <i class="fas {{ $s['icon'] }}"></i>
+                </div>
+                <div style="overflow: hidden; min-width: 0;">
+                    <div class="stat-value" style="font-size: 1.35rem; font-weight: 800; color: var(--gray-900); line-height: 1;">{{ $s['value'] }}</div>
+                    <div class="stat-label" style="font-size: 0.7rem; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $s['label'] }}</div>
+                </div>
             </div>
+        @endforeach
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-wrapper" style="margin-bottom: var(--spacing-2xl);">
+        <h3 style="font-size: 0.8125rem; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--spacing-sm);">Accesos Directos</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: var(--spacing-md);">
+            <a href="{{ route('courses.create') }}" class="btn" style="background: white; border: 1px solid var(--gray-200); color: var(--theme-color); justify-content: center; text-align: center; padding: 16px 8px; height: auto; flex-direction: column; gap: 8px; font-weight: 600; border-radius: var(--radius-lg); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--theme-color)'; this.style.backgroundColor='var(--gray-50)'" onmouseout="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='white'">
+                <i class="fas fa-plus-circle" style="font-size: 1.25rem;"></i>
+                <span style="font-size: 0.8125rem; white-space: normal; line-height: 1.2;">Crear Curso</span>
+            </a>
+            <a href="{{ route('students.index') }}" class="btn" style="background: white; border: 1px solid var(--gray-200); color: #3b82f6; justify-content: center; text-align: center; padding: 16px 8px; height: auto; flex-direction: column; gap: 8px; font-weight: 600; border-radius: var(--radius-lg); transition: all 0.2s;" onmouseover="this.style.borderColor='#3b82f6'; this.style.backgroundColor='var(--gray-50)'" onmouseout="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='white'">
+                <i class="fas fa-user-plus" style="font-size: 1.25rem;"></i>
+                <span style="font-size: 0.8125rem; white-space: normal; line-height: 1.2;">Estudiante</span>
+            </a>
+            <a href="{{ route('attendance.index') }}" class="btn" style="background: white; border: 1px solid var(--gray-200); color: var(--success); justify-content: center; text-align: center; padding: 16px 8px; height: auto; flex-direction: column; gap: 8px; font-weight: 600; border-radius: var(--radius-lg); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--success)'; this.style.backgroundColor='var(--gray-50)'" onmouseout="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='white'">
+                <i class="fas fa-clipboard-check" style="font-size: 1.25rem;"></i>
+                <span style="font-size: 0.8125rem; white-space: normal; line-height: 1.2;">Asistencia</span>
+            </a>
+            <a href="{{ route('grades.index') }}" class="btn" style="background: white; border: 1px solid var(--gray-200); color: var(--warning); justify-content: center; text-align: center; padding: 16px 8px; height: auto; flex-direction: column; gap: 8px; font-weight: 600; border-radius: var(--radius-lg); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--warning)'; this.style.backgroundColor='var(--gray-50)'" onmouseout="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='white'">
+                <i class="fas fa-star" style="font-size: 1.25rem;"></i>
+                <span style="font-size: 0.8125rem; white-space: normal; line-height: 1.2;">Notas</span>
+            </a>
+            <a href="{{ route('dashboard') }}" class="btn" style="background: white; border: 1px solid var(--gray-200); color: var(--gray-600); justify-content: center; text-align: center; padding: 16px 8px; height: auto; flex-direction: column; gap: 8px; font-weight: 600; border-radius: var(--radius-lg); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gray-400)'; this.style.backgroundColor='var(--gray-50)'" onmouseout="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='white'">
+                <i class="fas fa-chart-pie" style="font-size: 1.25rem;"></i>
+                <span style="font-size: 0.8125rem; white-space: normal; line-height: 1.2;">Reportes</span>
+            </a>
+            <a href="{{ route('settings.index') }}" class="btn" style="background: white; border: 1px solid var(--gray-200); color: var(--gray-600); justify-content: center; text-align: center; padding: 16px 8px; height: auto; flex-direction: column; gap: 8px; font-weight: 600; border-radius: var(--radius-lg); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gray-400)'; this.style.backgroundColor='var(--gray-50)'" onmouseout="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='white'">
+                <i class="fas fa-cog" style="font-size: 1.25rem;"></i>
+                <span style="font-size: 0.8125rem; white-space: normal; line-height: 1.2;">Ajustes</span>
+            </a>
         </div>
     </div>
 
@@ -273,11 +259,80 @@
 
         /* Mobile Responsive Styles for Dashboard */
         @media (max-width: 768px) {
-            /* Hide quick actions card on mobile */
-            .quick-actions-card {
+            /* Native App Look Optimizations */
+            .quick-actions-wrapper {
                 display: none !important;
             }
-
+            .dashboard-main-header {
+                flex-direction: column !important;
+                border-bottom: none !important;
+                padding-bottom: 0 !important;
+                margin-bottom: 24px !important;
+                gap: 4px !important;
+            }
+            .dashboard-greeting-title {
+                font-size: 1.25rem !important;
+                letter-spacing: 0 !important;
+            }
+            .dashboard-greeting-subtitle {
+                display: none !important; /* Hide subtitle to save vertical space like an app */
+            }
+            .mobile-date-pill {
+                border: none !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                color: var(--gray-500) !important;
+                font-size: 0.8125rem !important;
+            }
+            .stats-container {
+                gap: 12px !important;
+                margin-bottom: 24px !important;
+            }
+            .stat-dash-card {
+                padding: 12px !important;
+                border: none !important;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.03), 0 1px 3px rgba(0,0,0,0.02) !important;
+                border-radius: 16px !important;
+                background: white !important;
+            }
+            .stat-icon-box {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 0.95rem !important;
+                border-radius: 12px !important;
+            }
+            .stat-value {
+                font-size: 1.2rem !important;
+            }
+            .stat-label {
+                font-size: 0.65rem !important;
+                margin-top: 2px !important;
+            }
+            .card {
+                border: none !important;
+                box-shadow: none !important;
+                background: transparent !important;
+            }
+            .card-header {
+                border-bottom: none !important;
+                padding: 16px 8px 8px 8px !important;
+            }
+            .card-header .card-title {
+                font-size: 0.85rem !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.05em !important;
+                color: var(--gray-500) !important;
+            }
+            .card-body {
+                padding: 0 !important;
+                background: white !important;
+                border-radius: 12px !important;
+                border: 1px solid var(--gray-200) !important;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+                overflow: hidden !important;
+            }
+            
             /* Show FAB on mobile */
             .fab-button {
                 display: flex;
@@ -289,26 +344,59 @@
             .grid.grid-cols-2,
             .grid.grid-cols-3 {
                 grid-template-columns: 1fr !important;
-                gap: var(--spacing-md) !important;
+                gap: calc(var(--spacing-lg) * 1.5) !important;
             }
 
-            /* Statistics grid - 2 columns on mobile */
-            .grid.grid-cols-4 {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: var(--spacing-md) !important;
+            /* Make activity items more like a continuous native mobile list */
+            .card-body > div {
+                gap: 0 !important;
+                background: transparent !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+                overflow: visible !important;
             }
-
-            /* Make activity items more compact on mobile */
+            
             .activity-item {
-                gap: var(--spacing-sm) !important;
-                padding: var(--spacing-sm) !important;
+                gap: 16px !important;
+                padding: 16px !important;
                 align-items: center !important;
+                background: transparent !important;
+                box-shadow: none !important;
+                border: none !important;
+                border-bottom: 1px solid var(--gray-200) !important;
+                border-radius: 0 !important;
+            }
+            .activity-item:last-child {
+                border-bottom: none !important;
             }
 
             .activity-item .activity-icon {
-                width: 32px !important;
-                height: 32px !important;
+                width: 38px !important;
+                height: 38px !important;
+                font-size: 1.1rem !important;
+                border-radius: 50% !important; /* iOS Native Lists generally use circles */
+            }
+            
+            /* Tighter text spacing for activity */
+            .activity-item > div:last-child {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 3px;
+                flex: 1;
+                min-width: 0;
+            }
+            .activity-item div[style*="font-weight: 600"] {
                 font-size: 1rem !important;
+                line-height: 1.25 !important;
+                margin-bottom: 0 !important;
+                color: var(--gray-900) !important;
+            }
+            .activity-item div[style*="font-size: 0.875rem"] {
+                font-size: 0.85rem !important;
+                line-height: 1.25 !important;
+                color: var(--gray-500) !important;
             }
 
             /* Optimize task items for mobile */
@@ -320,39 +408,30 @@
             }
 
             .task-item-title {
-                font-size: 0.9375rem !important;
+                font-size: 1rem !important;
                 word-break: break-word !important;
-                line-height: 1.4 !important;
+                line-height: 1.25 !important;
+                color: var(--gray-900) !important;
             }
 
             .task-item-details {
-                font-size: 0.8125rem !important;
+                font-size: 0.85rem !important;
                 display: flex !important;
                 align-items: center !important;
                 gap: var(--spacing-xs) !important;
                 flex-wrap: wrap !important;
-            }
-
-            /* Make task cards more compact */
-            .task-item-header + .task-item-details {
-                margin-top: var(--spacing-xs) !important;
-            }
-
-            /* Smaller badges in tasks */
-            .task-item-header .badge {
-                font-size: 0.6875rem !important;
-                padding: 2px 8px !important;
-                font-weight: 600 !important;
-            }
-
-            /* Compact task cards container */
-            .card-body > div {
-                gap: var(--spacing-sm) !important;
+                margin-top: 4px !important;
             }
 
             /* Reduce padding in task cards */
-            .card-body > div > div[style*="padding"] {
-                padding: var(--spacing-sm) !important;
+            .card-body > div > div[style*="border-left"] {
+                padding: 16px !important;
+                border-radius: 0 !important;
+                border-bottom: 1px solid var(--gray-200) !important;
+                background: transparent !important;
+            }
+            .card-body > div > div[style*="border-left"]:last-child {
+                border-bottom: none !important;
             }
         }
 
@@ -410,14 +489,14 @@
     <div class="grid grid-cols-2" style="gap: var(--spacing-lg);">
         <!-- Recent Activity -->
         <div class="card">
-            <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-history"></i> Actividad Reciente</h3>
+            <div class="card-header" style="padding: var(--spacing-md) var(--spacing-lg);">
+                <h3 class="card-title" style="font-size: 1rem;"><i class="fas fa-history"></i> Actividad Reciente</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="padding: var(--spacing-md) var(--spacing-lg);">
                 @if($recentActivities->count() > 0)
-                    <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
+                    <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
                         @foreach($recentActivities as $activity)
-                            <div class="activity-item" style="display: flex; gap: var(--spacing-md); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
+                            <div class="activity-item" style="display: flex; gap: var(--spacing-md); padding: 12px; background: var(--gray-50); border-radius: var(--radius-md);">
                                 <div class="activity-icon" style="width: 40px; height: 40px; background: var(--theme-color); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; flex-shrink: 0;">
                                     <i class="fas {{ $activity['icon'] }}"></i>
                                 </div>
@@ -443,10 +522,10 @@
 
         <!-- Upcoming Tasks -->
         <div class="card">
-            <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Próximas Tareas</h3>
+            <div class="card-header" style="padding: var(--spacing-md) var(--spacing-lg);">
+                <h3 class="card-title" style="font-size: 1rem;"><i class="fas fa-calendar-alt"></i> Próximas Tareas</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="padding: var(--spacing-md) var(--spacing-lg);">
                 @if($upcomingPruebas->count() > 0)
                     <div style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
                         @foreach($upcomingPruebas as $prueba)

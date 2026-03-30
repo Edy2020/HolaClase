@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         Gestión de Cursos
     </x-slot>
@@ -208,10 +208,9 @@
     </style>
 
     <!-- Search and Filters -->
-    <div class="card mb-xl filters-card" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-        <div class="card-body" style="padding: var(--spacing-lg);">
-            <!-- Desktop: 3 columns -->
-            <div class="filters-desktop" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-md); align-items: center;">
+    <div class="mb-xl filters-card">
+        <!-- Desktop: 3 columns -->
+        <div class="filters-desktop" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-md); align-items: center;">
                 <!-- Search Input -->
                 <div class="form-group mb-0" style="position: relative;">
                     <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1.125rem;">
@@ -280,7 +279,6 @@
                     <span id="filterBadge" class="filter-badge" style="display: none;">0</span>
                 </button>
             </div>
-        </div>
     </div>
 
     <!-- Mobile: Standalone Filter Button (outside card) -->

@@ -27,24 +27,29 @@
     </div>
 
     <!-- Filters -->
-    <div class="card mb-xl">
-        <div class="card-body">
-            <form method="GET" action="{{ route('attendance.dashboard') }}">
-                <div style="display: flex; gap: var(--spacing-md); align-items: end; flex-wrap: wrap;">
-                    <div>
-                        <label class="form-label">Período</label>
-                        <div style="display: flex; gap: var(--spacing-xs);">
-                            @foreach($periodos as $key => $label)
-                                <button type="submit" name="periodo" value="{{ $key }}"
-                                    style="padding: 8px 16px; border-radius: var(--radius-md); font-size: 0.875rem; font-weight: 600; cursor: pointer; border: 2px solid {{ $filtroPeriodo === $key ? 'var(--theme-color)' : 'var(--gray-200)' }}; background: {{ $filtroPeriodo === $key ? 'var(--theme-color)' : 'white' }}; color: {{ $filtroPeriodo === $key ? 'white' : 'var(--gray-700)' }}; transition: all 0.2s;">
-                                    {{ $label }}
-                                </button>
-                            @endforeach
-                        </div>
+    <div class="mb-xl filters-card">
+        <form method="GET" action="{{ route('attendance.dashboard') }}">
+            <div style="display: flex; gap: var(--spacing-md); align-items: center; flex-wrap: wrap;">
+                <div>
+                    <div style="display: flex; gap: var(--spacing-xs);">
+                        @foreach($periodos as $key => $label)
+                            <button type="submit" name="periodo" value="{{ $key }}"
+                                style="padding: 10px 16px; border-radius: var(--radius-lg); font-size: 0.9375rem; font-weight: 600; cursor: pointer; border: 2px solid {{ $filtroPeriodo === $key ? 'var(--theme-color)' : 'var(--gray-200)' }}; background: {{ $filtroPeriodo === $key ? 'var(--theme-color)' : 'white' }}; color: {{ $filtroPeriodo === $key ? 'white' : 'var(--gray-700)' }}; transition: all 0.2s;">
+                                {{ $label }}
+                            </button>
+                        @endforeach
                     </div>
-                    <div>
-                        <label class="form-label">Curso</label>
-                        <select name="curso_id" class="form-select" onchange="this.form.submit()">
+                </div>
+                
+                <div style="flex: 1; min-width: 250px;">
+                    <div class="form-group mb-0" style="position: relative;">
+                        <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <select name="curso_id" class="form-select" onchange="this.form.submit()"
+                            style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                            onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                            onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                             <option value="">Todos los cursos</option>
                             @foreach($cursos as $curso)
                                 <option value="{{ $curso->id }}" {{ $filtroCurso == $curso->id ? 'selected' : '' }}>
@@ -53,16 +58,20 @@
                             @endforeach
                         </select>
                     </div>
-                    @if($filtroCurso)
-                        <a href="{{ route('attendance.dashboard', ['periodo' => $filtroPeriodo]) }}" class="btn btn-outline" style="margin-top: 24px;">
-                            <i class="fas fa-times"></i> Limpiar
-                        </a>
-                    @endif
-                    <!-- Hidden to preserve periodo when changing curso -->
-                    <input type="hidden" name="periodo" value="{{ $filtroPeriodo }}">
                 </div>
-            </form>
-        </div>
+                
+                @if($filtroCurso)
+                    <a href="{{ route('attendance.dashboard', ['periodo' => $filtroPeriodo]) }}" class="btn btn-outline" 
+                        style="height: 48px; display: inline-flex; align-items: center; white-space: nowrap; border-radius: var(--radius-lg); background: var(--gray-100); border: 1px solid var(--gray-300); color: var(--gray-600); cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.background='var(--gray-200)'; this.style.borderColor='var(--gray-400)'"
+                        onmouseout="this.style.background='var(--gray-100)'; this.style.borderColor='var(--gray-300)'">
+                        <i class="fas fa-times"></i> Limpiar
+                    </a>
+                @endif
+                <!-- Hidden to preserve periodo when changing curso -->
+                <input type="hidden" name="periodo" value="{{ $filtroPeriodo }}">
+            </div>
+        </form>
     </div>
 
     <!-- Stats Cards (compact row) -->

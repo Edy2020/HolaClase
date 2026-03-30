@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         Gestión de Asignaturas
     </x-slot>
@@ -180,9 +180,8 @@
     </style>
 
     <!-- Search -->
-    <div class="card mb-xl search-card" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-        <div class="card-body" style="padding: var(--spacing-lg);">
-            <div style="display: flex; gap: var(--spacing-xs); align-items: center;">
+    <div class="mb-xl search-card">
+        <div style="display: flex; gap: var(--spacing-xs); align-items: center;">
                 <div class="form-group mb-0" style="position: relative; flex: 1;">
                     <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1.125rem;">
                         <i class="fas fa-search"></i>
@@ -202,7 +201,6 @@
                     <i class="fas fa-times" style="font-size: 1.125rem;"></i>
                 </button>
             </div>
-        </div>
     </div>
 
     <!-- Mobile: Standalone Search Button -->

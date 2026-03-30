@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         Gestión de Estudiantes
     </x-slot>
@@ -195,9 +195,8 @@
     </style>
 
     <!-- Search and Filters -->
-    <div class="card mb-xl filters-card" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-        <div class="card-body" style="padding: var(--spacing-lg);">
-            <div class="grid" style="grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-md); align-items: center;">
+    <div class="mb-xl filters-card">
+        <div class="grid" style="grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-md); align-items: center;">
                 <div class="form-group mb-0" style="position: relative;">
                     <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1.125rem;">
                         <i class="fas fa-search"></i>
@@ -245,7 +244,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 
     <!-- Mobile: Standalone Filter Button -->

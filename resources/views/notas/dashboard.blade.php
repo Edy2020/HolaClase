@@ -30,19 +30,18 @@
     </div>
 
     <!-- Filters Section -->
-    <div class="card mb-xl">
-        <div class="card-header">
-            <h3 class="card-title">
-                <i class="fas fa-filter"></i> Filtros
-            </h3>
-        </div>
-        <div class="card-body">
-            <form method="GET" action="{{ route('grades.dashboard') }}" id="filterForm"
-                style="display: flex; gap: var(--spacing-lg); align-items: flex-end; flex-wrap: wrap;">
-                <div class="form-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
-                    <label class="form-label">Período Académico</label>
-                    <select name="periodo" class="form-select"
-                        onchange="document.getElementById('filterForm').submit()">
+    <div class="mb-xl filters-card">
+        <form method="GET" action="{{ route('grades.dashboard') }}" id="filterForm">
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: var(--spacing-md); align-items: center;">
+                
+                <div class="form-group mb-0" style="position: relative;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <select name="periodo" class="form-select" onchange="document.getElementById('filterForm').submit()"
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                         <option value="">Todos los períodos</option>
                         @foreach($periodos as $periodo)
                             <option value="{{ $periodo }}" {{ $filtroPeriodo === $periodo ? 'selected' : '' }}>
@@ -51,9 +50,15 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
-                    <label class="form-label">Nivel Educativo</label>
-                    <select name="nivel" class="form-select" onchange="document.getElementById('filterForm').submit()">
+
+                <div class="form-group mb-0" style="position: relative;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <select name="nivel" class="form-select" onchange="document.getElementById('filterForm').submit()"
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                         <option value="">Todos los niveles</option>
                         @foreach($niveles as $key => $label)
                             <option value="{{ $key }}" {{ $filtroNivel === $key ? 'selected' : '' }}>
@@ -62,15 +67,19 @@
                         @endforeach
                     </select>
                 </div>
-                <div style="display: flex; gap: var(--spacing-sm);">
-                    @if($filtroPeriodo || $filtroNivel)
-                        <a href="{{ route('grades.dashboard') }}" class="btn btn-outline">
-                            <i class="fas fa-times"></i> Limpiar Filtros
-                        </a>
-                    @endif
+            </div>
+
+            @if($filtroPeriodo || $filtroNivel)
+                <div style="margin-top: var(--spacing-sm); display: flex; justify-content: flex-end;">
+                    <a href="{{ route('grades.dashboard') }}" class="btn btn-sm btn-outline"
+                        style="background: var(--gray-100); border: 1px solid var(--gray-300); color: var(--gray-600); cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.background='var(--gray-200)'; this.style.borderColor='var(--gray-400)'"
+                        onmouseout="this.style.background='var(--gray-100)'; this.style.borderColor='var(--gray-300)'">
+                        <i class="fas fa-times"></i> Limpiar Filtros
+                    </a>
                 </div>
-            </form>
-        </div>
+            @endif
+        </form>
     </div>
 
     <!-- Charts Section -->

@@ -307,13 +307,11 @@
     </div>
 
     <!-- Desktop Filters Card (hidden on mobile) -->
-    <div class="card desktop-filters-card mb-xl" style="border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-        <div class="card-body" style="padding: var(--spacing-lg);">
-            <div class="grid grid-cols-5" style="gap: var(--spacing-md); align-items: end;">
+    <div class="desktop-filters-card mb-xl">
+        <div class="grid grid-cols-5" style="gap: var(--spacing-md); align-items: center;">
                 <!-- Search Input -->
                 <div class="form-group mb-0" style="position: relative;">
-                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Buscar</label>
-                    <div style="position: absolute; left: 12px; bottom: 11px; color: var(--gray-400); font-size: 1.125rem;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1.125rem;">
                         <i class="fas fa-search"></i>
                     </div>
                     <input type="text" id="searchInput" class="form-input" 
@@ -324,60 +322,50 @@
                 </div>
                 
                 <!-- Curso Filter -->
-                <div class="form-group mb-0">
-                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Curso</label>
-                    <div style="position: relative;">
-                        <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
-                            <i class="fas fa-graduation-cap"></i>
-                        </div>
-                        <select id="cursoFilter" class="form-select" 
-                            style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
-                            onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
-                            onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
-                            <option value="">Todos los cursos</option>
-                            @foreach($cursos as $curso)
-                                <option value="{{ $curso->id }}">{{ $curso->nombre }}</option>
-                            @endforeach
-                        </select>
+                <div class="form-group mb-0" style="position: relative;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-graduation-cap"></i>
                     </div>
+                    <select id="cursoFilter" class="form-select" 
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                        <option value="">Todos los cursos</option>
+                        @foreach($cursos as $curso)
+                            <option value="{{ $curso->id }}">{{ $curso->nombre }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 
                 <!-- Asignatura Filter -->
-                <div class="form-group mb-0">
-                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Asignatura</label>
-                    <div style="position: relative;">
-                        <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <select id="asignaturaFilter" class="form-select" 
-                            style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
-                            onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
-                            onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
-                            <option value="">Todas las asignaturas</option>
-                            @foreach($asignaturas as $asignatura)
-                                <option value="{{ $asignatura->id }}">{{ $asignatura->nombre }}</option>
-                            @endforeach
-                        </select>
+                <div class="form-group mb-0" style="position: relative;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-book"></i>
                     </div>
+                    <select id="asignaturaFilter" class="form-select" 
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                        <option value="">Todas las asignaturas</option>
+                        @foreach($asignaturas as $asignatura)
+                            <option value="{{ $asignatura->id }}">{{ $asignatura->nombre }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 
                 <!-- Fecha Filter -->
-                <div class="form-group mb-0">
-                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Fecha</label>
-                    <div style="position: relative;">
-                        <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
-                            <i class="fas fa-calendar"></i>
-                        </div>
-                        <input type="date" id="fechaFilter" class="form-input" 
-                            style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem;"
-                            onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
-                            onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
+                <div class="form-group mb-0" style="position: relative;">
+                    <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-calendar"></i>
                     </div>
+                    <input type="date" id="fechaFilter" class="form-input" 
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem;"
+                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                 </div>
                 
                 <!-- Estado Filter with Clear Button -->
                 <div class="form-group mb-0" style="position: relative;">
-                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">Estado</label>
                     <div style="display: flex; gap: var(--spacing-xs); align-items: center;">
                         <div style="position: relative; flex: 1;">
                             <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
@@ -405,7 +393,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 
     <!-- No Results Message (hidden by default) -->
