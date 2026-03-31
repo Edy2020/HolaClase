@@ -1,198 +1,154 @@
 <x-app-layout>
     <x-slot name="header">
-        Detalle de Asignatura
+        {{ $asignatura->nombre }} - Detalle
     </x-slot>
 
-    <!-- Header Section -->
-    <div class="card" style="margin-bottom: var(--spacing-xl);">
-        <div
-            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-md);">
-            <div>
-                <h2
-                    style="font-size: 2rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                    {{ $asignatura->nombre }}
-                </h2>
-                <p style="color: var(--gray-600); font-size: 1rem;">
-                    <i class="fas fa-barcode"></i> Código: {{ $asignatura->codigo }}
-                </p>
+    <link rel="stylesheet" href="{{ asset('css/shared-index.css') }}?v={{ time() }}">
+
+    <div class="page-header"
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg); flex-wrap: wrap; gap: var(--spacing-md);">
+        <div>
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0;">
+                {{ $asignatura->nombre }}
+            </h2>
+            <p style="color: var(--text-muted); margin: var(--spacing-xs) 0 0 0; font-size: 0.9375rem;">
+                <i class="fas fa-barcode"></i> {{ $asignatura->codigo }}
                 @if($asignatura->descripcion)
-                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-top: var(--spacing-sm);">
-                        {{ $asignatura->descripcion }}
-                    </p>
+                    &middot; {{ $asignatura->descripcion }}
                 @endif
-            </div>
-            <div style="display: flex; gap: var(--spacing-sm);">
-                <a href="{{ route('subjects.edit', $asignatura) }}" class="btn btn-primary" style="color: white;">
-                    <i class="fas fa-edit"></i> Editar
-                </a>
-                <a href="{{ route('subjects.index') }}" class="btn btn-outline">
-                    <i class="fas fa-arrow-left"></i> Volver
-                </a>
-            </div>
+            </p>
+        </div>
+        <div style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
+            <a href="{{ route('subjects.edit', $asignatura) }}" class="btn btn-outline"
+                style="color: var(--text-color); border-color: var(--border-color);">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a href="{{ route('subjects.index') }}" class="btn btn-outline"
+                style="color: var(--text-muted); border-color: var(--border-color);">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
         </div>
     </div>
 
-    <!-- Quick Stats -->
-    <div class="grid grid-cols-3" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
-        <div class="card" style="text-align: center;">
-            <div
-                style="font-size: 2.5rem; font-weight: 700; color: var(--theme-color); margin-bottom: var(--spacing-xs);">
-                {{ $asignatura->cursos->count() }}
-            </div>
-            <div style="color: var(--gray-600); font-weight: 600;">Cursos Asignados</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
+        <div class="stat-card" style="text-align: center;">
+            <div class="stat-value">{{ $asignatura->cursos->count() }}</div>
+            <div class="stat-label"><i class="fas fa-chalkboard"></i> Cursos</div>
         </div>
-        <div class="card" style="text-align: center;">
-            <div style="font-size: 2.5rem; font-weight: 700; color: var(--success); margin-bottom: var(--spacing-xs);">
-                {{ $asignatura->cursos->sum(function ($curso) {
-    return $curso->estudiantes->count(); }) }}
-            </div>
-            <div style="color: var(--gray-600); font-weight: 600;">Total Estudiantes</div>
+        <div class="stat-card" style="text-align: center;">
+            <div class="stat-value">{{ $asignatura->cursos->sum(fn($c) => $c->estudiantes->count()) }}</div>
+            <div class="stat-label"><i class="fas fa-users"></i> Estudiantes</div>
         </div>
-        <div class="card" style="text-align: center;">
-            <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent); margin-bottom: var(--spacing-xs);">
-                {{ $asignatura->notas->count() }}
-            </div>
-            <div style="color: var(--gray-600); font-weight: 600;">Notas Registradas</div>
+        <div class="stat-card" style="text-align: center;">
+            <div class="stat-value">{{ $asignatura->notas->count() }}</div>
+            <div class="stat-label"><i class="fas fa-clipboard-check"></i> Notas</div>
         </div>
     </div>
 
-    <!-- Main Content Grid -->
-    <div class="grid grid-cols-3" style="gap: var(--spacing-xl);">
-        <!-- Left Column (2/3 width) -->
-        <div style="grid-column: span 2;">
-            <!-- Cursos donde se imparte -->
-            <div class="card" style="margin-bottom: var(--spacing-xl);">
-                <h3
-                    style="font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-lg); display: flex; align-items: center; gap: var(--spacing-sm);">
-                    <i class="fas fa-chalkboard" style="color: var(--theme-color);"></i>
-                    Cursos donde se imparte
-                </h3>
+    <div class="system-tabs-container">
+        <div onclick="switchSystemTab('cursos')" class="system-tab active-tab" id="tab-cursos">Cursos</div>
+        <div onclick="switchSystemTab('estadisticas')" class="system-tab" id="tab-estadisticas">Estadísticas</div>
+    </div>
 
-                @if($asignatura->cursos->count() > 0)
-                    <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
-                        @foreach($asignatura->cursos as $curso)
-                            @php
-                                $notasCurso = $asignatura->notas->where('curso_id', $curso->id);
-                                $promedio = $notasCurso->count() > 0 ? $notasCurso->avg('nota') : null;
-                            @endphp
-                            <div
-                                style="padding: var(--spacing-lg); background: var(--gray-50); border-radius: var(--radius-lg); border-left: 4px solid var(--accent);">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div style="flex: 1;">
-                                        <div
-                                            style="font-weight: 700; font-size: 1.125rem; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                                            {{ $curso->nombre }}
-                                        </div>
-                                        <div
-                                            style="display: flex; gap: var(--spacing-lg); color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-sm);">
-                                            <span>
-                                                <i class="fas fa-users"></i> {{ $curso->estudiantes->count() }} estudiantes
+    <div id="section-cursos" class="system-tab-section active-section">
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
+            <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-color); margin: 0 0 var(--spacing-lg) 0; padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: var(--spacing-sm);">
+                <i class="fas fa-chalkboard" style="color: var(--text-muted);"></i> Cursos donde se imparte
+            </h3>
+
+            @if($asignatura->cursos->count() > 0)
+                <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+                    @foreach($asignatura->cursos as $curso)
+                        @php
+                            $notasCurso = $asignatura->notas->where('curso_id', $curso->id);
+                            $promedio = $notasCurso->count() > 0 ? $notasCurso->avg('nota') : null;
+                        @endphp
+                        <div style="padding: var(--spacing-md); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: var(--spacing-sm);">
+                                <div style="flex: 1; min-width: 0;">
+                                    <div style="font-weight: 700; font-size: 1rem; color: var(--text-color); margin-bottom: 4px;">
+                                        {{ $curso->nombre }}
+                                    </div>
+                                    <div style="display: flex; flex-wrap: wrap; gap: var(--spacing-md); color: var(--text-muted); font-size: 0.875rem; margin-bottom: var(--spacing-sm);">
+                                        <span><i class="fas fa-users"></i> {{ $curso->estudiantes->count() }} estudiantes</span>
+                                        <span><i class="fas fa-clipboard-check"></i> {{ $notasCurso->count() }} notas</span>
+                                        @if($promedio)
+                                            <span><i class="fas fa-chart-line"></i> Promedio:
+                                                <strong style="color: var(--text-color);">{{ number_format($promedio, 1) }}</strong>
                                             </span>
-                                            <span>
-                                                <i class="fas fa-clipboard-check"></i> {{ $notasCurso->count() }} notas
-                                            </span>
-                                            @if($promedio)
-                                                <span>
-                                                    <i class="fas fa-chart-line"></i> Promedio:
-                                                    <strong
-                                                        style="color: {{ $promedio >= 6.0 ? 'var(--success)' : ($promedio >= 4.0 ? 'var(--warning)' : 'var(--error)') }};">
-                                                        {{ number_format($promedio, 1) }}
-                                                    </strong>
-                                                </span>
-                                            @endif
-                                        </div>
-                                        <div style="display: flex; gap: var(--spacing-sm);">
-                                            <a href="{{ route('courses.show', $curso->id) }}" class="btn btn-sm btn-outline">
-                                                <i class="fas fa-eye"></i> Ver Curso
-                                            </a>
-                                            <a href="{{ route('grades.create', ['curso_id' => $curso->id, 'asignatura_id' => $asignatura->id]) }}"
-                                                class="btn btn-sm btn-primary" style="color: white;">
-                                                <i class="fas fa-plus"></i> Agregar Notas
-                                            </a>
-                                        </div>
+                                        @endif
+                                    </div>
+                                    <div style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
+                                        <a href="{{ route('courses.show', $curso->id) }}" class="btn btn-sm btn-outline" style="color: var(--text-color); border-color: var(--border-color);">
+                                            <i class="fas fa-eye"></i> Ver Curso
+                                        </a>
+                                        <a href="{{ route('grades.create', ['curso_id' => $curso->id, 'asignatura_id' => $asignatura->id]) }}"
+                                            class="btn btn-sm btn-outline" style="color: var(--text-color); border-color: var(--border-color);">
+                                            <i class="fas fa-plus"></i> Agregar Notas
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
-                @else
-                    <p style="color: var(--gray-500); text-align: center; padding: var(--spacing-xl);">
-                        <i class="fas fa-info-circle"></i> Esta asignatura no está asignada a ningún curso
-                    </p>
-                @endif
-            </div>
-        </div>
-
-        <!-- Right Column (1/3 width) -->
-        <div>
-            <!-- Estadísticas de Notas -->
-            <div class="card">
-                <h3
-                    style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-lg); display: flex; align-items: center; gap: var(--spacing-sm);">
-                    <i class="fas fa-chart-bar" style="color: var(--theme-color);"></i>
-                    Estadísticas de Notas
-                </h3>
-
-                @if($asignatura->notas->count() > 0)
-                    <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
-                        <div
-                            style="display: flex; justify-content: space-between; padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--gray-100);">
-                            <span style="color: var(--gray-600); font-size: 0.875rem;">Total Notas</span>
-                            <span style="font-weight: 600; font-size: 0.875rem;">{{ $asignatura->notas->count() }}</span>
                         </div>
-                        <div
-                            style="display: flex; justify-content: space-between; padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--gray-100);">
-                            <span style="color: var(--gray-600); font-size: 0.875rem;">Promedio General</span>
-                            <span style="font-weight: 600; font-size: 0.875rem; color: var(--success);">
-                                {{ number_format($asignatura->notas->avg('nota'), 1) }}
-                            </span>
-                        </div>
-                        <div
-                            style="display: flex; justify-content: space-between; padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--gray-100);">
-                            <span style="color: var(--gray-600); font-size: 0.875rem;">Nota Máxima</span>
-                            <span style="font-weight: 600; font-size: 0.875rem; color: var(--success);">
-                                {{ number_format($asignatura->notas->max('nota'), 1) }}
-                            </span>
-                        </div>
-                        <div
-                            style="display: flex; justify-content: space-between; padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--gray-100);">
-                            <span style="color: var(--gray-600); font-size: 0.875rem;">Nota Mínima</span>
-                            <span style="font-weight: 600; font-size: 0.875rem; color: var(--error);">
-                                {{ number_format($asignatura->notas->min('nota'), 1) }}
-                            </span>
-                        </div>
-                        <div
-                            style="display: flex; justify-content: space-between; padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--gray-100);">
-                            <span style="color: var(--gray-600); font-size: 0.875rem;">Aprobados</span>
-                            <span style="font-weight: 600; font-size: 0.875rem; color: var(--success);">
-                                {{ $asignatura->notas->where('nota', '>=', 4.0)->count() }}
-                            </span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; padding: var(--spacing-sm) 0;">
-                            <span style="color: var(--gray-600); font-size: 0.875rem;">Reprobados</span>
-                            <span style="font-weight: 600; font-size: 0.875rem; color: var(--error);">
-                                {{ $asignatura->notas->where('nota', '<', 4.0)->count() }}
-                            </span>
-                        </div>
-                    </div>
-                @else
-                    <p style="color: var(--gray-500); text-align: center; padding: var(--spacing-lg);">
-                        <i class="fas fa-info-circle"></i> No hay notas registradas
-                    </p>
-                @endif
-            </div>
+                    @endforeach
+                </div>
+            @else
+                <div style="text-align: center; padding: var(--spacing-2xl); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+                    <i class="fas fa-chalkboard" style="font-size: 2.5rem; color: var(--text-muted); margin-bottom: var(--spacing-md); opacity: 0.6;"></i>
+                    <p style="color: var(--text-color); margin: 0; font-weight: 500;">Esta asignatura no está asignada a ningún curso</p>
+                </div>
+            @endif
         </div>
     </div>
 
-    <style>
-        @media (max-width: 1024px) {
-            .grid-cols-3 {
-                grid-template-columns: 1fr !important;
-            }
+    <div id="section-estadisticas" class="system-tab-section">
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
+            <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-color); margin: 0 0 var(--spacing-lg) 0; padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: var(--spacing-sm);">
+                <i class="fas fa-chart-bar" style="color: var(--text-muted);"></i> Estadísticas de Notas
+            </h3>
 
-            .grid-cols-3>div {
-                grid-column: span 1 !important;
-            }
+            @if($asignatura->notas->count() > 0)
+                <div style="display: flex; flex-direction: column; gap: 0;">
+                    @php
+                        $stats = [
+                            ['label' => 'Total Notas',      'value' => $asignatura->notas->count()],
+                            ['label' => 'Promedio General', 'value' => number_format($asignatura->notas->avg('nota'), 1)],
+                            ['label' => 'Nota Máxima',      'value' => number_format($asignatura->notas->max('nota'), 1)],
+                            ['label' => 'Nota Mínima',      'value' => number_format($asignatura->notas->min('nota'), 1)],
+                            ['label' => 'Aprobados',        'value' => $asignatura->notas->where('nota', '>=', 4.0)->count()],
+                            ['label' => 'Reprobados',       'value' => $asignatura->notas->where('nota', '<', 4.0)->count()],
+                        ];
+                    @endphp
+                    @foreach($stats as $i => $s)
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-md) 0; {{ $i < count($stats) - 1 ? 'border-bottom: 1px solid var(--border-color);' : '' }}">
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">{{ $s['label'] }}</span>
+                            <span style="font-weight: 700; color: var(--text-color);">{{ $s['value'] }}</span>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div style="text-align: center; padding: var(--spacing-2xl); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+                    <i class="fas fa-chart-bar" style="font-size: 2.5rem; color: var(--text-muted); margin-bottom: var(--spacing-md); opacity: 0.6;"></i>
+                    <p style="color: var(--text-color); margin: 0; font-weight: 500;">No hay notas registradas aún</p>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <script>
+        function switchSystemTab(name) {
+            document.querySelectorAll('.system-tab').forEach(t => t.classList.remove('active-tab'));
+            document.querySelectorAll('.system-tab-section').forEach(s => s.classList.remove('active-section'));
+            document.getElementById('tab-' + name).classList.add('active-tab');
+            document.getElementById('section-' + name).classList.add('active-section');
+        }
+    </script>
+
+    <style>
+        @media (max-width: 768px) {
+            .page-header { flex-wrap: nowrap !important; align-items: flex-start !important; }
+            .page-header > div:last-child { display: flex; flex-wrap: nowrap !important; gap: var(--spacing-xs) !important; flex-shrink: 0; }
+            .page-header .btn { padding: 0.5rem 1rem !important; min-width: 80px; justify-content: center; }
         }
     </style>
 </x-app-layout>

@@ -376,6 +376,10 @@ html.dark-mode .system-tab.active-tab {
 
     .system-tab-section {
         display: block !important;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .system-tab-section:last-of-type {
         margin-bottom: 0;
     }
 }

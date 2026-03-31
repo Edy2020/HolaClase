@@ -3,36 +3,47 @@
         Editar Curso
     </x-slot>
 
-    <div class="card" style="max-width: 800px; margin: 0 auto;">
-        <!-- Header -->
-        <div style="margin-bottom: var(--spacing-2xl); text-align: center;">
-            <div style="width: 80px; height: 80px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-lg); background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; box-shadow: var(--shadow-lg);">
-                <i class="fas fa-edit"></i>
-            </div>
-            <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
+    <link rel="stylesheet" href="{{ asset('css/shared-index.css') }}?v={{ time() }}">
+
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+        <div>
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0;">
+                <i class="fas fa-edit" style="color: var(--text-muted); margin-right: 8px;"></i>
                 Editar Curso
             </h2>
-            <p style="color: var(--gray-600); font-size: 1rem;">{{ $curso->nombre }}</p>
+            <p style="color: var(--text-muted); margin: var(--spacing-xs) 0 0 0; font-size: 0.9375rem;">
+                {{ $curso->nombre }}
+            </p>
         </div>
+        <a href="{{ route('courses.show', $curso) }}"
+            style="display: inline-flex; align-items: center; gap: var(--spacing-sm); border: 1px solid var(--border-color); color: var(--text-muted); background: transparent; padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; font-size: 0.9rem;">
+            <i class="fas fa-arrow-left"></i>
+            <span>Volver al Curso</span>
+        </a>
+    </div>
 
-        <form action="{{ route('courses.update', $curso) }}" method="POST" id="cursoForm">
-            @csrf
-            @method('PUT')
+    <form action="{{ route('courses.update', $curso) }}" method="POST" id="cursoForm">
+        @csrf
+        @method('PUT')
 
-            <!-- Información del Curso -->
-            <div style="margin-bottom: var(--spacing-2xl);">
-                <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-md); border-bottom: 2px solid var(--gray-200);">
-                    <i class="fas fa-book" style="color: var(--theme-color); font-size: 1.25rem;"></i>
-                    <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin: 0;">Información del Curso</h3>
-                </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
 
-                <!-- Nivel -->
-                <div class="form-group">
-                    <label for="nivel" class="form-label">
-                        <i class="fas fa-layer-group" style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                        Nivel de Enseñanza <span style="color: #ef4444;">*</span>
-                    </label>
-                    <select name="nivel" id="nivel" class="form-select" required>
+            {{-- Campos del formulario --}}
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
+                <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-color); margin: 0 0 var(--spacing-lg) 0; padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-color);">
+                    <i class="fas fa-book" style="color: var(--text-muted); margin-right: 6px;"></i>
+                    Información del Curso
+                </h3>
+
+                <div class="form-group" style="position: relative;">
+                    <label class="form-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">NIVEL *</label>
+                    <div style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <select name="nivel" id="nivel" class="form-select" required
+                        style="padding-left: 40px; border: 2px solid var(--border-color); border-radius: var(--radius-lg); background-color: var(--bg-card); color: var(--text-color); font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132,204,22,0.1)'"
+                        onblur="this.style.borderColor='var(--border-color)'; this.style.boxShadow='none'">
                         <option value="">Seleccione un nivel...</option>
                         <option value="Pre-Kinder" {{ $curso->nivel == 'Pre-Kinder' ? 'selected' : '' }}>Pre-Kinder</option>
                         <option value="Kinder" {{ $curso->nivel == 'Kinder' ? 'selected' : '' }}>Kinder</option>
@@ -40,31 +51,35 @@
                         <option value="Media" {{ $curso->nivel == 'Media' ? 'selected' : '' }}>Educación Media</option>
                     </select>
                     @error('nivel')
-                        <span style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
+                        <span style="color: var(--error); font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
                     @enderror
                 </div>
 
-                <!-- Grado (conditional) -->
-                <div class="form-group" id="gradoGroup" style="display: {{ ($curso->nivel == 'Basica' || $curso->nivel == 'Media') ? 'block' : 'none' }};">
-                    <label for="grado" class="form-label">
-                        <i class="fas fa-sort-numeric-up" style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                        Grado <span style="color: #ef4444;">*</span>
-                    </label>
-                    <select name="grado" id="grado" class="form-select">
+                <div class="form-group" id="gradoGroup" style="display: {{ ($curso->nivel == 'Basica' || $curso->nivel == 'Media') ? 'block' : 'none' }}; position: relative;">
+                    <label class="form-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">GRADO *</label>
+                    <div style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-sort-numeric-up"></i>
+                    </div>
+                    <select name="grado" id="grado" class="form-select"
+                        style="padding-left: 40px; border: 2px solid var(--border-color); border-radius: var(--radius-lg); background-color: var(--bg-card); color: var(--text-color); font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132,204,22,0.1)'"
+                        onblur="this.style.borderColor='var(--border-color)'; this.style.boxShadow='none'">
                         <option value="">Seleccione un grado...</option>
                     </select>
                     @error('grado')
-                        <span style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
+                        <span style="color: var(--error); font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
                     @enderror
                 </div>
 
-                <!-- Sección -->
-                <div class="form-group mb-0">
-                    <label for="letra" class="form-label">
-                        <i class="fas fa-font" style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                        Sección <span style="color: #ef4444;">*</span>
-                    </label>
-                    <select name="letra" id="letra" class="form-select" required>
+                <div class="form-group mb-0" style="position: relative;">
+                    <label class="form-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">SECCIÓN *</label>
+                    <div style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-font"></i>
+                    </div>
+                    <select name="letra" id="letra" class="form-select" required
+                        style="padding-left: 40px; border: 2px solid var(--border-color); border-radius: var(--radius-lg); background-color: var(--bg-card); color: var(--text-color); font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132,204,22,0.1)'"
+                        onblur="this.style.borderColor='var(--border-color)'; this.style.boxShadow='none'">
                         <option value="">Seleccione una sección...</option>
                         <option value="A" {{ $curso->letra == 'A' ? 'selected' : '' }}>A</option>
                         <option value="B" {{ $curso->letra == 'B' ? 'selected' : '' }}>B</option>
@@ -74,62 +89,38 @@
                         <option value="F" {{ $curso->letra == 'F' ? 'selected' : '' }}>F</option>
                     </select>
                     @error('letra')
-                        <span style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
+                        <span style="color: var(--error); font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
                     @enderror
                 </div>
             </div>
 
-            <!-- Vista Previa -->
-            <div style="margin-bottom: var(--spacing-2xl);">
-                <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-md); border-bottom: 2px solid var(--gray-200);">
-                    <i class="fas fa-eye" style="color: var(--theme-color); font-size: 1.25rem;"></i>
-                    <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin: 0;">Vista Previa del Curso</h3>
+            {{-- Vista Previa --}}
+            <div style="background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-color); margin: 0 0 var(--spacing-lg) 0; padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-color); width: 100%;">
+                    <i class="fas fa-eye" style="color: var(--text-muted); margin-right: 6px;"></i>
+                    Vista Previa
+                </h3>
+
+                <div id="cursoBadge" style="width: 90px; height: 90px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-lg); background: var(--gray-200); display: flex; align-items: center; justify-content: center; color: var(--text-color); font-size: 1.75rem; font-weight: 700;">
+                    <span id="badgeText">?</span>
                 </div>
 
-                <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: var(--radius-lg); padding: var(--spacing-2xl); text-align: center; border: 2px dashed var(--gray-300);">
-                    <!-- Badge del curso -->
-                    <div id="cursoBadge" style="width: 120px; height: 120px; margin: 0 auto var(--spacing-lg); border-radius: var(--radius-lg); background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; box-shadow: var(--shadow-xl); transition: all 0.3s ease;">
-                        <span id="badgeText">?</span>
-                    </div>
+                <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 600; margin-bottom: 4px;">Nombre Corto</div>
+                <div id="nombreCorto" style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin-bottom: var(--spacing-md);">-</div>
 
-                    <!-- Nombre corto -->
-                    <div style="margin-bottom: var(--spacing-lg);">
-                        <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-500); margin-bottom: var(--spacing-xs); font-weight: 600;">
-                            Nombre Corto
-                        </div>
-                        <div id="nombreCorto" style="font-size: 1.75rem; font-weight: 700; color: var(--gray-900);">
-                            -
-                        </div>
-                    </div>
+                <div style="width: 40px; height: 1px; background: var(--border-color); margin: 0 auto var(--spacing-md);"></div>
 
-                    <!-- Separador -->
-                    <div style="width: 60px; height: 2px; background: var(--gray-300); margin: var(--spacing-lg) auto; border-radius: var(--radius-full);"></div>
-
-                    <!-- Nombre completo -->
-                    <div>
-                        <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-500); margin-bottom: var(--spacing-xs); font-weight: 600;">
-                            Nombre Completo
-                        </div>
-                        <div id="nombreCompleto" style="font-size: 1.125rem; font-weight: 600; color: var(--gray-700);">
-                            -
-                        </div>
-                    </div>
-                </div>
+                <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 600; margin-bottom: 4px;">Nombre Completo</div>
+                <div id="nombreCompleto" style="font-size: 1rem; font-weight: 600; color: var(--text-color);">-</div>
             </div>
+        </div>
 
-            <!-- Action Buttons -->
-            <div class="action-buttons" style="display: flex; gap: var(--spacing-md); justify-content: flex-end; padding-top: var(--spacing-xl); border-top: 2px solid var(--gray-200);">
-                <a href="{{ route('courses.index') }}" class="btn btn-ghost" style="min-width: 120px;">
-                    <i class="fas fa-times" style="margin-right: 0.5rem;"></i>
-                    Cancelar
-                </a>
-                <button type="submit" class="btn btn-primary" style="min-width: 150px;">
-                    <i class="fas fa-save" style="margin-right: 0.5rem;"></i>
-                    Guardar Cambios
-                </button>
-            </div>
-        </form>
-    </div>
+        <div style="margin-top: var(--spacing-lg); padding-top: var(--spacing-lg); border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end;">
+            <button type="submit" class="btn btn-outline" style="color: var(--text-color); border-color: var(--border-color);">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+        </div>
+    </form>
 
     <script>
         const nivelSelect = document.getElementById('nivel');
@@ -141,193 +132,87 @@
         const badgeText = document.getElementById('badgeText');
         const cursoBadge = document.getElementById('cursoBadge');
 
-        // Valores actuales del curso
         const cursoActual = {
             nivel: '{{ $curso->nivel }}',
             grado: '{{ $curso->grado }}',
             letra: '{{ $curso->letra }}'
         };
 
-        // Grados por nivel
         const gradosPorNivel = {
             'Basica': [
-                { value: '1°', text: '1° Primero' },
-                { value: '2°', text: '2° Segundo' },
-                { value: '3°', text: '3° Tercero' },
-                { value: '4°', text: '4° Cuarto' },
-                { value: '5°', text: '5° Quinto' },
-                { value: '6°', text: '6° Sexto' },
-                { value: '7°', text: '7° Séptimo' },
-                { value: '8°', text: '8° Octavo' }
+                { value: '1°', text: '1° Primero' }, { value: '2°', text: '2° Segundo' },
+                { value: '3°', text: '3° Tercero' }, { value: '4°', text: '4° Cuarto' },
+                { value: '5°', text: '5° Quinto' },  { value: '6°', text: '6° Sexto' },
+                { value: '7°', text: '7° Séptimo' }, { value: '8°', text: '8° Octavo' }
             ],
             'Media': [
-                { value: '1°', text: '1° Primero' },
-                { value: '2°', text: '2° Segundo' },
-                { value: '3°', text: '3° Tercero' },
-                { value: '4°', text: '4° Cuarto' }
+                { value: '1°', text: '1° Primero' }, { value: '2°', text: '2° Segundo' },
+                { value: '3°', text: '3° Tercero' }, { value: '4°', text: '4° Cuarto' }
             ]
         };
 
-        // Nombres completos de grados
         const nombresGrados = {
-            '1°': 'Primero',
-            '2°': 'Segundo',
-            '3°': 'Tercero',
-            '4°': 'Cuarto',
-            '5°': 'Quinto',
-            '6°': 'Sexto',
-            '7°': 'Séptimo',
-            '8°': 'Octavo'
+            '1°': 'Primero', '2°': 'Segundo', '3°': 'Tercero', '4°': 'Cuarto',
+            '5°': 'Quinto', '6°': 'Sexto', '7°': 'Séptimo', '8°': 'Octavo'
         };
 
-        // Inicializar grados al cargar la página
         function inicializarGrados() {
             const nivel = nivelSelect.value;
-
             if (nivel === 'Basica' || nivel === 'Media') {
                 gradoGroup.style.display = 'block';
                 gradoSelect.required = true;
-
-                // Limpiar y agregar opciones
                 gradoSelect.innerHTML = '<option value="">Seleccione un grado...</option>';
-                gradosPorNivel[nivel].forEach(grado => {
-                    const option = document.createElement('option');
-                    option.value = grado.value;
-                    option.textContent = grado.text;
-                    // Seleccionar el grado actual
-                    if (grado.value === cursoActual.grado) {
-                        option.selected = true;
-                    }
-                    gradoSelect.appendChild(option);
+                gradosPorNivel[nivel].forEach(g => {
+                    const o = document.createElement('option');
+                    o.value = g.value; o.textContent = g.text;
+                    if (g.value === cursoActual.grado) o.selected = true;
+                    gradoSelect.appendChild(o);
                 });
             }
-
             actualizarPreview();
         }
 
-        // Actualizar grados según nivel
         nivelSelect.addEventListener('change', function () {
-            const nivel = this.value;
-
-            // Limpiar grado
             gradoSelect.innerHTML = '<option value="">Seleccione un grado...</option>';
-
-            if (nivel === 'Basica' || nivel === 'Media') {
-                gradoGroup.style.display = 'block';
-                gradoSelect.required = true;
-
-                // Agregar opciones de grado
-                gradosPorNivel[nivel].forEach(grado => {
-                    const option = document.createElement('option');
-                    option.value = grado.value;
-                    option.textContent = grado.text;
-                    gradoSelect.appendChild(option);
+            if (this.value === 'Basica' || this.value === 'Media') {
+                gradoGroup.style.display = 'block'; gradoSelect.required = true;
+                gradosPorNivel[this.value].forEach(g => {
+                    const o = document.createElement('option');
+                    o.value = g.value; o.textContent = g.text;
+                    gradoSelect.appendChild(o);
                 });
             } else {
-                gradoGroup.style.display = 'none';
-                gradoSelect.required = false;
+                gradoGroup.style.display = 'none'; gradoSelect.required = false;
             }
-
             actualizarPreview();
         });
 
-        // Actualizar preview cuando cambian los valores
         gradoSelect.addEventListener('change', actualizarPreview);
         letraSelect.addEventListener('change', actualizarPreview);
 
         function actualizarPreview() {
-            const nivel = nivelSelect.value;
-            const grado = gradoSelect.value;
-            const letra = letraSelect.value;
-
+            const nivel = nivelSelect.value, grado = gradoSelect.value, letra = letraSelect.value;
             if (!nivel || !letra) {
-                nombreCorto.textContent = '-';
-                nombreCompleto.textContent = '-';
-                badgeText.textContent = '?';
-                cursoBadge.style.background = 'linear-gradient(135deg, var(--theme-color), var(--theme-dark))';
-                return;
+                nombreCorto.textContent = '-'; nombreCompleto.textContent = '-'; badgeText.textContent = '?'; return;
             }
-
-            let corto = '';
-            let completo = '';
-            let badge = '';
-
+            let corto = '', completo = '', badge = '';
             if (nivel === 'Pre-Kinder' || nivel === 'Kinder') {
-                corto = `${nivel} ${letra}`;
-                completo = `${nivel} ${letra}`;
+                corto = `${nivel} ${letra}`; completo = corto;
                 badge = nivel === 'Pre-Kinder' ? `PK${letra}` : `K${letra}`;
-                cursoBadge.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-            } else if (nivel === 'Basica') {
-                if (grado) {
-                    corto = `${grado}${letra}`;
-                    completo = `${grado}${nombresGrados[grado]} Básico ${letra}`;
-                    badge = `${grado}${letra}`;
-                    cursoBadge.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
-                }
-            } else if (nivel === 'Media') {
-                if (grado) {
-                    corto = `${grado}${letra}`;
-                    completo = `${grado}${nombresGrados[grado]} Medio ${letra}`;
-                    badge = `${grado}${letra}`;
-                    cursoBadge.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
-                }
+            } else if (nivel === 'Basica' && grado) {
+                corto = `${grado}${letra}`; completo = `${grado}${nombresGrados[grado]} Básico ${letra}`; badge = corto;
+            } else if (nivel === 'Media' && grado) {
+                corto = `${grado}${letra}`; completo = `${grado}${nombresGrados[grado]} Medio ${letra}`; badge = corto;
             }
-
-            nombreCorto.textContent = corto || '-';
-            nombreCompleto.textContent = completo || '-';
-            badgeText.textContent = badge || '?';
+            nombreCorto.textContent = corto || '-'; nombreCompleto.textContent = completo || '-'; badgeText.textContent = badge || '?';
         }
 
-        // Inicializar al cargar la página
         document.addEventListener('DOMContentLoaded', inicializarGrados);
     </script>
 
     <style>
-        /* Mobile Responsive Styles */
         @media (max-width: 768px) {
-            .card {
-                padding: var(--spacing-md) !important;
-                margin: 0 !important;
-                max-width: 100% !important;
-            }
-
-            /* Header adjustments */
-            .card > div:first-child {
-                margin-bottom: var(--spacing-lg) !important;
-            }
-
-            .card > div:first-child > div:first-child {
-                width: 60px !important;
-                height: 60px !important;
-                font-size: 1.5rem !important;
-            }
-
-            .card h2 {
-                font-size: 1.25rem !important;
-            }
-
-            .card > div:first-child > p {
-                font-size: 0.875rem !important;
-            }
-
-            /* Preview badge */
-            #cursoBadge {
-                width: 80px !important;
-                height: 80px !important;
-                font-size: 1.75rem !important;
-            }
-
-            /* Action buttons - stack vertically */
-            .action-buttons {
-                flex-direction: column-reverse !important;
-                gap: var(--spacing-sm) !important;
-            }
-
-            .action-buttons .btn {
-                width: 100% !important;
-                min-width: auto !important;
-                justify-content: center !important;
-            }
+            form > div:first-of-type { grid-template-columns: 1fr !important; }
         }
     </style>
 </x-app-layout>

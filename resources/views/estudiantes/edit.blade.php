@@ -1,655 +1,264 @@
 <x-app-layout>
-    <x-slot name="header">
-        Editar Estudiante
-    </x-slot>
+    <x-slot name="header">Editar Estudiante</x-slot>
+    <link rel="stylesheet" href="{{ asset('css/shared-index.css') }}?v={{ time() }}">
 
-    <div class="card" style="max-width: 1000px; margin: 0 auto;">
-        <!-- Header -->
-        <div style="margin-bottom: var(--spacing-2xl); text-align: center;">
-            <div
-                style="width: 80px; height: 80px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-lg); background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; box-shadow: var(--shadow-lg);">
-                <i class="fas fa-user-edit"></i>
-            </div>
-            <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
-                Editar Estudiante
+    <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--spacing-lg);gap:var(--spacing-md);flex-wrap:nowrap;">
+        <div>
+            <h2 style="font-size:1.5rem;font-weight:700;color:var(--text-color);margin:0;">
+                <i class="fas fa-user-edit" style="color:var(--text-muted);margin-right:8px;"></i> Editar Estudiante
             </h2>
-            <p style="color: var(--gray-600); font-size: 1rem;">{{ $estudiante->nombre_completo }}</p>
+            <p style="color:var(--text-muted);margin:var(--spacing-xs) 0 0 0;font-size:0.9375rem;">{{ $estudiante->nombre_completo }}</p>
         </div>
-
-        <form action="{{ route('students.update', $estudiante->id) }}" method="POST" enctype="multipart/form-data"
-            id="studentForm">
-            @csrf
-            @method('PATCH')
-
-            <!-- Sección: Información Personal -->
-            <div style="margin-bottom: var(--spacing-2xl);">
-                <div
-                    style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-md); border-bottom: 2px solid var(--gray-200);">
-                    <i class="fas fa-user" style="color: var(--theme-color); font-size: 1.25rem;"></i>
-                    <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin: 0;">Información
-                        Personal</h3>
-                </div>
-
-                <div class="grid grid-cols-3" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-id-card"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            RUT <span style="color: #ef4444;">*</span>
-                        </label>
-                        <input type="text" name="rut" id="rut" class="form-input"
-                            value="{{ old('rut', $estudiante->rut) }}" required placeholder="12345678-9" maxlength="12">
-                        <small id="rutError" style="color: #ef4444; font-size: 0.875rem; display: none;">RUT
-                            inválido</small>
-                        @error('rut')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-user"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Nombre <span style="color: #ef4444;">*</span>
-                        </label>
-                        <input type="text" name="nombre" class="form-input"
-                            value="{{ old('nombre', $estudiante->nombre) }}" required placeholder="Ej. Juan">
-                        @error('nombre')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-user"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Apellido <span style="color: #ef4444;">*</span>
-                        </label>
-                        <input type="text" name="apellido" class="form-input"
-                            value="{{ old('apellido', $estudiante->apellido) }}" required placeholder="Ej. Pérez">
-                        @error('apellido')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-3" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-calendar"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Fecha de Nacimiento
-                        </label>
-                        <input type="date" name="fecha_nacimiento" class="form-input"
-                            value="{{ old('fecha_nacimiento', $estudiante->fecha_nacimiento?->format('Y-m-d')) }}">
-                        @error('fecha_nacimiento')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-venus-mars"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Género
-                        </label>
-                        <select name="genero" class="form-select">
-                            <option value="">Seleccione...</option>
-                            <option value="Masculino" {{ old('genero', $estudiante->genero) == 'Masculino' ? 'selected' : '' }}>Masculino
-                            </option>
-                            <option value="Femenino" {{ old('genero', $estudiante->genero) == 'Femenino' ? 'selected' : '' }}>Femenino</option>
-                            <option value="Otro" {{ old('genero', $estudiante->genero) == 'Otro' ? 'selected' : '' }}>Otro
-                            </option>
-                        </select>
-                        @error('genero')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-flag"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Nacionalidad
-                        </label>
-                        <input type="text" name="nacionalidad" class="form-input"
-                            value="{{ old('nacionalidad', $estudiante->nacionalidad ?? 'Chilena') }}"
-                            placeholder="Ej. Chilena">
-                        @error('nacionalidad')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección: Información de Contacto -->
-            <div style="margin-bottom: var(--spacing-2xl);">
-                <div
-                    style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-md); border-bottom: 2px solid var(--gray-200);">
-                    <i class="fas fa-address-book" style="color: var(--theme-color); font-size: 1.25rem;"></i>
-                    <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin: 0;">Información de
-                        Contacto</h3>
-                </div>
-
-                <div class="grid grid-cols-2" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-envelope"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Email
-                        </label>
-                        <input type="email" name="email" class="form-input"
-                            value="{{ old('email', $estudiante->email) }}" placeholder="estudiante@email.com">
-                        @error('email')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-phone"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Teléfono
-                        </label>
-                        <input type="text" name="telefono" class="form-input"
-                            value="{{ old('telefono', $estudiante->telefono) }}" placeholder="+56 9 1234 5678">
-                        @error('telefono')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-map-marker-alt"
-                            style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                        Dirección
-                    </label>
-                    <input type="text" name="direccion" class="form-input"
-                        value="{{ old('direccion', $estudiante->direccion) }}" placeholder="Calle, número, comuna">
-                    @error('direccion')
-                        <span
-                            style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="grid grid-cols-2" style="gap: var(--spacing-lg);">
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-city"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Ciudad
-                        </label>
-                        <input type="text" name="ciudad" class="form-input"
-                            value="{{ old('ciudad', $estudiante->ciudad) }}" placeholder="Ej. Santiago">
-                        @error('ciudad')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-map"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Región
-                        </label>
-                        <select name="region" class="form-select">
-                            <option value="">Seleccione región...</option>
-                            <option value="Región Metropolitana" {{ old('region', $estudiante->region) == 'Región Metropolitana' ? 'selected' : '' }}>Región Metropolitana</option>
-                            <option value="Región de Valparaíso" {{ old('region', $estudiante->region) == 'Región de Valparaíso' ? 'selected' : '' }}>Región de Valparaíso</option>
-                            <option value="Región del Biobío" {{ old('region', $estudiante->region) == 'Región del Biobío' ? 'selected' : '' }}>Región del Biobío</option>
-                            <option value="Región de La Araucanía" {{ old('region', $estudiante->region) == 'Región de La Araucanía' ? 'selected' : '' }}>Región de La Araucanía</option>
-                            <option value="Región de Los Lagos" {{ old('region', $estudiante->region) == 'Región de Los Lagos' ? 'selected' : '' }}>Región de Los Lagos</option>
-                        </select>
-                        @error('region')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección: Estado del Estudiante -->
-            <div style="margin-bottom: var(--spacing-2xl);">
-                <div
-                    style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-md); border-bottom: 2px solid var(--gray-200);">
-                    <i class="fas fa-toggle-on" style="color: var(--theme-color); font-size: 1.25rem;"></i>
-                    <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin: 0;">Estado del
-                        Estudiante</h3>
-                </div>
-
-                <div class="form-group mb-0">
-                    <label class="form-label">
-                        <i class="fas fa-info-circle"
-                            style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                        Estado <span style="color: #ef4444;">*</span>
-                    </label>
-                    <select name="estado" class="form-select" required>
-                        <option value="activo" {{ old('estado', $estudiante->estado) == 'activo' ? 'selected' : '' }}>
-                            Activo</option>
-                        <option value="inactivo" {{ old('estado', $estudiante->estado) == 'inactivo' ? 'selected' : '' }}>
-                            Inactivo</option>
-                        <option value="retirado" {{ old('estado', $estudiante->estado) == 'retirado' ? 'selected' : '' }}>
-                            Retirado</option>
-                    </select>
-                    @error('estado')
-                        <span
-                            style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                    @enderror
-                </div>
-            </div>
-
-            <!-- Sección: Información del Apoderado -->
-            <div style="margin-bottom: var(--spacing-2xl);">
-                <div
-                    style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-md); border-bottom: 2px solid var(--gray-200);">
-                    <i class="fas fa-user-tie" style="color: var(--theme-color); font-size: 1.25rem;"></i>
-                    <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin: 0;">Información
-                        del Apoderado</h3>
-                </div>
-
-                <div class="grid grid-cols-2" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-id-card"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            RUT Apoderado <span style="color: #ef4444;">*</span>
-                        </label>
-                        <input type="text" name="apoderado_rut" id="apoderado_rut" class="form-input"
-                            value="{{ old('apoderado_rut', $estudiante->apoderado->rut ?? '') }}" required
-                            placeholder="12345678-9" maxlength="12">
-                        <small id="apoderadoRutError" style="color: #ef4444; font-size: 0.875rem; display: none;">RUT
-                            inválido</small>
-                        @error('apoderado_rut')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-heart"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Relación <span style="color: #ef4444;">*</span>
-                        </label>
-                        <select name="apoderado_relacion" class="form-select" required>
-                            <option value="">Seleccione...</option>
-                            <option value="Padre" {{ old('apoderado_relacion', $estudiante->apoderado->relacion ?? '') == 'Padre' ? 'selected' : '' }}>Padre
-                            </option>
-                            <option value="Madre" {{ old('apoderado_relacion', $estudiante->apoderado->relacion ?? '') == 'Madre' ? 'selected' : '' }}>Madre
-                            </option>
-                            <option value="Tutor" {{ old('apoderado_relacion', $estudiante->apoderado->relacion ?? '') == 'Tutor' ? 'selected' : '' }}>Tutor
-                            </option>
-                            <option value="Abuelo/a" {{ old('apoderado_relacion', $estudiante->apoderado->relacion ?? '') == 'Abuelo/a' ? 'selected' : '' }}>
-                                Abuelo/a</option>
-                            <option value="Tío/a" {{ old('apoderado_relacion', $estudiante->apoderado->relacion ?? '') == 'Tío/a' ? 'selected' : '' }}>Tío/a
-                            </option>
-                            <option value="Otro" {{ old('apoderado_relacion', $estudiante->apoderado->relacion ?? '') == 'Otro' ? 'selected' : '' }}>Otro</option>
-                        </select>
-                        @error('apoderado_relacion')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-user"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Nombre <span style="color: #ef4444;">*</span>
-                        </label>
-                        <input type="text" name="apoderado_nombre" class="form-input"
-                            value="{{ old('apoderado_nombre', $estudiante->apoderado->nombre ?? '') }}" required
-                            placeholder="Ej. María">
-                        @error('apoderado_nombre')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-user"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Apellido <span style="color: #ef4444;">*</span>
-                        </label>
-                        <input type="text" name="apoderado_apellido" class="form-input"
-                            value="{{ old('apoderado_apellido', $estudiante->apoderado->apellido ?? '') }}" required
-                            placeholder="Ej. González">
-                        @error('apoderado_apellido')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-envelope"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Email
-                        </label>
-                        <input type="email" name="apoderado_email" class="form-input"
-                            value="{{ old('apoderado_email', $estudiante->apoderado->email ?? '') }}"
-                            placeholder="apoderado@email.com">
-                        @error('apoderado_email')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-phone"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Teléfono
-                        </label>
-                        <input type="text" name="apoderado_telefono" class="form-input"
-                            value="{{ old('apoderado_telefono', $estudiante->apoderado->telefono ?? '') }}"
-                            placeholder="+56 9 1234 5678">
-                        @error('apoderado_telefono')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-phone-alt"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Teléfono de Emergencia
-                        </label>
-                        <input type="text" name="apoderado_telefono_emergencia" class="form-input"
-                            value="{{ old('apoderado_telefono_emergencia', $estudiante->apoderado->telefono_emergencia ?? '') }}"
-                            placeholder="+56 9 8765 4321">
-                        @error('apoderado_telefono_emergencia')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-briefcase"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Ocupación
-                        </label>
-                        <input type="text" name="apoderado_ocupacion" class="form-input"
-                            value="{{ old('apoderado_ocupacion', $estudiante->apoderado->ocupacion ?? '') }}"
-                            placeholder="Ej. Ingeniero">
-                        @error('apoderado_ocupacion')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2" style="gap: var(--spacing-lg);">
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-building"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Lugar de Trabajo
-                        </label>
-                        <input type="text" name="apoderado_lugar_trabajo" class="form-input"
-                            value="{{ old('apoderado_lugar_trabajo', $estudiante->apoderado->lugar_trabajo ?? '') }}"
-                            placeholder="Ej. Empresa XYZ">
-                        @error('apoderado_lugar_trabajo')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-map-marker-alt"
-                                style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Dirección
-                        </label>
-                        <input type="text" name="apoderado_direccion" class="form-input"
-                            value="{{ old('apoderado_direccion', $estudiante->apoderado->direccion ?? '') }}"
-                            placeholder="Calle, número, comuna">
-                        @error('apoderado_direccion')
-                            <span
-                                style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección: Documentos Existentes -->
-            @if($estudiante->documentos->count() > 0)
-                <div style="margin-bottom: var(--spacing-2xl);">
-                    <div
-                        style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-md); border-bottom: 2px solid var(--gray-200);">
-                        <i class="fas fa-file-alt" style="color: var(--theme-color); font-size: 1.25rem;"></i>
-                        <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin: 0;">Documentos
-                            Existentes</h3>
-                    </div>
-
-                    <div style="display: grid; gap: var(--spacing-md);">
-                        @foreach($estudiante->documentos as $documento)
-                            <div
-                                style="padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); border: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between;">
-                                <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                                    <i class="fas fa-file-pdf" style="color: var(--theme-color); font-size: 1.5rem;"></i>
-                                    <div>
-                                        <div style="font-weight: 600; color: var(--gray-900);">{{ $documento->tipo }}</div>
-                                        <div style="font-size: 0.875rem; color: var(--gray-600);">
-                                            {{ $documento->nombre_original ?? 'Documento' }}</div>
-                                        <div style="font-size: 0.75rem; color: var(--gray-500);">Subido:
-                                            {{ $documento->fecha_subida?->format('d/m/Y') ?? 'N/A' }}</div>
-                                    </div>
-                                </div>
-                                <a href="{{ Storage::url($documento->ruta_archivo) }}" target="_blank"
-                                    class="btn btn-sm btn-outline">
-                                    <i class="fas fa-download"></i> Descargar
-                                </a>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
-
-            <!-- Sección: Nuevos Documentos -->
-            <div style="margin-bottom: var(--spacing-2xl);">
-                <div
-                    style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-md); border-bottom: 2px solid var(--gray-200);">
-                    <i class="fas fa-file-upload" style="color: var(--theme-color); font-size: 1.25rem;"></i>
-                    <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin: 0;">Agregar Nuevos
-                        Documentos
-                    </h3>
-                </div>
-
-                <div id="documentosContainer">
-                    <!-- Document upload fields will be added here dynamically -->
-                </div>
-
-                <button type="button" id="addDocumento" class="btn btn-outline" style="width: 100%;">
-                    <i class="fas fa-plus"></i> Agregar Documento
-                </button>
-            </div>
-
-            <!-- Botones de Acción -->
-            <div class="action-buttons"
-                style="display: flex; gap: var(--spacing-md); justify-content: flex-end; padding-top: var(--spacing-xl); border-top: 2px solid var(--gray-200);">
-                <a href="{{ route('students.show', $estudiante->id) }}" class="btn btn-ghost" style="min-width: 120px;">
-                    <i class="fas fa-times" style="margin-right: 0.5rem;"></i>
-                    Cancelar
-                </a>
-                <button type="submit" class="btn btn-primary" style="min-width: 180px;">
-                    <i class="fas fa-save" style="margin-right: 0.5rem;"></i>
-                    Guardar Cambios
-                </button>
-            </div>
-        </form>
+        <a href="{{ route('students.show', $estudiante->id) }}" class="btn btn-outline" style="color:var(--text-muted);border-color:var(--border-color);flex-shrink:0;">
+            <i class="fas fa-arrow-left"></i> Volver
+        </a>
     </div>
 
-    <script>
-        // RUT formatting and validation
-        function formatRut(rut) {
-            let value = rut.replace(/[^0-9kK]/g, '');
-            if (value.length > 1) {
-                value = value.substring(0, value.length - 1) + '-' + value.substring(value.length - 1);
-            }
-            return value.toUpperCase();
-        }
+    <form action="{{ route('students.update', $estudiante->id) }}" method="POST" enctype="multipart/form-data" id="studentForm">
+        @csrf
+        @method('PATCH')
 
-        function validateRut(rut) {
-            rut = rut.replace(/[^0-9kK]/g, '');
-            if (rut.length < 2) return false;
-
-            const rutNum = rut.substring(0, rut.length - 1);
-            const dv = rut.substring(rut.length - 1).toUpperCase();
-
-            let suma = 0;
-            let multiplo = 2;
-
-            for (let i = rutNum.length - 1; i >= 0; i--) {
-                suma += parseInt(rutNum[i]) * multiplo;
-                multiplo = multiplo < 7 ? multiplo + 1 : 2;
-            }
-
-            let dvCalculado = 11 - (suma % 11);
-            if (dvCalculado === 11) dvCalculado = '0';
-            else if (dvCalculado === 10) dvCalculado = 'K';
-            else dvCalculado = dvCalculado.toString();
-
-            return dv === dvCalculado;
-        }
-
-        // Student RUT
-        const rutInput = document.getElementById('rut');
-        const rutError = document.getElementById('rutError');
-
-        rutInput.addEventListener('input', function (e) {
-            e.target.value = formatRut(e.target.value);
-            const isValid = validateRut(e.target.value);
-            rutError.style.display = e.target.value && !isValid ? 'block' : 'none';
-        });
-
-        // Apoderado RUT
-        const apoderadoRutInput = document.getElementById('apoderado_rut');
-        const apoderadoRutError = document.getElementById('apoderadoRutError');
-
-        apoderadoRutInput.addEventListener('input', function (e) {
-            e.target.value = formatRut(e.target.value);
-            const isValid = validateRut(e.target.value);
-            apoderadoRutError.style.display = e.target.value && !isValid ? 'block' : 'none';
-        });
-
-        // Dynamic document upload
-        let documentoIndex = 0;
-
-        document.getElementById('addDocumento').addEventListener('click', function () {
-            const container = document.getElementById('documentosContainer');
-            const documentoDiv = document.createElement('div');
-            documentoDiv.className = 'documento-item';
-            documentoDiv.style.cssText = 'padding: var(--spacing-lg); background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: var(--radius-lg); border: 2px dashed var(--gray-300); margin-bottom: var(--spacing-md);';
-
-            documentoDiv.innerHTML = `
-                <div class="grid grid-cols-2" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-md);">
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-file-alt" style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Tipo de Documento
-                        </label>
-                        <select name="nuevos_documentos[${documentoIndex}][tipo]" class="form-select" required>
-                            <option value="">Seleccione tipo...</option>
-                            <option value="Carnet de Identidad">Carnet de Identidad</option>
-                            <option value="Certificado de Nacimiento">Certificado de Nacimiento</option>
-                            <option value="Certificado de Matrícula">Certificado de Matrícula</option>
-                            <option value="Informe de Notas">Informe de Notas</option>
-                            <option value="Certificado Médico">Certificado Médico</option>
-                            <option value="Otro">Otro</option>
-                        </select>
+        <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <h3 style="font-size:1rem;font-weight:700;color:var(--text-color);margin:0 0 var(--spacing-lg) 0;padding-bottom:var(--spacing-sm);border-bottom:1px solid var(--border-color);">
+                <i class="fas fa-user" style="color:var(--text-muted);margin-right:6px;"></i> Información Personal
+            </h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--spacing-lg);">
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">RUT *</label>
+                    <div style="position:relative;"><i class="fas fa-id-card" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="rut" id="rut" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('rut', $estudiante->rut) }}" required placeholder="12345678-9" maxlength="12">
                     </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">
-                            <i class="fas fa-cloud-upload-alt" style="margin-right: var(--spacing-xs); color: var(--theme-color);"></i>
-                            Archivo (PDF/Imagen)
-                        </label>
-                        <input type="file" name="nuevos_documentos[${documentoIndex}][archivo]" class="form-input" accept=".pdf,.jpg,.jpeg,.png" required>
+                    <small id="rutError" style="color:var(--error);font-size:0.875rem;display:none;">RUT inválido</small>
+                    @error('rut')<span style="color:var(--error);font-size:0.875rem;display:block;margin-top:4px;">{{ $message }}</span>@enderror
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">NOMBRE *</label>
+                    <div style="position:relative;"><i class="fas fa-user" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="nombre" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('nombre', $estudiante->nombre) }}" required placeholder="Ej. Juan">
+                    </div>
+                    @error('nombre')<span style="color:var(--error);font-size:0.875rem;display:block;margin-top:4px;">{{ $message }}</span>@enderror
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">APELLIDO *</label>
+                    <div style="position:relative;"><i class="fas fa-user" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="apellido" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('apellido', $estudiante->apellido) }}" required placeholder="Ej. Pérez">
+                    </div>
+                    @error('apellido')<span style="color:var(--error);font-size:0.875rem;display:block;margin-top:4px;">{{ $message }}</span>@enderror
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">FECHA NACIMIENTO</label>
+                    <div style="position:relative;"><i class="fas fa-calendar" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="date" name="fecha_nacimiento" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('fecha_nacimiento', $estudiante->fecha_nacimiento?->format('Y-m-d')) }}">
+                    </div>
+                    @error('fecha_nacimiento')<span style="color:var(--error);font-size:0.875rem;display:block;margin-top:4px;">{{ $message }}</span>@enderror
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">GÉNERO</label>
+                    <select name="genero" class="form-select" style="width:100%;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);">
+                        <option value="">Seleccione...</option>
+                        <option value="Masculino" {{ old('genero', $estudiante->genero) == 'Masculino' ? 'selected' : '' }}>Masculino</option>
+                        <option value="Femenino" {{ old('genero', $estudiante->genero) == 'Femenino' ? 'selected' : '' }}>Femenino</option>
+                        <option value="Otro" {{ old('genero', $estudiante->genero) == 'Otro' ? 'selected' : '' }}>Otro</option>
+                    </select>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">NACIONALIDAD</label>
+                    <div style="position:relative;"><i class="fas fa-flag" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="nacionalidad" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('nacionalidad', $estudiante->nacionalidad ?? 'Chilena') }}" placeholder="Ej. Chilena">
                     </div>
                 </div>
-                <button type="button" class="btn btn-ghost btn-sm remove-documento" style="color: var(--error);">
-                    <i class="fas fa-trash"></i> Eliminar
-                </button>
-            `;
+            </div>
+        </div>
 
-            container.appendChild(documentoDiv);
-            documentoIndex++;
+        <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <h3 style="font-size:1rem;font-weight:700;color:var(--text-color);margin:0 0 var(--spacing-lg) 0;padding-bottom:var(--spacing-sm);border-bottom:1px solid var(--border-color);">
+                <i class="fas fa-toggle-on" style="color:var(--text-muted);margin-right:6px;"></i> Estado
+            </h3>
+            <div class="form-group mb-0">
+                <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">ESTADO *</label>
+                <select name="estado" class="form-select" style="width:100%;max-width:300px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" required>
+                    <option value="activo" {{ old('estado', $estudiante->estado) == 'activo' ? 'selected' : '' }}>Activo</option>
+                    <option value="inactivo" {{ old('estado', $estudiante->estado) == 'inactivo' ? 'selected' : '' }}>Inactivo</option>
+                    <option value="retirado" {{ old('estado', $estudiante->estado) == 'retirado' ? 'selected' : '' }}>Retirado</option>
+                </select>
+            </div>
+        </div>
 
-            // Add remove functionality
-            documentoDiv.querySelector('.remove-documento').addEventListener('click', function () {
-                documentoDiv.remove();
-            });
+        <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <h3 style="font-size:1rem;font-weight:700;color:var(--text-color);margin:0 0 var(--spacing-lg) 0;padding-bottom:var(--spacing-sm);border-bottom:1px solid var(--border-color);">
+                <i class="fas fa-address-book" style="color:var(--text-muted);margin-right:6px;"></i> Contacto
+            </h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-lg);">
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">EMAIL</label>
+                    <div style="position:relative;"><i class="fas fa-envelope" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="email" name="email" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('email', $estudiante->email) }}" placeholder="estudiante@email.com">
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">TELÉFONO</label>
+                    <div style="position:relative;"><i class="fas fa-phone" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="telefono" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('telefono', $estudiante->telefono) }}" placeholder="+56 9 1234 5678">
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">DIRECCIÓN</label>
+                    <div style="position:relative;"><i class="fas fa-map-marker-alt" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="direccion" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('direccion', $estudiante->direccion) }}" placeholder="Calle, número, comuna">
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">CIUDAD</label>
+                    <div style="position:relative;"><i class="fas fa-city" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="ciudad" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('ciudad', $estudiante->ciudad) }}" placeholder="Ej. Santiago">
+                    </div>
+                </div>
+                <div class="form-group mb-0" style="grid-column:1/-1;">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">REGIÓN</label>
+                    <select name="region" class="form-select" style="width:100%;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);">
+                        <option value="">Seleccione región...</option>
+                        <option value="Región Metropolitana" {{ old('region', $estudiante->region) == 'Región Metropolitana' ? 'selected' : '' }}>Región Metropolitana</option>
+                        <option value="Región de Valparaíso" {{ old('region', $estudiante->region) == 'Región de Valparaíso' ? 'selected' : '' }}>Región de Valparaíso</option>
+                        <option value="Región del Biobío" {{ old('region', $estudiante->region) == 'Región del Biobío' ? 'selected' : '' }}>Región del Biobío</option>
+                        <option value="Región de La Araucanía" {{ old('region', $estudiante->region) == 'Región de La Araucanía' ? 'selected' : '' }}>Región de La Araucanía</option>
+                        <option value="Región de Los Lagos" {{ old('region', $estudiante->region) == 'Región de Los Lagos' ? 'selected' : '' }}>Región de Los Lagos</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <h3 style="font-size:1rem;font-weight:700;color:var(--text-color);margin:0 0 var(--spacing-lg) 0;padding-bottom:var(--spacing-sm);border-bottom:1px solid var(--border-color);">
+                <i class="fas fa-user-tie" style="color:var(--text-muted);margin-right:6px;"></i> Apoderado
+            </h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-lg);">
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">RUT APODERADO *</label>
+                    <div style="position:relative;"><i class="fas fa-id-card" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="apoderado_rut" id="apoderado_rut" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('apoderado_rut', $estudiante->apoderado->rut ?? '') }}" required placeholder="12345678-9" maxlength="12">
+                    </div>
+                    <small id="apoderadoRutError" style="color:var(--error);font-size:0.875rem;display:none;">RUT inválido</small>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">RELACIÓN *</label>
+                    <select name="apoderado_relacion" class="form-select" style="width:100%;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" required>
+                        <option value="">Seleccione...</option>
+                        @foreach(['Padre','Madre','Tutor','Abuelo/a','Tío/a','Otro'] as $rel)
+                            <option value="{{ $rel }}" {{ old('apoderado_relacion', $estudiante->apoderado->relacion ?? '') == $rel ? 'selected' : '' }}>{{ $rel }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">NOMBRE *</label>
+                    <div style="position:relative;"><i class="fas fa-user" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="apoderado_nombre" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('apoderado_nombre', $estudiante->apoderado->nombre ?? '') }}" required placeholder="Ej. María">
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">APELLIDO *</label>
+                    <div style="position:relative;"><i class="fas fa-user" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="apoderado_apellido" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('apoderado_apellido', $estudiante->apoderado->apellido ?? '') }}" required placeholder="Ej. González">
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">EMAIL</label>
+                    <div style="position:relative;"><i class="fas fa-envelope" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="email" name="apoderado_email" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('apoderado_email', $estudiante->apoderado->email ?? '') }}" placeholder="apoderado@email.com">
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">TELÉFONO</label>
+                    <div style="position:relative;"><i class="fas fa-phone" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="apoderado_telefono" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('apoderado_telefono', $estudiante->apoderado->telefono ?? '') }}" placeholder="+56 9 1234 5678">
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">TEL. EMERGENCIA</label>
+                    <div style="position:relative;"><i class="fas fa-phone-alt" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="apoderado_telefono_emergencia" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('apoderado_telefono_emergencia', $estudiante->apoderado->telefono_emergencia ?? '') }}" placeholder="+56 9 8765 4321">
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">OCUPACIÓN</label>
+                    <div style="position:relative;"><i class="fas fa-briefcase" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="apoderado_ocupacion" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('apoderado_ocupacion', $estudiante->apoderado->ocupacion ?? '') }}" placeholder="Ej. Ingeniero">
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">LUGAR DE TRABAJO</label>
+                    <div style="position:relative;"><i class="fas fa-building" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="apoderado_lugar_trabajo" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('apoderado_lugar_trabajo', $estudiante->apoderado->lugar_trabajo ?? '') }}" placeholder="Ej. Empresa XYZ">
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">DIRECCIÓN APODERADO</label>
+                    <div style="position:relative;"><i class="fas fa-map-marker-alt" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;z-index:1;"></i>
+                        <input type="text" name="apoderado_direccion" class="form-input" style="width:100%;padding-left:40px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" value="{{ old('apoderado_direccion', $estudiante->apoderado->direccion ?? '') }}" placeholder="Calle, número, comuna">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if($estudiante->documentos->count() > 0)
+        <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <h3 style="font-size:1rem;font-weight:700;color:var(--text-color);margin:0 0 var(--spacing-lg) 0;padding-bottom:var(--spacing-sm);border-bottom:1px solid var(--border-color);">
+                <i class="fas fa-file-alt" style="color:var(--text-muted);margin-right:6px;"></i> Documentos Existentes
+            </h3>
+            <div style="border:1px solid var(--border-color);border-radius:var(--radius-md);overflow:hidden;">
+                @foreach($estudiante->documentos as $documento)
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--spacing-md);{{ !$loop->last ? 'border-bottom:1px solid var(--border-color);' : '' }}">
+                        <div style="display:flex;align-items:center;gap:var(--spacing-md);">
+                            <div style="width:36px;height:36px;border-radius:var(--radius-md);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;color:var(--text-muted);flex-shrink:0;"><i class="fas fa-file-pdf"></i></div>
+                            <div>
+                                <div style="font-weight:600;color:var(--text-color);font-size:0.9rem;">{{ $documento->tipo }}</div>
+                                <div style="font-size:0.75rem;color:var(--text-muted);">{{ $documento->fecha_subida?->format('d/m/Y') ?? 'N/A' }}</div>
+                            </div>
+                        </div>
+                        <a href="{{ Storage::url($documento->ruta_archivo) }}" target="_blank" class="btn btn-sm btn-outline" style="color:var(--text-color);border-color:var(--border-color);">
+                            <i class="fas fa-download"></i> Descargar
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:var(--spacing-lg);margin-bottom:var(--spacing-lg);">
+            <h3 style="font-size:1rem;font-weight:700;color:var(--text-color);margin:0 0 var(--spacing-lg) 0;padding-bottom:var(--spacing-sm);border-bottom:1px solid var(--border-color);">
+                <i class="fas fa-file-upload" style="color:var(--text-muted);margin-right:6px;"></i> Agregar Documentos
+            </h3>
+            <div id="documentosContainer"></div>
+            <button type="button" id="addDocumento" class="btn btn-outline" style="width:100%;color:var(--text-muted);border-color:var(--border-color);">
+                <i class="fas fa-plus"></i> Agregar Documento
+            </button>
+        </div>
+
+        <div style="padding-top:var(--spacing-lg);border-top:1px solid var(--border-color);display:flex;justify-content:flex-end;">
+            <button type="submit" class="btn btn-outline" style="color:var(--text-color);border-color:var(--border-color);">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+        </div>
+    </form>
+
+    <script>
+        function formatRut(rut) { let v=rut.replace(/[^0-9kK]/g,''); if(v.length>1)v=v.substring(0,v.length-1)+'-'+v.substring(v.length-1); return v.toUpperCase(); }
+        function validateRut(rut) { rut=rut.replace(/[^0-9kK]/g,''); if(rut.length<2)return false; const n=rut.substring(0,rut.length-1),d=rut.substring(rut.length-1).toUpperCase(); let s=0,m=2; for(let i=n.length-1;i>=0;i--){s+=parseInt(n[i])*m;m=m<7?m+1:2;} let c=11-(s%11); if(c===11)c='0';else if(c===10)c='K';else c=c.toString(); return d===c; }
+        const ri=document.getElementById('rut'),re=document.getElementById('rutError');
+        ri.addEventListener('input',e=>{e.target.value=formatRut(e.target.value);re.style.display=e.target.value&&!validateRut(e.target.value)?'block':'none';});
+        const ai=document.getElementById('apoderado_rut'),ae=document.getElementById('apoderadoRutError');
+        ai.addEventListener('input',e=>{e.target.value=formatRut(e.target.value);ae.style.display=e.target.value&&!validateRut(e.target.value)?'block':'none';});
+        let idx=0;
+        document.getElementById('addDocumento').addEventListener('click',function(){
+            const c=document.getElementById('documentosContainer'),d=document.createElement('div');
+            d.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-lg);margin-bottom:var(--spacing-md);padding:var(--spacing-md);border:1px solid var(--border-color);border-radius:var(--radius-md);';
+            d.innerHTML=`<div class="form-group mb-0"><label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">TIPO</label><select name="nuevos_documentos[${idx}][tipo]" class="form-select" style="width:100%;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" required><option value="">Seleccione...</option><option>Carnet de Identidad</option><option>Certificado de Nacimiento</option><option>Certificado de Matrícula</option><option>Informe de Notas</option><option>Certificado Médico</option><option>Otro</option></select></div><div class="form-group mb-0"><label class="form-label" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">ARCHIVO <button type="button" class="rm" style="float:right;background:none;border:none;color:var(--error);cursor:pointer;font-size:0.8rem;"><i class="fas fa-trash"></i></button></label><input type="file" name="nuevos_documentos[${idx}][archivo]" class="form-input" style="border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-color);" accept=".pdf,.jpg,.jpeg,.png" required></div>`;
+            c.appendChild(d); d.querySelector('.rm').addEventListener('click',()=>d.remove()); idx++;
         });
-
-        // Form validation before submit
-        document.getElementById('studentForm').addEventListener('submit', function (e) {
-            const rutValid = validateRut(rutInput.value);
-            const apoderadoRutValid = validateRut(apoderadoRutInput.value);
-
-            if (!rutValid || !apoderadoRutValid) {
-                e.preventDefault();
-                if (!rutValid) rutError.style.display = 'block';
-                if (!apoderadoRutValid) apoderadoRutError.style.display = 'block';
-                alert('Por favor corrija los errores en el formulario antes de continuar.');
-            }
+        document.getElementById('studentForm').addEventListener('submit',function(e){
+            if(!validateRut(ri.value)||!validateRut(ai.value)){e.preventDefault();if(!validateRut(ri.value))re.style.display='block';if(!validateRut(ai.value))ae.style.display='block';}
         });
     </script>
-
     <style>
-        /* Mobile Responsive Styles */
-        @media (max-width: 768px) {
-            .card {
-                padding: var(--spacing-md) !important;
-                margin: 0 !important;
-                max-width: 100% !important;
-            }
-
-            .card>div:first-child {
-                margin-bottom: var(--spacing-lg) !important;
-            }
-
-            .card>div:first-child>div:first-child {
-                width: 60px !important;
-                height: 60px !important;
-                font-size: 1.5rem !important;
-            }
-
-            .card h2 {
-                font-size: 1.25rem !important;
-            }
-
-            .card>div:first-child>p {
-                font-size: 0.875rem !important;
-            }
-
-            .card h3 {
-                font-size: 1rem !important;
-            }
-
-            .grid-cols-2,
-            .grid-cols-3 {
-                grid-template-columns: 1fr !important;
-                gap: var(--spacing-md) !important;
-            }
-
-            .action-buttons {
-                flex-direction: column-reverse !important;
-                gap: var(--spacing-sm) !important;
-            }
-
-            .action-buttons .btn {
-                width: 100% !important;
-                min-width: auto !important;
-                justify-content: center !important;
-            }
-        }
+        @media(max-width:768px){div[style*="grid-template-columns:1fr 1fr 1fr"]{grid-template-columns:1fr!important;}div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important;}}
     </style>
 </x-app-layout>
