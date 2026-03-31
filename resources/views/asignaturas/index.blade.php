@@ -11,176 +11,31 @@
         </div>
     @endif
 
-    <!-- Hero Header -->
-    <div class="hero-header"
-        style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center;">
+    <link rel="stylesheet" href="{{ asset('css/shared-index.css') }}?v={{ time() }}">
+
+    <!-- Page Header -->
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
         <div>
-            <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
-                <i class="fas fa-book"></i> Asignaturas
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900); margin: 0;">
+                Gestión de Asignaturas
             </h2>
-            <p class="hero-description" style="font-size: 1rem; opacity: 0.95; margin: 0;">
+            <p style="color: var(--gray-500); margin: var(--spacing-xs) 0 0 0; font-size: 0.9375rem;">
                 Administra todas las asignaturas del sistema educativo
             </p>
         </div>
-        <div class="hero-actions">
-            <a href="{{ route('subjects.create') }}" class="btn btn-primary btn-new-subject"
-                style="background: white; color: var(--theme-dark); text-decoration: none;">
-                <span><i class="fas fa-plus"></i></span>
+        <div class="header-actions">
+            <a href="{{ route('subjects.create') }}" class="btn btn-outline"
+                style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--gray-300); color: var(--gray-700); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                onmouseover="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'"
+                onmouseout="this.style.background='transparent'; this.style.color='var(--gray-700)'">
+                <i class="fas fa-plus"></i>
                 <span class="btn-text">Nueva Asignatura</span>
             </a>
         </div>
     </div>
 
-    <style>
-        /* Mobile Responsive Styles */
-        @media (max-width: 768px) {
-            .hero-header {
-                flex-direction: column !important;
-                gap: var(--spacing-lg) !important;
-                padding: var(--spacing-lg) !important;
-                text-align: center !important;
-            }
-
-            .hero-header h2 {
-                font-size: 1.5rem !important;
-            }
-
-            .hero-description {
-                font-size: 0.875rem !important;
-            }
-
-            .hero-actions {
-                width: 100% !important;
-            }
-
-            .btn-new-subject {
-                width: 100% !important;
-                justify-content: center !important;
-            }
-
-            /* Hide search card on mobile */
-            .search-card {
-                display: none !important;
-            }
-
-            /* Show mobile search button */
-            .mobile-search-button {
-                display: block !important;
-            }
-
-            /* Hide table on mobile, show table */
-            .table-container {
-                display: none !important;
-            }
-
-            .mobile-table {
-                display: block !important;
-            }
-        }
-
-        /* Desktop: Show table, hide mobile elements */
-        @media (min-width: 769px) {
-            .mobile-table {
-                display: none !important;
-            }
-
-            .table-container {
-                display: block !important;
-            }
-
-            .mobile-search-button,
-            .search-modal {
-                display: none !important;
-            }
-        }
-
-        /* Search Modal */
-        .search-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            animation: fadeIn 0.2s ease-out;
-        }
-
-        .search-modal.active {
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-        }
-
-        .search-modal-content {
-            background: white;
-            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-            width: 100%;
-            max-height: 40vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .search-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: var(--spacing-lg);
-            border-bottom: 1px solid var(--gray-200);
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 1;
-        }
-
-        .search-modal-close {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--gray-100);
-            border: none;
-            color: var(--gray-600);
-            font-size: 1.125rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .search-modal-close:hover {
-            background: var(--gray-200);
-            color: var(--gray-900);
-        }
-
-        .search-modal-body {
-            padding: var(--spacing-lg);
-        }
-
-        .search-modal-footer {
-            padding: var(--spacing-lg);
-            border-top: 1px solid var(--gray-200);
-            display: flex;
-            gap: var(--spacing-sm);
-            position: sticky;
-            bottom: 0;
-            background: white;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-    </style>
-
     <!-- Search -->
-    <div class="mb-xl search-card">
+    <div class="mb-xl filters-card">
         <div style="display: flex; gap: var(--spacing-xs); align-items: center;">
                 <div class="form-group mb-0" style="position: relative; flex: 1;">
                     <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1.125rem;">
@@ -189,7 +44,7 @@
                     <input type="text" id="searchInput" class="form-input" 
                         placeholder="Buscar por nombre o código..." 
                         style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem;"
-                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
                         onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                 </div>
                 <!-- Clear Button (only visible when search is active) -->
@@ -204,39 +59,40 @@
     </div>
 
     <!-- Mobile: Standalone Search Button -->
-    <div class="mobile-search-button" style="display: none; margin-bottom: var(--spacing-lg);">
-        <button class="btn btn-primary" onclick="openSearchModal()" 
-            style="width: 100%; height: 48px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); color: white;">
+    <div class="mobile-filter-button" style="display: none; margin-bottom: var(--spacing-md);">
+        <button onclick="openSearchModal()" 
+            style="width: 100%; height: 48px; border-radius: var(--radius-lg); background: transparent; border: 1px solid var(--gray-300); display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); color: var(--gray-700); font-weight: 600; cursor: pointer;">
             <i class="fas fa-search"></i>
             <span>Buscar Asignaturas</span>
         </button>
     </div>
 
     <!-- Search Modal (Mobile only) -->
-    <div id="searchModal" class="search-modal" onclick="closeSearchModal()">
-        <div class="search-modal-content" onclick="event.stopPropagation()">
-            <div class="search-modal-header">
-                <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--gray-900);">
-                    <i class="fas fa-search" style="color: var(--theme-color); margin-right: var(--spacing-sm);"></i>
+    <div id="searchModal" class="filters-modal" onclick="closeSearchModal()">
+        <div class="filters-modal-content" onclick="event.stopPropagation()">
+            <div class="filters-modal-header">
+                <h3 style="margin: 0; font-size: 1.125rem; font-weight: 600; color: var(--gray-900);">
+                    <i class="fas fa-search" style="color: var(--gray-400); margin-right: var(--spacing-sm);"></i>
                     Buscar
                 </h3>
-                <button onclick="closeSearchModal()" class="search-modal-close" aria-label="Cerrar">
+                <button onclick="closeSearchModal()" class="filters-modal-close" aria-label="Cerrar">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="search-modal-body">
+            <div class="filters-modal-body">
                 <div class="form-group mb-0">
-                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">
-                        <i class="fas fa-search" style="color: var(--theme-color);"></i> Buscar
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs); display: flex; align-items: center; gap: var(--spacing-xs);">
+                        <i class="fas fa-search" style="color: var(--gray-400);"></i> Buscar
                     </label>
                     <input type="text" id="searchInputMobile" class="form-input" 
                         placeholder="Buscar por nombre o código..." 
-                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;">
+                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;"
+                        onfocus="this.style.borderColor='#84cc16'" onblur="this.style.borderColor='var(--gray-200)'">
                 </div>
             </div>
-            <div class="search-modal-footer">
-                <button onclick="clearFilters()" class="btn btn-outline" style="flex: 1;">Limpiar</button>
-                <button onclick="applySearch()" class="btn btn-primary" style="flex: 1; color: white;">Aplicar</button>
+            <div class="filters-modal-footer">
+                <button onclick="clearFilters()" class="btn btn-outline" style="flex: 1; border: 1px solid var(--gray-300); background: transparent; color: var(--gray-700);">Limpiar</button>
+                <button onclick="applySearch()" style="flex: 1; background: #84cc16; color: white; border: none; border-radius: var(--radius-md); font-weight: 600; padding: 0.625rem;">Aplicar</button>
             </div>
         </div>
     </div>
@@ -248,12 +104,10 @@
                 <div class="asignatura-item mobile-table-row" 
                     style="border-bottom: 1px solid var(--gray-200); padding: var(--spacing-sm) var(--spacing-md); cursor: pointer; transition: background 0.2s;"
                     onclick="window.location='{{ route('subjects.show', $asignatura->id) }}'" 
-                    data-search="{{ strtolower($asignatura->nombre . ' ' . $asignatura->codigo) }}"
-                    onmouseover="this.style.background='var(--gray-50)'"
-                    onmouseout="this.style.background='white'">
+                    data-search="{{ strtolower($asignatura->nombre . ' ' . $asignatura->codigo) }}">
                     
                     <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
-                        <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.875rem; flex-shrink: 0;">
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: #84cc16; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.875rem; flex-shrink: 0;">
                             <i class="fas fa-book-open"></i>
                         </div>
                         
@@ -264,7 +118,9 @@
                         
                         <div style="display: flex; gap: 4px; flex-shrink: 0;" onclick="event.stopPropagation();">
                             <a href="{{ route('subjects.edit', $asignatura->id) }}" 
-                                style="width: 32px; height: 32px; border-radius: var(--radius-md); background: var(--theme-color); color: white; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.75rem;"
+                                style="width: 32px; height: 32px; border-radius: var(--radius-md); background: transparent; color: var(--gray-600); border: 1px solid var(--gray-300); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.75rem; transition: background 0.2s;"
+                                onmouseover="this.style.background='var(--gray-100)';"
+                                onmouseout="this.style.background='transparent';"
                                 title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
@@ -272,7 +128,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" 
-                                    style="width: 32px; height: 32px; border-radius: var(--radius-md); background: white; color: var(--error); border: 1px solid var(--error); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem;"
+                                    style="width: 32px; height: 32px; border-radius: var(--radius-md); background: transparent; color: var(--error); border: 1px solid var(--error); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; transition: background 0.2s;"
                                     title="Eliminar">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -293,11 +149,11 @@
     <div class="table-container">
         <table class="table">
             <thead>
-                <tr style="background: var(--theme-dark);">
-                    <th style="color: white !important;">Asignatura</th>
-                    <th style="color: white !important;">Código</th>
-                    <th style="color: white !important;">Descripción</th>
-                    <th style="color: white !important;">Acciones</th>
+                <tr class="table-header-row">
+                    <th style="text-align: left;">Asignatura</th>
+                    <th style="text-align: left;">Código</th>
+                    <th style="text-align: left;">Descripción</th>
+                    <th style="text-align: left;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -307,7 +163,7 @@
                         <td>
                             <div style="display: flex; align-items: center; gap: var(--spacing-md);">
                                 <div
-                                    style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+                                    style="width: 40px; height: 40px; border-radius: 50%; background: #84cc16; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
                                     <i class="fas fa-book-open"></i>
                                 </div>
                                 <div>
@@ -317,7 +173,7 @@
                             </div>
                         </td>
                         <td>
-                            <span class="badge badge-primary">{{ $asignatura->codigo }}</span>
+                            <span style="display: inline-block; padding: 0.25rem 0.625rem; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; color: #84cc16; background: rgba(132, 204, 22, 0.1); border-radius: 9999px;">{{ $asignatura->codigo }}</span>
                         </td>
                         <td style="color: var(--gray-600); font-size: 0.875rem;">
                             {{ $asignatura->descripcion ? Str::limit($asignatura->descripcion, 60) : 'Sin descripción' }}

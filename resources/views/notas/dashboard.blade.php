@@ -3,29 +3,33 @@
         Dashboard de Notas
     </x-slot>
 
-    <!-- Hero Header -->
-    <div
-        style="background: linear-gradient(135deg, var(--theme-color) 0%, var(--theme-dark) 100%); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg);">
-        <div
-            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-lg);">
-            <div>
-                <h2 style="color: white; font-size: 1.875rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
-                    <i class="fas fa-chart-bar"></i> Dashboard de Notas
-                </h2>
-                <p style="font-size: 1rem; opacity: 0.95; margin: 0;">
-                    Gestión integral de calificaciones y estadísticas académicas
-                </p>
-            </div>
-            <div style="display: flex; gap: var(--spacing-md);">
-                <a href="{{ route('grades.index') }}" class="btn btn-outline"
-                    style="background: rgba(255,255,255,0.2); border-color: white; color: white;">
-                    <i class="fas fa-list"></i> Ver Todas las Notas
-                </a>
-                <a href="{{ route('grades.create') }}" class="btn"
-                    style="background: white; color: var(--theme-color);">
-                    <i class="fas fa-plus"></i> Ingresar Notas
-                </a>
-            </div>
+    <link rel="stylesheet" href="{{ asset('css/shared-index.css') }}?v={{ time() }}">
+
+    <!-- Page Header -->
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+        <div>
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900); margin: 0;">
+                <i class="fas fa-chart-bar" style="color: var(--gray-400); margin-right: 8px;"></i> Dashboard de Notas
+            </h2>
+            <p style="color: var(--gray-500); margin: var(--spacing-xs) 0 0 0; font-size: 0.9375rem;">
+                Gestión integral de calificaciones y estadísticas académicas
+            </p>
+        </div>
+        <div class="header-actions" style="display: flex; gap: var(--spacing-md);">
+            <a href="{{ route('grades.index') }}" class="btn btn-outline"
+                style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--gray-300); color: var(--gray-700); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                onmouseover="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'"
+                onmouseout="this.style.background='transparent'; this.style.color='var(--gray-700)'">
+                <i class="fas fa-list"></i>
+                <span class="btn-text">Ver Todas las Notas</span>
+            </a>
+            <a href="{{ route('grades.create') }}" class="btn btn-outline"
+                style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--gray-300); color: var(--gray-700); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                onmouseover="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'"
+                onmouseout="this.style.background='transparent'; this.style.color='var(--gray-700)'">
+                <i class="fas fa-plus"></i>
+                <span class="btn-text">Ingresar Notas</span>
+            </a>
         </div>
     </div>
 
@@ -40,7 +44,7 @@
                     </div>
                     <select name="periodo" class="form-select" onchange="document.getElementById('filterForm').submit()"
                         style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
-                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
                         onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                         <option value="">Todos los períodos</option>
                         @foreach($periodos as $periodo)
@@ -57,7 +61,7 @@
                     </div>
                     <select name="nivel" class="form-select" onchange="document.getElementById('filterForm').submit()"
                         style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
-                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
                         onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                         <option value="">Todos los niveles</option>
                         @foreach($niveles as $key => $label)
@@ -82,179 +86,169 @@
         </form>
     </div>
 
-    <!-- Charts Section -->
-    <div class="grid grid-cols-2 mb-xl">
-        <!-- Bar Chart - Course Averages -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">
-                    <i class="fas fa-chart-bar"></i> Promedios por Curso (Top 10)
-                </h3>
-            </div>
-            <div class="card-body">
-                <canvas id="chartPromedios" style="max-height: 300px;"></canvas>
-            </div>
-        </div>
-
-        <!-- Doughnut Chart - Pass/Fail Distribution -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">
-                    <i class="fas fa-chart-pie"></i> Distribución de Notas
-                </h3>
-            </div>
-            <div class="card-body">
-                <canvas id="chartDistribucion" style="max-height: 300px;"></canvas>
-            </div>
-        </div>
+    <!-- TABS CONTAINER (MOBILE ONLY via CSS) -->
+    <div class="system-tabs-container">
+        <div onclick="switchSystemTab('general')" class="system-tab active-tab" id="tab-general">Visión General</div>
+        <div onclick="switchSystemTab('rendimiento')" class="system-tab" id="tab-rendimiento">Rendimiento</div>
+        <div onclick="switchSystemTab('detalles')" class="system-tab" id="tab-detalles">Detalles y Exportación</div>
     </div>
 
-    <!-- General Statistics -->
-    <div class="grid grid-cols-4 mb-xl">
-        <div class="stat-card">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
-                <i class="fas fa-users"></i>
+    <!-- TAB 1: VISIÓN GENERAL -->
+    <div id="section-general" class="system-tab-section active-section">
+        <!-- General Statistics -->
+        <div class="grid grid-cols-4 mb-lg" style="gap: var(--spacing-md);">
+            <div class="card" style="padding: 12px; text-align: center; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); background: var(--bg-card);">
+                <div style="font-size: 1.5rem; font-weight: 800; color: #3b82f6; line-height: 1;">{{ $totalEstudiantes }}</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-top: 4px;">Total Estudiantes</div>
             </div>
-            <div class="stat-content">
-                <div class="stat-value">{{ $totalEstudiantes }}</div>
-                <div class="stat-label">Total Estudiantes</div>
+            <div class="card" style="padding: 12px; text-align: center; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); background: var(--bg-card);">
+                <div style="font-size: 1.5rem; font-weight: 800; color: #10b981; line-height: 1;">{{ $totalNotas }}</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-top: 4px;">Notas Registradas</div>
             </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-                <i class="fas fa-file-alt"></i>
+            <div class="card" style="padding: 12px; text-align: center; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); background: var(--bg-card);">
+                <div style="font-size: 1.5rem; font-weight: 800; color: #84cc16; line-height: 1;">{{ $promedioGeneral }}</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-top: 4px;">Promedio General</div>
             </div>
-            <div class="stat-content">
-                <div class="stat-value">{{ $totalNotas }}</div>
-                <div class="stat-label">Notas Registradas</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-                <i class="fas fa-chart-line"></i>
-            </div>
-            <div class="stat-content">
-                <div class="stat-value">{{ $promedioGeneral }}</div>
-                <div class="stat-label">Promedio General</div>
+            <div class="card" style="padding: 12px; text-align: center; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); background: var(--bg-card);">
+                <div style="font-size: 1.5rem; font-weight: 800; color: {{ $porcentajeAprobacion >= 60 ? 'var(--success)' : 'var(--warning)' }}; line-height: 1;">{{ $porcentajeAprobacion }}%</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-top: 4px;">Aprobación</div>
             </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
-                <i class="fas fa-percentage"></i>
-            </div>
-            <div class="stat-content">
-                <div class="stat-value">{{ $porcentajeAprobacion }}%</div>
-                <div class="stat-label">Aprobación</div>
-            </div>
-        </div>
-    </div>
 
     <!-- Statistics by Education Level -->
-    <div class="grid grid-cols-2 mb-xl">
+    <div class="grid grid-cols-2 mb-xl" style="gap: var(--spacing-lg);">
         <!-- Básica Statistics -->
-        <div class="card">
-            <div class="card-header"
-                style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white;">
-                <h3 class="card-title" style="color: white; margin: 0;">
-                    <i class="fas fa-school"></i> Educación Básica
+        <div class="card" style="min-width: 0; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-color);">
+            <div class="card-header" style="padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-color);">
+                <h3 class="card-title" style="margin: 0; font-size: 1.1rem; color: var(--text-color);">
+                    <i class="fas fa-school" style="color: #3b82f6; margin-right: 6px;"></i> Educación Básica
                 </h3>
             </div>
-            <div class="card-body">
-                <div class="grid grid-cols-2 mb-lg">
-                    <div style="text-align: center; padding: var(--spacing-lg);">
-                        <div
-                            style="font-size: 2.5rem; font-weight: 700; color: var(--success); margin-bottom: var(--spacing-sm);">
+            <div class="card-body" style="padding: var(--spacing-md) var(--spacing-lg);">
+                <div class="grid grid-cols-2 mb-md">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.8rem; font-weight: 800; color: var(--success); margin-bottom: 2px;">
                             {{ $estadisticasBasica['porcentaje_aprobacion'] }}%
                         </div>
-                        <div style="color: var(--gray-600); font-size: 0.875rem; font-weight: 500;">Aprobación</div>
+                        <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">Aprobación</div>
                     </div>
-                    <div style="text-align: center; padding: var(--spacing-lg);">
-                        <div
-                            style="font-size: 2.5rem; font-weight: 700; color: var(--theme-color); margin-bottom: var(--spacing-sm);">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.8rem; font-weight: 800; color: #84cc16; margin-bottom: 2px;">
                             {{ $estadisticasBasica['promedio'] }}
                         </div>
-                        <div style="color: var(--gray-600); font-size: 0.875rem; font-weight: 500;">Promedio</div>
+                        <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">Promedio</div>
                     </div>
                 </div>
-                <div
-                    style="display: flex; justify-content: space-around; padding-top: var(--spacing-lg); border-top: 1px solid var(--gray-200);">
+                <div style="display: flex; justify-content: space-around; padding-top: var(--spacing-md); border-top: 1px solid var(--border-color);">
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: 600; color: var(--success);">
+                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--success);">
                             {{ $estadisticasBasica['aprobados'] }}
                         </div>
-                        <div style="color: var(--gray-600); font-size: 0.75rem;">Aprobados</div>
+                        <div style="color: var(--text-muted); font-size: 0.7rem; font-weight: 600; text-transform: uppercase;">Aprobados</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: 600; color: var(--danger);">
+                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--danger);">
                             {{ $estadisticasBasica['reprobados'] }}
                         </div>
-                        <div style="color: var(--gray-600); font-size: 0.75rem;">Reprobados</div>
+                        <div style="color: var(--text-muted); font-size: 0.7rem; font-weight: 600; text-transform: uppercase;">Reprobados</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: 600; color: var(--gray-700);">
+                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-color);">
                             {{ $estadisticasBasica['total'] }}
                         </div>
-                        <div style="color: var(--gray-600); font-size: 0.75rem;">Total</div>
+                        <div style="color: var(--text-muted); font-size: 0.7rem; font-weight: 600; text-transform: uppercase;">Total</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Media Statistics -->
-        <div class="card">
-            <div class="card-header"
-                style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white;">
-                <h3 class="card-title" style="color: white; margin: 0;">
-                    <i class="fas fa-graduation-cap"></i> Educación Media
+        <div class="card" style="min-width: 0; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-color);">
+            <div class="card-header" style="padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-color);">
+                <h3 class="card-title" style="margin: 0; font-size: 1.1rem; color: var(--text-color);">
+                    <i class="fas fa-graduation-cap" style="color: #8b5cf6; margin-right: 6px;"></i> Educación Media
                 </h3>
             </div>
-            <div class="card-body">
-                <div class="grid grid-cols-2 mb-lg">
-                    <div style="text-align: center; padding: var(--spacing-lg);">
-                        <div
-                            style="font-size: 2.5rem; font-weight: 700; color: var(--success); margin-bottom: var(--spacing-sm);">
+            <div class="card-body" style="padding: var(--spacing-md) var(--spacing-lg);">
+                <div class="grid grid-cols-2 mb-md">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.8rem; font-weight: 800; color: var(--success); margin-bottom: 2px;">
                             {{ $estadisticasMedia['porcentaje_aprobacion'] }}%
                         </div>
-                        <div style="color: var(--gray-600); font-size: 0.875rem; font-weight: 500;">Aprobación</div>
+                        <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">Aprobación</div>
                     </div>
-                    <div style="text-align: center; padding: var(--spacing-lg);">
-                        <div
-                            style="font-size: 2.5rem; font-weight: 700; color: var(--theme-color); margin-bottom: var(--spacing-sm);">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.8rem; font-weight: 800; color: #84cc16; margin-bottom: 2px;">
                             {{ $estadisticasMedia['promedio'] }}
                         </div>
-                        <div style="color: var(--gray-600); font-size: 0.875rem; font-weight: 500;">Promedio</div>
+                        <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">Promedio</div>
                     </div>
                 </div>
-                <div
-                    style="display: flex; justify-content: space-around; padding-top: var(--spacing-lg); border-top: 1px solid var(--gray-200);">
+                <div style="display: flex; justify-content: space-around; padding-top: var(--spacing-md); border-top: 1px solid var(--border-color);">
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: 600; color: var(--success);">
+                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--success);">
                             {{ $estadisticasMedia['aprobados'] }}
                         </div>
-                        <div style="color: var(--gray-600); font-size: 0.75rem;">Aprobados</div>
+                        <div style="color: var(--text-muted); font-size: 0.7rem; font-weight: 600; text-transform: uppercase;">Aprobados</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: 600; color: var(--danger);">
+                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--danger);">
                             {{ $estadisticasMedia['reprobados'] }}
                         </div>
-                        <div style="color: var(--gray-600); font-size: 0.75rem;">Reprobados</div>
+                        <div style="color: var(--text-muted); font-size: 0.7rem; font-weight: 600; text-transform: uppercase;">Reprobados</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: 600; color: var(--gray-700);">
+                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-color);">
                             {{ $estadisticasMedia['total'] }}
                         </div>
-                        <div style="color: var(--gray-600); font-size: 0.75rem;">Total</div>
+                        <div style="color: var(--text-muted); font-size: 0.7rem; font-weight: 600; text-transform: uppercase;">Total</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    </div>
+    <!-- END TAB 1 -->
+
+    <!-- TAB 2: RENDIMIENTO -->
+    <div id="section-rendimiento" class="system-tab-section">
+        <!-- Charts Section (Moved from top) -->
+        <div class="grid grid-cols-2 mb-lg" style="gap: var(--spacing-lg);">
+            <!-- Bar Chart - Course Averages -->
+            <div class="card" style="min-width: 0; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-color);">
+                <div class="card-header" style="padding: var(--spacing-sm) var(--spacing-md); border-bottom: 1px solid var(--border-color);">
+                    <h3 class="card-title" style="font-size: 0.95rem; margin: 0; color: var(--text-color);">
+                        <i class="fas fa-chart-bar" style="color: var(--text-muted);"></i> Promedios por Curso (Top 10)
+                    </h3>
+                </div>
+                <div class="card-body" style="padding: var(--spacing-sm);">
+                    <canvas id="chartPromedios" style="max-height: 180px; width: 100%;"></canvas>
+                </div>
+            </div>
+
+            <!-- Doughnut Chart - Pass/Fail Distribution -->
+            <div class="card" style="min-width: 0; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-color);">
+                <div class="card-header" style="padding: var(--spacing-sm) var(--spacing-md); border-bottom: 1px solid var(--border-color);">
+                    <h3 class="card-title" style="font-size: 0.95rem; margin: 0; color: var(--text-color);">
+                        <i class="fas fa-chart-pie" style="color: var(--text-muted);"></i> Distribución de Notas
+                    </h3>
+                </div>
+                <div class="card-body" style="padding: var(--spacing-sm);">
+                    <canvas id="chartDistribucion" style="max-height: 180px; width: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END TAB 2 -->
+
+    <!-- TAB 3: DETALLES Y EXPORTACIÓN -->
+    <div id="section-detalles" class="system-tab-section">
 
     <!-- Export Section -->
-    <div class="card mb-xl">
-        <div class="card-header">
-            <h3 class="card-title">
-                <i class="fas fa-download"></i> Exportar Reportes por Curso
+    <div class="card mb-xl" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+        <div class="card-header" style="border-bottom: 1px solid var(--border-color);">
+            <h3 class="card-title" style="color: var(--text-color);">
+                <i class="fas fa-download" style="color: var(--text-muted);"></i> Exportar Reportes por Curso
             </h3>
         </div>
         <div class="card-body">
@@ -312,17 +306,17 @@
 
 
     <!-- Course Summary Table -->
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">
-                <i class="fas fa-table"></i> Resumen por Curso
+    <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+        <div class="card-header" style="border-bottom: 1px solid var(--border-color);">
+            <h3 class="card-title" style="color: var(--text-color);">
+                <i class="fas fa-table" style="color: var(--text-muted);"></i> Resumen por Curso
             </h3>
         </div>
-        <div class="card-body" style="padding: 0;">
-            <div class="table-container">
+        <div class="card-body" style="padding: 0; overflow-x: auto;">
+            <div>
                 <table class="table" id="cursosTable">
                     <thead>
-                        <tr>
+                        <tr class="table-header-row">
                             <th class="sortable" data-column="nombre" style="cursor: pointer;">
                                 Curso <i class="fas fa-sort sort-icon"></i>
                             </th>
@@ -352,11 +346,11 @@
                     </thead>
                     <tbody>
                         @forelse($cursos as $curso)
-                            <tr>
+                            <tr class="nota-item">
                                 <td style="font-weight: 600;" data-value="{{ $curso['nombre'] }}">{{ $curso['nombre'] }}</td>
                                 <td data-value="{{ $curso['nivel'] }}">
                                     <span class="badge"
-                                        style="background: {{ $curso['nivel'] === 'basica' ? '#3b82f6' : '#8b5cf6' }};">
+                                        style="background: {{ $curso['nivel'] === 'basica' ? '#3b82f6' : '#84cc16' }}; color: white;">
                                         {{ ucfirst($curso['nivel']) }}
                                     </span>
                                 </td>
@@ -383,7 +377,10 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <a href="{{ route('courses.show', $curso['id']) }}" class="btn btn-sm btn-outline">
+                                    <a href="{{ route('courses.show', $curso['id']) }}" class="btn btn-sm btn-outline"
+                                        style="color: var(--gray-600); border-color: var(--gray-300);"
+                                        onmouseover="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'"
+                                        onmouseout="this.style.background='transparent'; this.style.color='var(--gray-600)'">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                 </td>
@@ -403,6 +400,8 @@
             </div>
         </div>
     </div>
+    </div>
+    <!-- END TAB 3 -->
 
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -417,8 +416,8 @@
                 datasets: [{
                     label: 'Promedio',
                     data: {!! json_encode($chartPromedios) !!},
-                    backgroundColor: 'rgba(124, 58, 237, 0.8)',
-                    borderColor: 'rgba(124, 58, 237, 1)',
+                    backgroundColor: 'rgba(132, 204, 22, 0.8)',
+                    borderColor: '#84cc16',
                     borderWidth: 1
                 }]
             },
@@ -560,6 +559,27 @@
             if (header) {
                 sortDirection[column] = direction === 'asc' ? 'desc' : 'asc'; // Toggle will flip it back
                 header.click();
+            }
+        }
+
+        // --- System Tabs Logic ---
+        function switchSystemTab(tabId) {
+            // Update Tab Active State
+            document.querySelectorAll('.system-tab').forEach(tab => {
+                tab.classList.remove('active-tab');
+            });
+            document.getElementById('tab-' + tabId).classList.add('active-tab');
+
+            // Show Relevant Section
+            document.querySelectorAll('.system-tab-section').forEach(section => {
+                section.style.display = 'none';
+                section.classList.remove('active-section'); // Force hide logic
+            });
+            
+            const targetSection = document.getElementById('section-' + tabId);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+                targetSection.classList.add('active-section');
             }
         }
     </script>

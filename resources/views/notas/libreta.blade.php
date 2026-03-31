@@ -49,9 +49,9 @@
             <div style="margin-bottom: var(--spacing-2xl);">
                 <!-- Period Header -->
                 <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
-                    <div style="height: 2px; flex: 0 0 40px; background: var(--theme-color);"></div>
+                    <div style="height: 2px; flex: 0 0 40px; background: #84cc16;"></div>
                     <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--theme-dark); margin: 0; white-space: nowrap;">
-                        <i class="fas fa-calendar-alt" style="color: var(--theme-color);"></i> {{ $periodo }}
+                        <i class="fas fa-calendar-alt" style="color: #84cc16;"></i> {{ $periodo }}
                     </h3>
                     <div style="height: 2px; flex: 1; background: var(--gray-200);"></div>
                 </div>

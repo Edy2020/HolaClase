@@ -91,7 +91,7 @@
                 </div>
                 <div class="card-body">
                     <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-                        <div style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.25rem; flex-shrink: 0;">
+                        <div style="width: 56px; height: 56px; border-radius: 50%; background: #84cc16; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.25rem; flex-shrink: 0;">
                             {{ strtoupper(substr($nota->estudiante->nombre ?? '?', 0, 1) . substr($nota->estudiante->apellido ?? '?', 0, 1)) }}
                         </div>
                         <div>

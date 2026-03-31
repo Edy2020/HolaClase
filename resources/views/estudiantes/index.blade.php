@@ -3,196 +3,28 @@
         Gestión de Estudiantes
     </x-slot>
 
-    <!-- Hero Header -->
-    <div class="hero-header"
-        style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center;">
+    <link rel="stylesheet" href="{{ asset('css/shared-index.css') }}?v={{ time() }}">
+
+    <!-- Page Header -->
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
         <div>
-            <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
-                <i class="fas fa-users"></i> Estudiantes
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900); margin: 0;">
+                Gestión de Estudiantes
             </h2>
-            <p class="hero-description" style="font-size: 1rem; opacity: 0.95; margin: 0;">
+            <p style="color: var(--gray-500); margin: var(--spacing-xs) 0 0 0; font-size: 0.9375rem;">
                 Gestiona la información de todos tus estudiantes
             </p>
         </div>
-        <div class="hero-actions" style="display: flex; gap: var(--spacing-md); align-items: center;">
-            <a href="{{ route('students.create') }}" class="btn btn-primary btn-new-student"
-                style="background: white; color: var(--theme-dark); flex-shrink: 0;">
-                <span><i class="fas fa-plus"></i></span>
+        <div class="header-actions">
+            <a href="{{ route('students.create') }}" class="btn btn-outline"
+                style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--gray-300); color: var(--gray-700); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                onmouseover="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'"
+                onmouseout="this.style.background='transparent'; this.style.color='var(--gray-700)'">
+                <i class="fas fa-plus"></i>
                 <span class="btn-text">Nuevo Estudiante</span>
             </a>
         </div>
     </div>
-
-    <style>
-        /* Mobile Responsive Styles */
-        @media (max-width: 768px) {
-            .hero-header {
-                flex-direction: column !important;
-                gap: var(--spacing-lg) !important;
-                padding: var(--spacing-lg) !important;
-                text-align: center !important;
-            }
-
-            .hero-header h2 {
-                font-size: 1.5rem !important;
-            }
-
-            .hero-description {
-                font-size: 0.875rem !important;
-            }
-
-            .hero-actions {
-                width: 100% !important;
-                flex-direction: column !important;
-                gap: var(--spacing-sm) !important;
-            }
-
-            .btn-new-student {
-                width: 100% !important;
-                justify-content: center !important;
-            }
-
-            .btn-text {
-                display: inline !important;
-            }
-
-            /* Hide filters card on mobile */
-            .filters-card {
-                display: none !important;
-            }
-
-            /* Show mobile filter button */
-            .mobile-filter-button {
-                display: block !important;
-            }
-
-            /* Hide table on mobile, show table */
-            .table-container {
-                display: none !important;
-            }
-
-            .mobile-table {
-                display: block !important;
-            }
-        }
-
-        /* Desktop: Show table, hide mobile elements */
-        @media (min-width: 769px) {
-            .mobile-table {
-                display: none !important;
-            }
-
-            .table-container {
-                display: block !important;
-            }
-
-            .mobile-filter-button,
-            .filters-modal {
-                display: none !important;
-            }
-        }
-
-        /* Filter Badge */
-        .filter-badge {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            background: var(--error);
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.6875rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Filters Modal */
-        .filters-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            animation: fadeIn 0.2s ease-out;
-        }
-
-        .filters-modal.active {
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-        }
-
-        .filters-modal-content {
-            background: white;
-            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-            width: 100%;
-            max-height: 70vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .filters-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: var(--spacing-lg);
-            border-bottom: 1px solid var(--gray-200);
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 1;
-        }
-
-        .filters-modal-close {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--gray-100);
-            border: none;
-            color: var(--gray-600);
-            font-size: 1.125rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .filters-modal-close:hover {
-            background: var(--gray-200);
-            color: var(--gray-900);
-        }
-
-        .filters-modal-body {
-            padding: var(--spacing-lg);
-        }
-
-        .filters-modal-footer {
-            padding: var(--spacing-lg);
-            border-top: 1px solid var(--gray-200);
-            display: flex;
-            gap: var(--spacing-sm);
-            position: sticky;
-            bottom: 0;
-            background: white;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-    </style>
 
     <!-- Search and Filters -->
     <div class="mb-xl filters-card">
@@ -204,7 +36,7 @@
                     <input type="text" id="searchInput" class="form-input" 
                         placeholder="Buscar estudiantes..." 
                         style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem;"
-                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
                         onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                 </div>
                 <div class="form-group mb-0" style="position: relative;">
@@ -212,7 +44,9 @@
                         <i class="fas fa-graduation-cap"></i>
                     </div>
                     <select id="cursoFilter" class="form-select" 
-                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;">
+                        style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                        onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
+                        onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                         <option value="">Todos los cursos</option>
                         @foreach($estudiantes->pluck('curso_actual')->filter()->unique('id') as $curso)
                             <option value="{{ $curso->id }}">{{ $curso->nombre }}</option>
@@ -226,7 +60,9 @@
                                 <i class="fas fa-check-circle"></i>
                             </div>
                             <select id="estadoFilter" class="form-select" 
-                                style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;">
+                                style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
+                                onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
+                                onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                                 <option value="">Todos los estados</option>
                                 <option value="activo">Activo</option>
                                 <option value="inactivo">Inactivo</option>
@@ -247,12 +83,12 @@
     </div>
 
     <!-- Mobile: Standalone Filter Button -->
-    <div class="mobile-filter-button" style="display: none; margin-bottom: var(--spacing-lg);">
-        <button class="btn btn-primary" onclick="openFiltersModal()" 
-            style="width: 100%; height: 48px; border-radius: var(--radius-lg); position: relative; display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); color: white;">
+    <div class="mobile-filter-button" style="display: none; margin-bottom: var(--spacing-md);">
+        <button onclick="openFiltersModal()" 
+            style="width: 100%; height: 48px; border-radius: var(--radius-lg); background: transparent; border: 1px solid var(--gray-300); position: relative; display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); color: var(--gray-700); font-weight: 600; cursor: pointer;">
             <i class="fas fa-search"></i>
             <span>Buscar y Filtrar</span>
-            <span id="filterBadgeMobile" class="filter-badge" style="display: none;">0</span>
+            <span id="filterBadgeMobile" class="filter-badge" style="display: none; background: #84cc16;">0</span>
         </button>
     </div>
 
@@ -260,8 +96,8 @@
     <div id="filtersModal" class="filters-modal" onclick="closeFiltersModal()">
         <div class="filters-modal-content" onclick="event.stopPropagation()">
             <div class="filters-modal-header">
-                <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--gray-900);">
-                    <i class="fas fa-search" style="color: var(--theme-color); margin-right: var(--spacing-sm);"></i>
+                <h3 style="margin: 0; font-size: 1.125rem; font-weight: 600; color: var(--gray-900);">
+                    <i class="fas fa-search" style="color: var(--gray-400); margin-right: var(--spacing-sm);"></i>
                     Buscar y Filtrar
                 </h3>
                 <button onclick="closeFiltersModal()" class="filters-modal-close" aria-label="Cerrar">
@@ -270,19 +106,21 @@
             </div>
             <div class="filters-modal-body">
                 <div class="form-group">
-                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">
-                        <i class="fas fa-search" style="color: var(--theme-color);"></i> Buscar
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs); display: flex; align-items: center; gap: var(--spacing-xs);">
+                        <i class="fas fa-search" style="color: var(--gray-400);"></i> Buscar
                     </label>
                     <input type="text" id="searchInputMobile" class="form-input" 
                         placeholder="Buscar estudiantes..." 
-                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;">
+                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;"
+                        onfocus="this.style.borderColor='#84cc16'" onblur="this.style.borderColor='var(--gray-200)'">
                 </div>
                 <div class="form-group">
-                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">
-                        <i class="fas fa-graduation-cap" style="color: var(--theme-color);"></i> Curso
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs); display: flex; align-items: center; gap: var(--spacing-xs);">
+                        <i class="fas fa-graduation-cap" style="color: var(--gray-400);"></i> Curso
                     </label>
                     <select id="cursoFilterMobile" class="form-select" 
-                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;">
+                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;"
+                        onfocus="this.style.borderColor='#84cc16'" onblur="this.style.borderColor='var(--gray-200)'">
                         <option value="">Todos los cursos</option>
                         @foreach($estudiantes->pluck('curso_actual')->filter()->unique('id') as $curso)
                             <option value="{{ $curso->id }}">{{ $curso->nombre }}</option>
@@ -290,11 +128,12 @@
                     </select>
                 </div>
                 <div class="form-group mb-0">
-                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs);">
-                        <i class="fas fa-check-circle" style="color: var(--theme-color);"></i> Estado
+                    <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs); display: flex; align-items: center; gap: var(--spacing-xs);">
+                        <i class="fas fa-check-circle" style="color: var(--gray-400);"></i> Estado
                     </label>
                     <select id="estadoFilterMobile" class="form-select" 
-                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;">
+                        style="border: 2px solid var(--gray-200); border-radius: var(--radius-lg); font-size: 0.9375rem;"
+                        onfocus="this.style.borderColor='#84cc16'" onblur="this.style.borderColor='var(--gray-200)'">
                         <option value="">Todos los estados</option>
                         <option value="activo">Activo</option>
                         <option value="inactivo">Inactivo</option>
@@ -303,8 +142,8 @@
                 </div>
             </div>
             <div class="filters-modal-footer">
-                <button onclick="clearFilters()" class="btn btn-outline" style="flex: 1;">Limpiar</button>
-                <button onclick="applyFilters()" class="btn btn-primary" style="flex: 1; color: white;">Aplicar</button>
+                <button onclick="clearFilters()" class="btn btn-outline" style="flex: 1; border: 1px solid var(--gray-300); background: transparent; color: var(--gray-700);">Limpiar</button>
+                <button onclick="applyFilters()" style="flex: 1; background: #84cc16; color: white; border: none; border-radius: var(--radius-md); font-weight: 600; padding: 0.625rem;">Aplicar</button>
             </div>
         </div>
     </div>
@@ -318,12 +157,10 @@
                     onclick="window.location='{{ route('students.show', $estudiante->id) }}'" 
                     data-search="{{ strtolower($estudiante->nombre . ' ' . $estudiante->apellido . ' ' . $estudiante->rut) }}"
                     data-curso="{{ $estudiante->curso_actual->id ?? '' }}"
-                    data-estado="{{ $estudiante->estado }}"
-                    onmouseover="this.style.background='var(--gray-50)'"
-                    onmouseout="this.style.background='white'">
+                    data-estado="{{ $estudiante->estado }}">
                     
                     <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
-                        <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.75rem; flex-shrink: 0;">
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: #84cc16; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.75rem; flex-shrink: 0;">
                             {{ strtoupper(substr($estudiante->nombre, 0, 1) . substr($estudiante->apellido, 0, 1)) }}
                         </div>
                         
@@ -341,7 +178,9 @@
                         
                         <div style="display: flex; gap: 4px; flex-shrink: 0;" onclick="event.stopPropagation();">
                             <a href="{{ route('students.edit', $estudiante->id) }}" 
-                                style="width: 32px; height: 32px; border-radius: var(--radius-md); background: var(--theme-color); color: white; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.75rem;"
+                                style="width: 32px; height: 32px; border-radius: var(--radius-md); background: transparent; color: var(--gray-600); border: 1px solid var(--gray-300); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.75rem; transition: background 0.2s;"
+                                onmouseover="this.style.background='var(--gray-100)';"
+                                onmouseout="this.style.background='transparent';"
                                 title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
@@ -349,7 +188,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" 
-                                    style="width: 32px; height: 32px; border-radius: var(--radius-md); background: white; color: var(--error); border: 1px solid var(--error); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem;"
+                                    style="width: 32px; height: 32px; border-radius: var(--radius-md); background: transparent; color: var(--error); border: 1px solid var(--error); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; transition: background 0.2s;"
                                     title="Eliminar">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -370,14 +209,14 @@
     <div class="table-container">
         <table class="table">
             <thead>
-                <tr style="background: var(--theme-dark);">
-                    <th style="color: white !important;">Estudiante</th>
-                    <th style="color: white !important;">Email</th>
-                    <th style="color: white !important;">Curso</th>
-                    <th style="color: white !important;">Promedio</th>
-                    <th style="color: white !important;">Asistencia</th>
-                    <th style="color: white !important;">Estado</th>
-                    <th style="color: white !important;">Acciones</th>
+                <tr class="table-header-row">
+                    <th style="text-align: left;">Estudiante</th>
+                    <th style="text-align: left;">Email</th>
+                    <th style="text-align: left;">Curso</th>
+                    <th style="text-align: left;">Promedio</th>
+                    <th style="text-align: left;">Asistencia</th>
+                    <th style="text-align: left;">Estado</th>
+                    <th style="text-align: left;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -389,7 +228,7 @@
                         <td>
                             <div style="display: flex; align-items: center; gap: var(--spacing-md);">
                                 <div
-                                    style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+                                    style="width: 40px; height: 40px; border-radius: 50%; background: #84cc16; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
                                     {{ strtoupper(substr($estudiante->nombre, 0, 1) . substr($estudiante->apellido, 0, 1)) }}
                                 </div>
                                 <div>
@@ -402,9 +241,9 @@
                         <td style="color: var(--gray-600);">{{ $estudiante->email ?? 'Sin email' }}</td>
                         <td>
                             @if($estudiante->curso_actual)
-                                <span class="badge badge-primary">{{ $estudiante->curso_actual->nombre }}</span>
+                                <span style="display: inline-block; padding: 0.25rem 0.625rem; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; color: #84cc16; background: rgba(132, 204, 22, 0.1); border-radius: 9999px;">{{ $estudiante->curso_actual->nombre }}</span>
                             @else
-                                <span class="badge">Sin curso</span>
+                                <span style="display: inline-block; padding: 0.25rem 0.625rem; font-size: 0.6875rem; font-weight: 600; color: var(--gray-500); background: var(--gray-100); border-radius: 9999px;">Sin curso</span>
                             @endif
                         </td>
                         <td>
@@ -422,11 +261,11 @@
                         </td>
                         <td>
                             @if($estudiante->estado === 'activo')
-                                <span class="badge badge-success">Activo</span>
+                                <span style="display: inline-block; padding: 0.25rem 0.625rem; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; color: var(--success); background: rgba(34, 197, 94, 0.1); border-radius: 9999px;">Activo</span>
                             @elseif($estudiante->estado === 'inactivo')
-                                <span class="badge badge-warning">Inactivo</span>
+                                <span style="display: inline-block; padding: 0.25rem 0.625rem; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; color: var(--warning); background: rgba(245, 158, 11, 0.1); border-radius: 9999px;">Inactivo</span>
                             @else
-                                <span class="badge">{{ ucfirst($estudiante->estado) }}</span>
+                                <span style="display: inline-block; padding: 0.25rem 0.625rem; font-size: 0.6875rem; font-weight: 600; color: var(--gray-500); background: var(--gray-100); border-radius: 9999px;">{{ ucfirst($estudiante->estado) }}</span>
                             @endif
                         </td>
                         <td>

@@ -7,10 +7,10 @@
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: var(--theme-color);
+    background: #84cc16;
     color: white;
     border: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     z-index: 999;
     font-size: 1.5rem;
@@ -88,16 +88,17 @@
 }
 
 .speed-dial-button {
-    width: 56px;
-    height: 56px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    background: var(--theme-color);
-    color: white;
+    background: white;
+    color: #111827;
+    border: 1px solid var(--gray-200);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.375rem;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15), 0 1px 4px rgba(0, 0, 0, 0.1);
+    font-size: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -114,13 +115,14 @@
 
 .speed-dial-label {
     background: white;
-    color: var(--theme-color);
-    padding: 10px 16px;
-    border-radius: 24px;
-    font-size: 1rem;
-    font-weight: 600;
+    color: #111827;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--gray-200);
+    font-size: 0.9rem;
+    font-weight: 500;
     white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     opacity: 1;
     transform: translateX(0);
 }
@@ -365,4 +367,129 @@
     .speed-dial-backdrop {
         display: none !important;
     }
+}
+
+/* =========================================================
+   Dashboard Inline Styles Extracted
+   ========================================================= */
+.dash-tab {
+    padding-bottom: 12px; font-weight: 500; color: var(--gray-500); 
+    border-bottom: 3px solid transparent; font-size: 0.95rem; 
+    cursor: pointer; white-space: nowrap; transition: all 0.2s;
+}
+.dash-tab.active-tab {
+    font-weight: 700; color: var(--gray-900); border-bottom-color: #84cc16;
+}
+
+/* Default (Desktop): Hide tabs, show all sections without overriding their display type */
+.mobile-tabs-container {
+    display: none !important;
+}
+
+/* Reserved section hidden everywhere by default */
+#section-saved {
+    display: none !important;
+}
+
+/* Mobile View: Show tabs, filter sections */
+@media (max-width: 1024px) {
+    .mobile-tabs-container {
+        display: flex !important;
+        gap: var(--spacing-md);
+        border-bottom: 1px solid var(--gray-200);
+        margin-bottom: var(--spacing-lg);
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .mobile-tabs-container::-webkit-scrollbar {
+        display: none;
+    }
+    .dash-tab {
+        flex-shrink: 0;
+        padding: 0 var(--spacing-sm) 12px var(--spacing-sm);
+    }
+    .tab-section {
+        display: none !important;
+    }
+    #section-summary.active-section {
+        display: flex !important;
+        flex-direction: column;
+    }
+    .stat-item {
+        border-left: none !important;
+        padding: var(--spacing-md) 0 !important;
+        border-bottom: 1px solid var(--gray-100);
+    }
+    .stat-item:last-child {
+        border-bottom: none;
+    }
+    #section-activity.active-section,
+    #section-tasks.active-section,
+    #section-saved.active-section {
+        display: block !important;
+    }
+    .mobile-grid-break {
+        display: block !important;
+    }
+    .desktop-quick-actions {
+        display: none !important;
+    }
+}
+
+/* Desktop Quick Actions styles */
+.action-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: var(--bg-card, white);
+    border: 1px solid var(--gray-200) !important;
+    color: var(--gray-600) !important;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.action-pill:hover {
+    background: var(--gray-50);
+    color: var(--gray-900) !important;
+    border-color: var(--gray-300) !important;
+}
+.action-pill.primary {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border-color: rgba(16, 185, 129, 0.3);
+    font-weight: 600;
+}
+.action-pill.primary:hover {
+    background: #10b981;
+    color: white;
+    border-color: #10b981;
+}
+.action-pill i {
+    font-size: 0.95rem;
+}
+
+/* Enforce dark-mode colors so anchors don't inherit purple */
+html.dark-mode .action-pill {
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+html.dark-mode .action-pill:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+html.dark-mode .action-pill.primary {
+    background: rgba(132, 204, 22, 0.1) !important;
+    color: #84cc16 !important;
+    border-color: rgba(132, 204, 22, 0.3) !important;
+}
+html.dark-mode .action-pill.primary:hover {
+    background: #84cc16 !important;
+    color: #fff !important;
+    border-color: #84cc16 !important;
 }

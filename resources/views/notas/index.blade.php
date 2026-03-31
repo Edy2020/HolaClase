@@ -3,22 +3,32 @@
         Gestión de Notas
     </x-slot>
 
-    <!-- Hero Header -->
-    <div style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center;">
+    <link rel="stylesheet" href="{{ asset('css/shared-index.css') }}?v={{ time() }}">
+
+    <!-- Page Header -->
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
         <div>
-            <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
-                <i class="fas fa-chart-line"></i> Gestión de Notas
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900); margin: 0;">
+                Gestión de Notas
             </h2>
-            <p style="font-size: 1rem; opacity: 0.85; margin: 0;">
+            <p style="color: var(--gray-500); margin: var(--spacing-xs) 0 0 0; font-size: 0.9375rem;">
                 Registra y administra las notas de tus estudiantes
             </p>
         </div>
-        <div style="display: flex; gap: var(--spacing-md);">
-            <a href="{{ route('grades.dashboard') }}" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.4);">
-                <i class="fas fa-tachometer-alt"></i> Dashboard
+        <div class="header-actions" style="display: flex; gap: var(--spacing-md);">
+            <a href="{{ route('grades.dashboard') }}" class="btn btn-outline"
+                style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--gray-300); color: var(--gray-700); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                onmouseover="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'"
+                onmouseout="this.style.background='transparent'; this.style.color='var(--gray-700)'">
+                <i class="fas fa-tachometer-alt"></i>
+                <span class="btn-text">Dashboard</span>
             </a>
-            <a href="{{ route('grades.create') }}" class="btn btn-primary" style="background: white; color: var(--theme-dark); font-weight: 700;">
-                <i class="fas fa-plus"></i> Registrar Notas
+            <a href="{{ route('grades.create') }}" class="btn btn-outline"
+                style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--gray-300); color: var(--gray-700); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                onmouseover="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'"
+                onmouseout="this.style.background='transparent'; this.style.color='var(--gray-700)'">
+                <i class="fas fa-plus"></i>
+                <span class="btn-text">Registrar Notas</span>
             </a>
         </div>
     </div>
@@ -41,7 +51,7 @@
     <!-- Statistics -->
     <div class="grid grid-cols-4 mb-xl">
         <div class="stat-card">
-            <div class="stat-value" style="color: var(--theme-color);">{{ $stats['total'] }}</div>
+            <div class="stat-value" style="color: #84cc16;">{{ $stats['total'] }}</div>
             <div class="stat-label">Total Notas</div>
         </div>
         <div class="stat-card">
@@ -72,7 +82,7 @@
                     </div>
                     <select name="curso_id" class="form-select" onchange="this.form.submit()"
                         style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
-                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
                         onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                         <option value="">Todos los cursos</option>
                         @foreach($cursos as $curso)
@@ -90,7 +100,7 @@
                     </div>
                     <select name="asignatura_id" class="form-select" onchange="this.form.submit()"
                         style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
-                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
                         onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                         <option value="">Todas las asignaturas</option>
                         @foreach($asignaturas as $asignatura)
@@ -108,7 +118,7 @@
                     </div>
                     <select name="periodo" class="form-select" onchange="this.form.submit()"
                         style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
-                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
                         onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                         <option value="">Todos los períodos</option>
                         <option value="Semestre 1" {{ request('periodo') == 'Semestre 1' ? 'selected' : '' }}>Semestre 1</option>
@@ -124,7 +134,7 @@
                     </div>
                     <select name="tipo_evaluacion" class="form-select" onchange="this.form.submit()"
                         style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
-                        onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                        onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
                         onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                         <option value="">Todos los tipos</option>
                         @foreach(['Prueba','Trabajo','Examen','Taller','Proyecto','Participación','Control'] as $tipo)
@@ -185,11 +195,11 @@
                         </thead>
                         <tbody>
                             @foreach($notas as $nota)
-                                <tr>
+                                <tr class="nota-item">
                                     <td style="font-weight: 600; color: var(--gray-500); font-size: 0.8rem;">#{{ $nota->id }}</td>
                                     <td>
                                         <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
-                                            <div style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-color), var(--theme-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.75rem; flex-shrink: 0;">
+                                            <div style="width: 34px; height: 34px; border-radius: 50%; background: #84cc16; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.75rem; flex-shrink: 0;">
                                                 {{ strtoupper(substr($nota->estudiante->nombre ?? '?', 0, 1) . substr($nota->estudiante->apellido ?? '?', 0, 1)) }}
                                             </div>
                                             <div>

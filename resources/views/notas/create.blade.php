@@ -3,25 +3,43 @@
         Registrar Notas
     </x-slot>
 
-    <!-- Header Section -->
-    <div class="card" style="margin-bottom: var(--spacing-xl);">
-        <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-sm);">
-            <i class="fas fa-clipboard-list"></i> Registrar Notas
-        </h2>
-        <p style="color: var(--gray-600);">
-            Selecciona el curso y la asignatura para registrar las notas de los estudiantes.
-        </p>
+    <!-- Page Header -->
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+        <div>
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0;">
+                <i class="fas fa-clipboard-list" style="color: var(--text-muted); margin-right: 8px;"></i> Registrar Notas
+            </h2>
+            <p style="color: var(--text-muted); margin: var(--spacing-xs) 0 0 0; font-size: 0.9375rem;">
+                Selecciona el curso y la asignatura para registrar las notas de los estudiantes.
+            </p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ route('grades.index') }}" class="btn btn-outline"
+                style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--border-color); color: var(--text-color); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                onmouseover="this.style.background='var(--bg-card)'; this.style.color='var(--text-color)'"
+                onmouseout="this.style.background='transparent'; this.style.color='var(--text-color)'">
+                <i class="fas fa-arrow-left"></i>
+                <span class="btn-text">Volver a Notas</span>
+            </a>
+        </div>
     </div>
 
-    <!-- Course and Subject Selection Form -->
-    <div class="card" style="margin-bottom: var(--spacing-xl);">
+    <!-- Filters Container -->
+    <div class="mb-xl" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-color); margin-top: 0; margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--border-color); padding-bottom: var(--spacing-sm);">
+            <i class="fas fa-filter" style="color: var(--text-muted); margin-right: 6px;"></i> Selección de Formulario
+        </h3>
         <form method="GET" action="{{ route('grades.create') }}" id="filterForm">
-            <div class="grid grid-cols-2" style="gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
-                <div>
-                    <label style="display: block; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-sm);">
-                        <i class="fas fa-chalkboard"></i> Curso *
-                    </label>
-                    <select name="curso_id" id="cursoSelect" class="form-input" style="width: 100%;" required onchange="this.form.submit()">
+            <div class="grid grid-cols-1 md:grid-cols-2" style="gap: var(--spacing-lg);">
+                <div class="form-group mb-0" style="position: relative;">
+                    <label class="form-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">CURSO *</label>
+                    <div style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <select name="curso_id" id="cursoSelect" class="form-select" required onchange="this.form.submit()"
+                        style="padding-left: 40px; border: 2px solid var(--border-color); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer; background-color: var(--bg-card); color: var(--text-color);"
+                        onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
+                        onblur="this.style.borderColor='var(--border-color)'; this.style.boxShadow='none'">
                         <option value="">Seleccione un curso</option>
                         @foreach($cursos as $curso)
                             <option value="{{ $curso->id }}" {{ $selectedCurso && $selectedCurso->id == $curso->id ? 'selected' : '' }}>
@@ -31,12 +49,15 @@
                     </select>
                 </div>
 
-                <div>
-                    <label style="display: block; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-sm);">
-                        <i class="fas fa-book"></i> Asignatura *
-                    </label>
-                    <select name="asignatura_id" id="asignaturaSelect" class="form-input" style="width: 100%;" 
-                            {{ !$selectedCurso ? 'disabled' : '' }} required onchange="this.form.submit()">
+                <div class="form-group mb-0" style="position: relative;">
+                    <label class="form-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">ASIGNATURA *</label>
+                    <div style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <select name="asignatura_id" id="asignaturaSelect" class="form-select" {{ !$selectedCurso ? 'disabled' : '' }} required onchange="this.form.submit()"
+                        style="padding-left: 40px; border: 2px solid var(--border-color); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer; background-color: var(--bg-card); color: var(--text-color);"
+                        onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
+                        onblur="this.style.borderColor='var(--border-color)'; this.style.boxShadow='none'">
                         <option value="">Seleccione una asignatura</option>
                         @if($selectedCurso)
                             @foreach($selectedCurso->asignaturas as $asignatura)
@@ -60,17 +81,21 @@
             <input type="hidden" name="asignatura_id" value="{{ $selectedAsignatura->id }}">
 
             <!-- Evaluation Details -->
-            <div class="card" style="margin-bottom: var(--spacing-xl);">
-                <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-lg);">
-                    <i class="fas fa-info-circle"></i> Detalles de la Evaluación
+            <div class="mb-xl" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-color); margin-top: 0; margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--border-color); padding-bottom: var(--spacing-sm);">
+                    <i class="fas fa-info-circle" style="color: var(--text-muted); margin-right: 6px;"></i> Detalles de la Evaluación
                 </h3>
 
-                <div class="grid grid-cols-2" style="gap: var(--spacing-md);">
-                    <div>
-                        <label style="display: block; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-sm);">
-                            Tipo de Evaluación *
-                        </label>
-                        <select name="tipo_evaluacion" class="form-input" style="width: 100%;" required>
+                <div class="grid grid-cols-1 md:grid-cols-4" style="gap: var(--spacing-lg);">
+                    <div class="form-group mb-0" style="position: relative;">
+                        <label class="form-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">TIPO EV. *</label>
+                        <div style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <select name="tipo_evaluacion" class="form-select" required
+                            style="padding-left: 40px; border: 2px solid var(--border-color); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer; background-color: var(--bg-card); color: var(--text-color);"
+                            onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
+                            onblur="this.style.borderColor='var(--border-color)'; this.style.boxShadow='none'">
                             <option value="">Seleccione tipo</option>
                             @foreach($tiposEvaluacion as $tipo)
                                 <option value="{{ $tipo }}">{{ $tipo }}</option>
@@ -78,11 +103,15 @@
                         </select>
                     </div>
 
-                    <div>
-                        <label style="display: block; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-sm);">
-                            Período *
-                        </label>
-                        <select name="periodo" class="form-input" style="width: 100%;" required>
+                    <div class="form-group mb-0" style="position: relative;">
+                        <label class="form-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">PERÍODO *</label>
+                        <div style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <select name="periodo" class="form-select" required
+                            style="padding-left: 40px; border: 2px solid var(--border-color); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer; background-color: var(--bg-card); color: var(--text-color);"
+                            onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
+                            onblur="this.style.borderColor='var(--border-color)'; this.style.boxShadow='none'">
                             <option value="">Seleccione período</option>
                             @foreach($periodos as $periodo)
                                 <option value="{{ $periodo }}">{{ $periodo }}</option>
@@ -90,31 +119,34 @@
                         </select>
                     </div>
 
-                    <div>
-                        <label style="display: block; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-sm);">
-                            Fecha *
-                        </label>
-                        <input type="date" name="fecha" class="form-input" style="width: 100%;" 
-                               value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}" required>
+                    <div class="form-group mb-0" style="position: relative;">
+                        <label class="form-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">FECHA *</label>
+                        <div style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <input type="date" name="fecha" class="form-input" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}" required
+                            style="padding-left: 40px; border: 2px solid var(--border-color); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; background-color: var(--bg-card); color: var(--text-color);"
+                            onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
+                            onblur="this.style.borderColor='var(--border-color)'; this.style.boxShadow='none'">
                     </div>
 
-                    <div>
-                        <label style="display: block; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-sm);">
-                            Ponderación (%) *
-                        </label>
-                        <input type="number" name="ponderacion" class="form-input" style="width: 100%;" 
-                               step="1" min="1" max="100" value="30" required>
-                        <small style="color: var(--gray-500); font-size: 0.75rem;">
-                            Ejemplo: 30 = 30%, 50 = 50%, 100 = 100%
-                        </small>
+                    <div class="form-group mb-0" style="position: relative;">
+                        <label class="form-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">PONDERACIÓN *</label>
+                        <div style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
+                            <i class="fas fa-percent"></i>
+                        </div>
+                        <input type="number" name="ponderacion" class="form-input" step="1" min="1" max="100" value="30" required
+                            style="padding-left: 40px; border: 2px solid var(--border-color); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; background-color: var(--bg-card); color: var(--text-color);"
+                            onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
+                            onblur="this.style.borderColor='var(--border-color)'; this.style.boxShadow='none'">
                     </div>
                 </div>
             </div>
 
             <!-- Students Grades Table -->
-            <div class="card">
+            <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
-                    <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin: 0;">
+                    <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--text-color); margin: 0;">
                         <i class="fas fa-users"></i> Notas de Estudiantes ({{ $estudiantes->count() }})
                     </h3>
                     <div style="display: flex; gap: var(--spacing-sm);">
@@ -172,8 +204,8 @@
                     </table>
                 </div>
 
-                <div style="margin-top: var(--spacing-lg); padding-top: var(--spacing-lg); border-top: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center;">
-                    <a href="{{ route('grades.index') }}" class="btn btn-outline">
+                <div style="margin-top: var(--spacing-lg); padding-top: var(--spacing-lg); border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <a href="{{ route('grades.index') }}" class="btn btn-outline" style="color: var(--text-color); border-color: var(--border-color);">
                         <i class="fas fa-arrow-left"></i> Cancelar
                     </a>
                     <button type="submit" class="btn btn-primary" style="color: white;">
@@ -183,13 +215,11 @@
             </div>
         </form>
     @elseif($selectedCurso && $selectedAsignatura && $estudiantes->count() == 0)
-        <div class="card">
+        <div style="background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: var(--radius-lg);">
             <div style="text-align: center; padding: var(--spacing-2xl);">
-                <i class="fas fa-users-slash" style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
-                <p style="color: var(--gray-600); font-size: 1.125rem; margin-bottom: var(--spacing-sm);">
-                    No hay estudiantes inscritos en este curso
-                </p>
-                <p style="color: var(--gray-500); font-size: 0.875rem;">
+                <i class="fas fa-users-slash" style="font-size: 3rem; color: var(--text-muted); margin-bottom: var(--spacing-md); opacity: 0.8;"></i>
+                <p style="color: var(--text-color); margin: 0; font-weight: 500;">No hay estudiantes inscritos en este curso para esta asignatura</p>
+                <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: var(--spacing-sm);">
                     Agrega estudiantes al curso <strong>{{ $selectedCurso->nombre }}</strong> para poder registrar notas.
                 </p>
                 <a href="{{ route('courses.show', $selectedCurso->id) }}" class="btn btn-primary" style="margin-top: var(--spacing-md); color: white;">
@@ -198,20 +228,18 @@
             </div>
         </div>
     @else
-        <div class="card">
+        <div style="background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: var(--radius-lg);">
             <div style="text-align: center; padding: var(--spacing-2xl);">
-                <i class="fas fa-hand-pointer" style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
-                <p style="color: var(--gray-600); font-size: 1.125rem;">
-                    Selecciona un curso y una asignatura para comenzar
-                </p>
+                <i class="fas fa-hand-pointer" style="font-size: 3rem; color: var(--text-muted); margin-bottom: var(--spacing-md); opacity: 0.8;"></i>
+                <p style="color: var(--text-color); margin: 0; font-weight: 500;">Selecciona un curso y una asignatura para comenzar a registrar notas</p>
             </div>
         </div>
     @endif
 
     <style>
         .grade-input:focus {
-            border-color: var(--theme-color);
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+            border-color: #84cc16;
+            box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.1);
         }
 
         .grade-input.invalid {

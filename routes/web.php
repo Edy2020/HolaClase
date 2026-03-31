@@ -118,9 +118,9 @@ Route::middleware('auth')->group(function () {
     Route::get('notas/libreta/{estudiante}', [App\Http\Controllers\NotaController::class, 'libreta'])->name('grades.libreta');
 
 
-    // Settings Routes
-    Route::get('/configuracion', [ConfiguracionController::class, 'index'])->name('settings.index');
-    Route::post('/configuracion/tema', [ConfiguracionController::class, 'updateTheme'])->name('settings.theme');
+    // Settings Routes - Completely Removed as per new UI
+    // Route::get('/configuracion', [ConfiguracionController::class, 'index'])->name('settings.index');
+    // Route::post('/configuracion/tema', [ConfiguracionController::class, 'updateTheme'])->name('settings.theme');
 });
 
 require __DIR__ . '/auth.php';

@@ -1,0 +1,262 @@
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: var(--spacing-md) !important;
+    }
+
+    .header-actions {
+        width: 100% !important;
+    }
+
+    .action-btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    /* Hide search card on mobile */
+    .filters-card {
+        display: none !important;
+    }
+
+    /* Show mobile search button */
+    .mobile-filter-button {
+        display: block !important;
+    }
+
+    /* Hide desktop table, show mobile table */
+    .table-container {
+        display: none !important;
+    }
+
+    .mobile-table {
+        display: block !important;
+    }
+}
+
+/* Desktop: Show table, hide mobile elements */
+@media (min-width: 769px) {
+    .mobile-table {
+        display: none !important;
+    }
+
+    .table-container {
+        display: block !important;
+        background: white;
+        border-radius: var(--radius-xl);
+        border: 1px solid var(--gray-200);
+        overflow: hidden;
+    }
+
+    .mobile-filter-button,
+    .filters-modal {
+        display: none !important;
+    }
+}
+
+/* Minimalist Table Header */
+.table-header-row {
+    background: var(--bg-secondary, #f8fafc);
+}
+
+.table th {
+    color: var(--gray-600) !important;
+    font-weight: 600 !important;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: var(--spacing-sm) var(--spacing-md) !important;
+    border-bottom: 2px solid var(--gray-200) !important;
+}
+
+.table td {
+    padding: var(--spacing-sm) var(--spacing-md) !important;
+    border-bottom: 1px solid var(--gray-200);
+    vertical-align: middle;
+}
+
+/* Base card / Row hover */
+.profesor-item {
+    transition: background 0.2s;
+}
+
+.profesor-item:hover {
+    background: var(--gray-50);
+}
+
+/* Search Modal */
+.filters-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.filters-modal.active {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.filters-modal-content {
+    background: white;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    width: 100%;
+    max-height: 40vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filters-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--gray-200);
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+}
+
+.filters-modal-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--gray-100);
+    border: none;
+    color: var(--gray-600);
+    font-size: 1.125rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.filters-modal-close:hover {
+    background: var(--gray-200);
+    color: var(--gray-900);
+}
+
+.filters-modal-body,
+.filters-modal-footer {
+    padding: var(--spacing-lg);
+}
+
+.filters-modal-footer {
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    gap: var(--spacing-sm);
+    position: sticky;
+    bottom: 0;
+    background: white;
+}
+
+/* ---- Dark Mode Rules ---- */
+html.dark-mode .page-header h2 {
+    color: white !important;
+}
+
+html.dark-mode .table-container {
+    background: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode .table-header-row {
+    background: var(--bg-secondary) !important;
+}
+
+html.dark-mode .table th {
+    color: var(--gray-400) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode .table td {
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode .profesor-item:hover {
+    background: var(--bg-hover) !important;
+}
+
+html.dark-mode .profesor-item td div[style*="color: var(--gray-900)"],
+html.dark-mode .profesor-item td span[style*="color: var(--gray-900)"] {
+    color: white !important;
+}
+
+/* Modal text inputs in dark mode */
+html.dark-mode .form-input,
+html.dark-mode .form-select {
+    background: var(--bg-card) !important;
+    color: white !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode .filters-modal-content {
+    background: var(--bg-card) !important;
+}
+
+html.dark-mode .filters-modal-header,
+html.dark-mode .filters-modal-footer {
+    background: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode .filters-modal-header h3 {
+    color: white !important;
+}
+
+html.dark-mode .filters-modal-close {
+    background: var(--bg-secondary) !important;
+    color: var(--gray-400) !important;
+}
+
+html.dark-mode .filters-modal-close:hover {
+    background: var(--bg-hover) !important;
+    color: white !important;
+}
+
+/* Mobile cards in dark mode */
+html.dark-mode .mobile-table-container {
+    background: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode .mobile-table-row {
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode .mobile-table-row:hover {
+    background: var(--bg-hover) !important;
+}
+
+html.dark-mode .mobile-table-row div[style*="color: var(--gray-900)"] {
+    color: white !important;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}

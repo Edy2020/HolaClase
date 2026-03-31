@@ -3,26 +3,34 @@
         Dashboard de Asistencia
     </x-slot>
 
-    <!-- Hero Header -->
-    <div style="background: linear-gradient(135deg, var(--theme-dark) 0%, #1e1b4b 100%); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl); box-shadow: var(--shadow-lg);">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--spacing-md);">
-            <div>
-                <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
-                    <i class="fas fa-chart-area"></i> Dashboard de Asistencia
-                </h2>
-                <p style="opacity: 0.85; margin: 0; font-size: 0.95rem;">
-                    {{ $periodos[$filtroPeriodo] ?? 'Este Mes' }} —
-                    {{ $startDate->format('d/m/Y') }} al {{ $endDate->format('d/m/Y') }}
-                </p>
-            </div>
-            <div style="display: flex; gap: var(--spacing-md);">
-                <a href="{{ route('attendance.index') }}" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.4);">
-                    <i class="fas fa-list"></i> Ver Registros
-                </a>
-                <a href="{{ route('attendance.create') }}" class="btn" style="background: white; color: var(--theme-dark); font-weight: 700;">
-                    <i class="fas fa-plus"></i> Tomar Asistencia
-                </a>
-            </div>
+    <link rel="stylesheet" href="{{ asset('css/shared-index.css') }}?v={{ time() }}">
+
+    <!-- Page Header -->
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+        <div>
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900); margin: 0;">
+                <i class="fas fa-chart-area" style="color: var(--gray-400); margin-right: 8px;"></i> Dashboard de Asistencia
+            </h2>
+            <p style="color: var(--gray-500); margin: var(--spacing-xs) 0 0 0; font-size: 0.9375rem;">
+                {{ $periodos[$filtroPeriodo] ?? 'Este Mes' }} —
+                {{ $startDate->format('d/m/Y') }} al {{ $endDate->format('d/m/Y') }}
+            </p>
+        </div>
+        <div class="header-actions" style="display: flex; gap: var(--spacing-md);">
+            <a href="{{ route('attendance.index') }}" class="btn btn-outline"
+                style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--gray-300); color: var(--gray-700); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                onmouseover="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'"
+                onmouseout="this.style.background='transparent'; this.style.color='var(--gray-700)'">
+                <i class="fas fa-list"></i>
+                <span class="btn-text">Ver Registros</span>
+            </a>
+            <a href="{{ route('attendance.create') }}" class="btn btn-outline"
+                style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--gray-300); color: var(--gray-700); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                onmouseover="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'"
+                onmouseout="this.style.background='transparent'; this.style.color='var(--gray-700)'">
+                <i class="fas fa-plus"></i>
+                <span class="btn-text">Tomar Asistencia</span>
+            </a>
         </div>
     </div>
 
@@ -34,7 +42,7 @@
                     <div style="display: flex; gap: var(--spacing-xs);">
                         @foreach($periodos as $key => $label)
                             <button type="submit" name="periodo" value="{{ $key }}"
-                                style="padding: 10px 16px; border-radius: var(--radius-lg); font-size: 0.9375rem; font-weight: 600; cursor: pointer; border: 2px solid {{ $filtroPeriodo === $key ? 'var(--theme-color)' : 'var(--gray-200)' }}; background: {{ $filtroPeriodo === $key ? 'var(--theme-color)' : 'white' }}; color: {{ $filtroPeriodo === $key ? 'white' : 'var(--gray-700)' }}; transition: all 0.2s;">
+                                style="padding: 6px 14px; border-radius: var(--radius-lg); font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid {{ $filtroPeriodo === $key ? '#84cc16' : 'var(--gray-300)' }}; background: {{ $filtroPeriodo === $key ? '#84cc16' : 'transparent' }}; color: {{ $filtroPeriodo === $key ? 'white' : 'var(--gray-600)' }}; transition: all 0.2s;">
                                 {{ $label }}
                             </button>
                         @endforeach
@@ -48,7 +56,7 @@
                         </div>
                         <select name="curso_id" class="form-select" onchange="this.form.submit()"
                             style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
-                            onfocus="this.style.borderColor='var(--theme-color)'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                            onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
                             onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
                             <option value="">Todos los cursos</option>
                             @foreach($cursos as $curso)
@@ -74,38 +82,59 @@
         </form>
     </div>
 
-    <!-- Stats Cards (compact row) -->
+    <!-- TABS NAVIGATION -->
+    <div class="system-tabs-container">
+        <div id="tab-general" onclick="switchSystemTab('general')" class="system-tab active-tab">
+            Visión General
+        </div>
+        <div id="tab-tendencias" onclick="switchSystemTab('tendencias')" class="system-tab">
+            Tendencias y Distribución
+        </div>
+        <div id="tab-detalles" onclick="switchSystemTab('detalles')" class="system-tab">
+            Alertas y Detalles
+        </div>
+    </div>
+
+    <!-- TAB 1: VISION GENERAL -->
+    <div id="section-general" class="system-tab-section active-section">
+        <!-- Stats Cards (compact row) -->
     @php $pctColor = $porcentajeAsistencia >= 85 ? 'var(--success)' : ($porcentajeAsistencia >= 75 ? 'var(--warning)' : 'var(--error)'); @endphp
     <div style="display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-xl); flex-wrap: wrap;">
         @foreach([
-            ['icon' => 'fa-list-alt',      'value' => $totalRegistros,       'label' => 'Total',      'color' => 'var(--theme-color)'],
+            ['icon' => 'fa-list-alt',      'value' => $totalRegistros,       'label' => 'Total',      'color' => '#84cc16'],
             ['icon' => 'fa-percent',        'value' => $porcentajeAsistencia.'%', 'label' => '% Asist.', 'color' => $pctColor],
             ['icon' => 'fa-check-circle',   'value' => $totalPresente,        'label' => 'Presentes',  'color' => 'var(--success)'],
             ['icon' => 'fa-times-circle',   'value' => $totalAusente,         'label' => 'Ausentes',   'color' => 'var(--error)'],
             ['icon' => 'fa-clock',          'value' => $totalTarde,           'label' => 'Tardanzas',  'color' => 'var(--warning)'],
             ['icon' => 'fa-file-alt',       'value' => $totalJustificado,     'label' => 'Justif.',    'color' => '#3b82f6'],
         ] as $s)
-            <div style="flex: 1; min-width: 120px; background: white; border: 1px solid var(--gray-100); border-radius: var(--radius-lg); padding: 12px 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);">
-                <div style="width: 36px; height: 36px; border-radius: var(--radius-md); background: {{ $s['color'] }}18; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <i class="fas {{ $s['icon'] }}" style="color: {{ $s['color'] }}; font-size: 0.875rem;"></i>
+            <div class="card" style="flex: 1; min-width: 120px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border-color); background: var(--bg-card);">
+                <div style="width: 32px; height: 32px; border-radius: var(--radius-sm); background: {{ $s['color'] }}18; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <i class="fas {{ $s['icon'] }}" style="color: {{ $s['color'] }}; font-size: 0.85rem;"></i>
                 </div>
                 <div>
-                    <div style="font-size: 1.25rem; font-weight: 800; color: {{ $s['color'] }}; line-height: 1.1;">{{ $s['value'] }}</div>
-                    <div style="font-size: 0.7rem; color: var(--gray-500); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em;">{{ $s['label'] }}</div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: {{ $s['color'] }}; line-height: 1;">{{ $s['value'] }}</div>
+                    <div style="font-size: 0.7rem; color: var(--gray-500); font-weight: 600; text-transform: uppercase;">{{ $s['label'] }}</div>
                 </div>
             </div>
         @endforeach
     </div>
 
+    </div>
+    <!-- END TAB 1 -->
 
+    <!-- TAB 2: TENDENCIAS -->
+    <div id="section-tendencias" class="system-tab-section">
     <!-- Charts Row -->
-    <div class="grid grid-cols-2 mb-xl" style="gap: var(--spacing-xl);">
+    <div class="grid grid-cols-2 mb-lg" style="gap: var(--spacing-lg);">
         <!-- Trend Chart -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-chart-line"></i> Tendencia de Asistencia</h3>
+        <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); min-width: 0; overflow: hidden;">
+            <div class="card-header" style="padding: var(--spacing-sm) var(--spacing-md); border-bottom: 1px solid var(--border-color);">
+                <h3 class="card-title" style="font-size: 0.95rem; margin: 0; color: var(--text-color);">
+                    <i class="fas fa-chart-line" style="color: var(--text-muted, var(--gray-400));"></i> Tendencia de Asistencia
+                </h3>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="padding: var(--spacing-sm);">
                 @if(count($chartDias) > 0)
                     <canvas id="trendChart" height="120"></canvas>
                 @else
@@ -118,11 +147,13 @@
         </div>
 
         <!-- Donut Chart -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-chart-pie"></i> Distribución de Estados</h3>
+        <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); min-width: 0; overflow: hidden;">
+            <div class="card-header" style="padding: var(--spacing-sm) var(--spacing-md); border-bottom: 1px solid var(--border-color);">
+                <h3 class="card-title" style="font-size: 0.95rem; margin: 0; color: var(--text-color);">
+                    <i class="fas fa-chart-pie" style="color: var(--text-muted, var(--gray-400));"></i> Distribución de Estados
+                </h3>
             </div>
-            <div class="card-body" style="display: flex; align-items: center; gap: var(--spacing-xl);">
+            <div class="card-body mobile-col" style="display: flex; align-items: center; gap: var(--spacing-lg); padding: var(--spacing-md);">
                 @if($totalRegistros > 0)
                     <div style="flex: 0 0 180px;">
                         <canvas id="donutChart" width="180" height="180"></canvas>
@@ -153,19 +184,23 @@
             </div>
         </div>
     </div>
+    </div>
+    <!-- END TAB 2 -->
 
-    <!-- Bottom Row: Critical Students + Course Summary -->
-    <div class="grid grid-cols-2 mb-xl" style="gap: var(--spacing-xl);">
+    <!-- TAB 2: DETALLES -->
+    <div id="section-detalles" class="system-tab-section">
+        <!-- Bottom Row: Critical Students + Course Summary -->
+    <div class="grid grid-cols-2 mb-lg" style="gap: var(--spacing-lg);">
         <!-- Critical Students -->
-        <div class="card">
-            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 class="card-title">
+        <div class="card" style="min-width: 0; overflow: hidden;">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-sm) var(--spacing-md); border-bottom: 1px solid var(--border-color);">
+                <h3 class="card-title" style="font-size: 0.95rem; margin: 0; color: var(--text-color);">
                     <i class="fas fa-exclamation-triangle" style="color: var(--warning);"></i>
                     Asistencia Crítica
-                    <span style="font-size: 0.75rem; font-weight: 400; color: var(--gray-500); margin-left: 4px;">(menos del 75%)</span>
+                    <span style="font-size: 0.75rem; font-weight: 400; color: var(--text-muted, var(--gray-500)); margin-left: 4px;">(menos del 75%)</span>
                 </h3>
                 @if($estudiantesCriticos->count() > 0)
-                    <span class="badge badge-danger">{{ $estudiantesCriticos->count() }} alumnos</span>
+                    <span class="badge badge-danger" style="font-size: 0.7rem; padding: 2px 6px;">{{ $estudiantesCriticos->count() }} alumnos</span>
                 @endif
             </div>
             <div class="card-body" style="padding: 0;">
@@ -173,7 +208,7 @@
                     <div style="overflow-x: auto;">
                         <table class="table" style="margin: 0;">
                             <thead>
-                                <tr>
+                                <tr class="table-header-row">
                                     <th>Estudiante</th>
                                     <th style="text-align: center;">Asistidas</th>
                                     <th style="text-align: center;">% Asistencia</th>
@@ -185,16 +220,16 @@
                                         $pct = $critico['porcentaje'];
                                         $barColor = $pct >= 70 ? '#f59e0b' : '#ef4444';
                                     @endphp
-                                    <tr>
+                                    <tr class="asistencia-item">
                                         <td>
-                                            <div style="font-weight: 600; font-size: 0.875rem; color: var(--gray-900);">
+                                            <div style="font-weight: 600; font-size: 0.875rem; color: var(--text-color);">
                                                 {{ $critico['estudiante']->nombre ?? '–' }} {{ $critico['estudiante']->apellido ?? '' }}
                                             </div>
-                                            <div style="font-size: 0.75rem; color: var(--gray-500);">
+                                            <div style="font-size: 0.75rem; color: var(--text-muted, var(--gray-500));">
                                                 {{ $critico['estudiante']->rut ?? '' }}
                                             </div>
                                         </td>
-                                        <td style="text-align: center; font-size: 0.875rem; color: var(--gray-600);">
+                                        <td style="text-align: center; font-size: 0.875rem; color: var(--text-muted, var(--gray-600));">
                                             {{ $critico['asistio'] }} / {{ $critico['total'] }}
                                         </td>
                                         <td>
@@ -221,15 +256,17 @@
         </div>
 
         <!-- Course Summary -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-chalkboard"></i> Resumen por Curso</h3>
+        <div class="card" style="min-width: 0; overflow: hidden;">
+            <div class="card-header" style="padding: var(--spacing-sm) var(--spacing-md); border-bottom: 1px solid var(--border-color);">
+                <h3 class="card-title" style="font-size: 0.95rem; margin: 0; color: var(--text-color);">
+                    <i class="fas fa-chalkboard" style="color: var(--text-muted, var(--gray-400));"></i> Resumen por Curso
+                </h3>
             </div>
-            <div class="card-body" style="padding: 0; overflow-y: auto; max-height: 420px;">
+            <div class="card-body" style="padding: 0; overflow-x: auto; overflow-y: auto; max-height: 420px;">
                 @if($resumenCursos->count() > 0)
                     <table class="table" style="margin: 0;">
                         <thead>
-                            <tr>
+                            <tr class="table-header-row">
                                 <th>Curso</th>
                                 <th style="text-align: center;">Registros</th>
                                 <th style="text-align: center;">% Asistencia</th>
@@ -243,14 +280,14 @@
                                     $semColor  = match($sem) { 'green' => 'var(--success)', 'yellow' => 'var(--warning)', 'red' => 'var(--error)', default => 'var(--gray-400)' };
                                     $badgeClass = match($sem) { 'green' => 'badge-success', 'yellow' => 'badge-warning', 'red' => 'badge-danger', default => '' };
                                 @endphp
-                                <tr>
+                                <tr class="asistencia-item">
                                     <td>
-                                        <a href="{{ route('attendance.reporte.curso', $res['id']) }}" style="font-weight: 600; color: var(--theme-color); text-decoration: none; font-size: 0.875rem;">
+                                        <a href="{{ route('attendance.reporte.curso', $res['id']) }}" style="font-weight: 600; color: var(--text-color); text-decoration: none; font-size: 0.875rem;">
                                             {{ $res['nombre'] }}
                                         </a>
-                                        <div style="font-size: 0.75rem; color: var(--gray-500);">{{ $res['estudiantes'] }} estudiantes</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted, var(--gray-500));">{{ $res['estudiantes'] }} estudiantes</div>
                                     </td>
-                                    <td style="text-align: center; font-size: 0.875rem; color: var(--gray-600);">{{ $res['total'] }}</td>
+                                    <td style="text-align: center; font-size: 0.875rem; color: var(--text-muted, var(--gray-600));">{{ $res['total'] }}</td>
                                     <td>
                                         @if(!is_null($res['porcentaje']))
                                             <div style="display: flex; align-items: center; gap: 8px;">
@@ -293,7 +330,19 @@
         </div>
     </div>
 
+    </div>
+    <!-- END TAB 2 -->
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        function switchSystemTab(tabId) {
+            document.querySelectorAll('.system-tab').forEach(t => t.classList.remove('active-tab'));
+            document.querySelectorAll('.system-tab-section').forEach(s => s.classList.remove('active-section'));
+
+            document.getElementById('tab-' + tabId).classList.add('active-tab');
+            document.getElementById('section-' + tabId).classList.add('active-section');
+        }
+    </script>
     <script>
         // Trend line chart
         @if(count($chartDias) > 0)

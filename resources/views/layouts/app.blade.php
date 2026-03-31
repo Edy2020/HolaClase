@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -8,41 +8,38 @@
 
     <title>{{ config('app.name', 'HolaClase') }}</title>
 
-    <!-- Fonts -->
+    
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800" rel="stylesheet" />
 
-    <!-- Font Awesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-    <!-- Styles -->
+    
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}?v={{ time() }}">
     <link rel="stylesheet" href="{{ asset('css/themes.css') }}?v={{ time() }}">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 
-    <!-- Scripts -->
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body>
     <div class="app-container">
-        <!-- Desktop Sidebar -->
+        
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a href="{{ route('dashboard') }}" class="sidebar-logo">
                     <div class="sidebar-logo-icon">
-                        <img src="{{ asset('hc_icon.png') }}" alt="HolaClase"
-                            style="width: 100%; height: 100%; object-fit: contain;">
+                        <img src="{{ asset('hc_icon_4.png') }}" class="brand-logo-light" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
+                        <img src="{{ asset('hc_icon.png') }}" class="brand-logo-dark" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain; display: none;">
                     </div>
                     <span class="sidebar-logo-text">HolaClase!</span>
                 </a>
-                <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
             </div>
 
-            <nav>
-                <ul class="sidebar-nav">
+            <nav style="display: flex; flex-direction: column; flex: 1; overflow-y: auto;">
+                <ul class="sidebar-nav" style="display: flex; flex-direction: column; flex: 1;">
                     <li class="sidebar-nav-item">
                         <a href="{{ route('dashboard') }}"
                             class="sidebar-nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
@@ -86,33 +83,33 @@
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('grades.dashboard') }}"
+                        <a href="{{ route('grades.index') }}"
                             class="sidebar-nav-link {{ request()->routeIs('grades.*') ? 'active' : '' }}">
                             <span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span>
                             <span>Notas</span>
                         </a>
                     </li>
-                    <li class="sidebar-nav-item">
-                        <a href="{{ route('settings.index') }}"
-                            class="sidebar-nav-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
-                            <span class="sidebar-nav-icon"><i class="fas fa-cog"></i></span>
-                            <span>Configuración</span>
+
+                    <li class="sidebar-nav-item" style="margin-top: auto; border-top: 1px solid var(--gray-200); padding-top: 1rem;">
+                        <a href="#" onclick="toggleDarkMode(); return false;" class="sidebar-nav-link">
+                            <span class="sidebar-nav-icon theme-toggle-icon"><i class="fas fa-moon"></i></span>
+                            <span class="theme-toggle-text">Modo Oscuro</span>
                         </a>
                     </li>
                 </ul>
             </nav>
         </aside>
 
-        <!-- Mobile Sidebar Overlay -->
+        
         <div class="mobile-sidebar-overlay" id="mobile-overlay" onclick="closeMobileSidebar()"></div>
 
-        <!-- Mobile Sidebar -->
+        
         <aside class="mobile-sidebar" id="mobile-sidebar">
             <div class="sidebar-header">
                 <a href="{{ route('dashboard') }}" class="sidebar-logo">
                     <div class="sidebar-logo-icon">
-                        <img src="{{ asset('hc_icon.png') }}" alt="HolaClase"
-                            style="width: 100%; height: 100%; object-fit: contain;">
+                        <img src="{{ asset('hc_icon_4.png') }}" class="brand-logo-light" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain;">
+                        <img src="{{ asset('hc_icon.png') }}" class="brand-logo-dark" alt="HolaClase" style="width: 100%; height: 100%; object-fit: contain; display: none;">
                     </div>
                     <span class="sidebar-logo-text">HolaClase</span>
                 </a>
@@ -121,8 +118,8 @@
                 </button>
             </div>
 
-            <nav>
-                <ul class="sidebar-nav">
+            <nav style="display: flex; flex-direction: column; flex: 1; overflow-y: auto;">
+                <ul class="sidebar-nav" style="display: flex; flex-direction: column; flex: 1;">
                     <li class="sidebar-nav-item">
                         <a href="{{ route('dashboard') }}"
                             class="sidebar-nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
@@ -172,21 +169,21 @@
                             <span>Notas</span>
                         </a>
                     </li>
-                    <li class="sidebar-nav-item">
-                        <a href="{{ route('settings.index') }}"
-                            class="sidebar-nav-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
-                            <span class="sidebar-nav-icon"><i class="fas fa-cog"></i></span>
-                            <span>Configuración</span>
+
+                    <li class="sidebar-nav-item" style="margin-top: auto; border-top: 1px solid var(--gray-200); padding-top: 1rem;">
+                        <a href="#" onclick="toggleDarkMode(); return false;" class="sidebar-nav-link">
+                            <span class="sidebar-nav-icon theme-toggle-icon"><i class="fas fa-moon"></i></span>
+                            <span class="theme-toggle-text">Modo Oscuro</span>
                         </a>
                     </li>
                 </ul>
             </nav>
         </aside>
 
-        <!-- Mobile User Sidebar Overlay -->
+        
         <div class="mobile-user-sidebar-overlay" id="mobile-user-overlay" onclick="closeMobileUserSidebar()"></div>
 
-        <!-- Mobile User Sidebar -->
+        
         <aside class="mobile-user-sidebar" id="mobile-user-sidebar">
             <div class="mobile-user-sidebar-header">
                 <div class="mobile-user-sidebar-info">
@@ -224,7 +221,7 @@
             </nav>
         </aside>
 
-        <!-- Fixed Navbar -->
+        
         <nav class="app-navbar">
             <div class="navbar-left">
                 <button class="mobile-menu-btn" onclick="openMobileSidebar()">
@@ -234,12 +231,12 @@
             </div>
 
             <div class="navbar-right">
-                <!-- User Icon Button -->
+                
                 <button class="user-icon-btn" onclick="toggleUserMenu()" id="user-icon-btn">
                     <i class="fas fa-user"></i>
                 </button>
 
-                <!-- User Dropdown Menu (Desktop) -->
+                
                 <div id="user-menu" class="user-dropdown-menu">
                     <div class="user-dropdown-header">
                         <div class="user-dropdown-avatar">
@@ -272,17 +269,15 @@
             </div>
         </nav>
 
-        <!-- Main Content -->
+        
         <div class="main-content with-sidebar" id="mainContent">
-            <!-- Page Content -->
+            
             <main class="content-wrapper fade-in">
                 {{ $slot }}
             </main>
 
-            <!-- Footer -->
-            <!-- <footer class="app-footer">
-                <p>&copy; {{ date('Y') }} HolaClase. Sistema de Gestión Educativa. Todos los derechos reservados.</p>
-            </footer> -->
+            
+            
         </div>
     </div>
 
@@ -291,20 +286,9 @@
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
 
-        // Load saved sidebar state
-        let sidebarOpen = localStorage.getItem('sidebarOpen') !== 'false';
-
-        function toggleSidebar() {
-            sidebarOpen = !sidebarOpen;
-            sidebar.classList.toggle('collapsed');
-            // Save state to localStorage
-            localStorage.setItem('sidebarOpen', sidebarOpen);
-        }
-
-        // Apply saved state on load
-        if (!sidebarOpen) {
-            sidebar.classList.add('collapsed');
-        }
+        // Desktop sidebar functionality explicitly locked OPEN on desktop mode.
+        // Mobile mode collapses it dynamically.
+        let sidebarOpen = true;
 
         // Mobile Sidebar functionality
         const mobileSidebar = document.getElementById('mobile-sidebar');
@@ -327,8 +311,7 @@
             if (window.innerWidth <= 1024) {
                 sidebar.classList.add('collapsed');
                 sidebarOpen = false;
-                localStorage.setItem('sidebarOpen', false);
-            } else if (localStorage.getItem('sidebarOpen') !== 'false') {
+            } else {
                 sidebar.classList.remove('collapsed');
                 sidebarOpen = true;
                 // Close mobile sidebar if open
@@ -377,55 +360,35 @@
             document.body.style.overflow = '';
         }
 
-        // Initialize theme on page load
-        const savedTheme = localStorage.getItem('theme') || 'purple';
-        if (savedTheme) {
-            document.documentElement.setAttribute('data-theme', savedTheme);
+        // --- Dark Mode Logic ---
+        function applyDarkModeUI(isDark) {
+            document.querySelectorAll('.theme-toggle-icon i').forEach(icon => {
+                icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            });
+            document.querySelectorAll('.theme-toggle-text').forEach(text => {
+                text.textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
+            });
+        }
 
-            // Apply custom color if custom theme is selected
-            if (savedTheme === 'custom') {
-                const customColor = localStorage.getItem('customColor');
-                if (customColor) {
-                    applyCustomColor(customColor);
-                }
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark-mode');
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            applyDarkModeUI(isDark);
+        }
+
+        // Initialize dark mode on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const hasDarkPreference = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedTheme = localStorage.getItem('theme');
+            const isDark = savedTheme === 'dark' || (!savedTheme && hasDarkPreference);
+            
+            if (isDark) {
+                document.documentElement.classList.add('dark-mode');
             }
-        }
+            applyDarkModeUI(isDark);
+        });
 
-        // Initialize dark mode on page load
-        const isDarkMode = localStorage.getItem('darkMode') === 'true';
-        if (isDarkMode) {
-            document.documentElement.classList.add('dark-mode');
-        }
-
-        function applyCustomColor(baseColor) {
-            // Generate color variations
-            const variations = generateColorVariations(baseColor);
-
-            // Apply custom colors
-            document.documentElement.style.setProperty('--custom-color', baseColor);
-            document.documentElement.style.setProperty('--custom-light', variations.light);
-            document.documentElement.style.setProperty('--custom-dark', variations.dark);
-            document.documentElement.style.setProperty('--custom-darker', variations.darker);
-        }
-
-        function generateColorVariations(hexColor) {
-            // Convert hex to RGB
-            const r = parseInt(hexColor.substr(1, 2), 16);
-            const g = parseInt(hexColor.substr(3, 2), 16);
-            const b = parseInt(hexColor.substr(5, 2), 16);
-
-            // Generate lighter version (increase brightness by 15%)
-            const light = `#${Math.min(255, Math.round(r * 1.15)).toString(16).padStart(2, '0')}${Math.min(255, Math.round(g * 1.15)).toString(16).padStart(2, '0')}${Math.min(255, Math.round(b * 1.15)).toString(16).padStart(2, '0')}`;
-
-            // Generate darker version (decrease brightness by 15%)
-            const dark = `#${Math.round(r * 0.85).toString(16).padStart(2, '0')}${Math.round(g * 0.85).toString(16).padStart(2, '0')}${Math.round(b * 0.85).toString(16).padStart(2, '0')}`;
-
-            // Generate even darker version (decrease brightness by 30%)
-            const darker = `#${Math.round(r * 0.7).toString(16).padStart(2, '0')}${Math.round(g * 0.7).toString(16).padStart(2, '0')}${Math.round(b * 0.7).toString(16).padStart(2, '0')}`;
-
-            return { light, dark, darker };
-        }
     </script>
 </body>
-
 </html>
