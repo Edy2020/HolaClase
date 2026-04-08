@@ -34,10 +34,10 @@
                 <a href="{{ route('students.create') }}" class="action-pill">
                     <i class="fas fa-user-plus"></i> Estudiante
                 </a>
-                <a href="{{ route('attendance.create') }}" class="action-pill">
+                <a href="{{ route('attendance.dashboard') }}" class="action-pill">
                     <i class="fas fa-clipboard-check"></i> Asistencia
                 </a>
-                <a href="{{ route('grades.index') }}" class="action-pill">
+                <a href="{{ route('grades.dashboard') }}" class="action-pill">
                     <i class="fas fa-star"></i> Notas
                 </a>
                 <a href="{{ route('dashboard') }}" class="action-pill">
@@ -81,14 +81,14 @@
                 <i class="fas fa-user-plus"></i>
             </div>
         </a>
-        <a href="{{ route('attendance.create') }}" class="speed-dial-item" style="text-decoration: none;">
-            <span class="speed-dial-label">Tomar Asistencia</span>
+        <a href="{{ route('attendance.dashboard') }}" class="speed-dial-item" style="text-decoration: none;">
+            <span class="speed-dial-label">Asistencia</span>
             <div class="speed-dial-button">
                 <i class="fas fa-clipboard-check"></i>
             </div>
         </a>
-        <a href="{{ route('grades.index') }}" class="speed-dial-item" style="text-decoration: none;">
-            <span class="speed-dial-label">Registrar Notas</span>
+        <a href="{{ route('grades.dashboard') }}" class="speed-dial-item" style="text-decoration: none;">
+            <span class="speed-dial-label">Notas</span>
             <div class="speed-dial-button">
                 <i class="fas fa-star"></i>
             </div>

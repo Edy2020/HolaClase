@@ -76,14 +76,14 @@
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('attendance.index') }}"
+                        <a href="{{ route('attendance.dashboard') }}"
                             class="sidebar-nav-link {{ request()->routeIs('attendance.*') ? 'active' : '' }}">
                             <span class="sidebar-nav-icon"><i class="fas fa-calendar-check"></i></span>
                             <span>Asistencia</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('grades.index') }}"
+                        <a href="{{ route('grades.dashboard') }}"
                             class="sidebar-nav-link {{ request()->routeIs('grades.*') ? 'active' : '' }}">
                             <span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span>
                             <span>Notas</span>
@@ -156,7 +156,7 @@
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a href="{{ route('attendance.index') }}"
+                        <a href="{{ route('attendance.dashboard') }}"
                             class="sidebar-nav-link {{ request()->routeIs('attendance.*') ? 'active' : '' }}">
                             <span class="sidebar-nav-icon"><i class="fas fa-calendar-check"></i></span>
                             <span>Asistencia</span>
