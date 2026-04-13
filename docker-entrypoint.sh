@@ -12,16 +12,14 @@ php artisan migrate --force
 # Create storage symlink (public disk)
 php artisan storage:link --force 2>/dev/null || true
 
-# Clear caches (ignore errors — directories may not exist on first boot)
+# Clear all caches (ignore errors on first boot)
 php artisan config:clear 2>/dev/null || true
 php artisan route:clear 2>/dev/null || true
-php artisan view:clear 2>/dev/null || true
 php artisan cache:clear 2>/dev/null || true
 
-# Rebuild optimized caches
+# Rebuild optimized caches (skip view:cache — it's unreliable in Docker)
 php artisan config:cache
 php artisan route:cache
-php artisan view:cache
 
 # Start Apache in foreground
 exec apache2-foreground
