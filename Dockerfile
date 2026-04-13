@@ -1,7 +1,7 @@
 # ---- Base image ----
 FROM php:8.2-apache
 
-# ---- System dependencies + PostgreSQL support ----
+# ---- System dependencies + PostgreSQL support + Node.js ----
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -13,6 +13,12 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     && docker-php-ext-install pdo pdo_pgsql pgsql mbstring exif pcntl bcmath gd zip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# ---- Install Node.js 20 (LTS) ----
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -34,6 +40,9 @@ COPY . .
 
 # ---- Install PHP dependencies (no dev) ----
 RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+# ---- Install Node dependencies & build assets ----
+RUN npm ci && npm run build
 
 # ---- Storage & bootstrap permissions ----
 RUN chown -R www-data:www-data /var/www/html \
