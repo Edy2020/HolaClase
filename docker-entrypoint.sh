@@ -12,11 +12,11 @@ php artisan migrate --force
 # Create storage symlink (public disk)
 php artisan storage:link --force 2>/dev/null || true
 
-# Clear all caches first
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
-php artisan cache:clear
+# Clear caches (ignore errors — directories may not exist on first boot)
+php artisan config:clear 2>/dev/null || true
+php artisan route:clear 2>/dev/null || true
+php artisan view:clear 2>/dev/null || true
+php artisan cache:clear 2>/dev/null || true
 
 # Rebuild optimized caches
 php artisan config:cache
