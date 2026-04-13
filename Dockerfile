@@ -44,8 +44,14 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 # ---- Install Node dependencies & build assets ----
 RUN npm ci && npm run build
 
-# ---- Storage & bootstrap permissions ----
-RUN chown -R www-data:www-data /var/www/html \
+# ---- Ensure required storage directories exist (git does not track empty dirs) ----
+RUN mkdir -p storage/framework/views \
+        storage/framework/cache/data \
+        storage/framework/sessions \
+        storage/app/public \
+        storage/logs \
+        bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html \
     && chmod -R 775 storage bootstrap/cache
 
 # ---- Expose port 80 ----
