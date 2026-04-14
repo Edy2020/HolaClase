@@ -9,9 +9,6 @@ use Illuminate\Http\Request;
 
 class EstudianteController extends Controller
 {
-    /**
-     * Display a listing of the students.
-     */
     public function index()
     {
         $estudiantes = Estudiante::with(['cursos', 'apoderado', 'notas'])
@@ -20,22 +17,15 @@ class EstudianteController extends Controller
         return view('estudiantes.index', compact('estudiantes'));
     }
 
-    /**
-     * Show the form for creating a new student.
-     */
     public function create()
     {
         $cursos = Curso::all();
         return view('estudiantes.create', compact('cursos'));
     }
 
-    /**
-     * Store a newly created student in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            // Student information
             'rut' => 'required|string|unique:estudiantes|max:12',
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
@@ -48,7 +38,6 @@ class EstudianteController extends Controller
             'ciudad' => 'nullable|string|max:255',
             'region' => 'nullable|string|max:255',
 
-            // Guardian information
             'apoderado_rut' => 'required|string|max:12',
             'apoderado_nombre' => 'required|string|max:255',
             'apoderado_apellido' => 'required|string|max:255',
@@ -60,16 +49,12 @@ class EstudianteController extends Controller
             'apoderado_ocupacion' => 'nullable|string|max:255',
             'apoderado_lugar_trabajo' => 'nullable|string|max:255',
 
-            // Documents
             'documentos' => 'nullable|array',
             'documentos.*.tipo' => 'required|string',
             'documentos.*.archivo' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-
-            // Course enrollment
             'curso_id' => 'nullable|exists:cursos,id',
         ]);
 
-        // Validate RUT
         if (!$this->validarRut($validated['rut'])) {
             return back()->withErrors(['rut' => 'El RUT ingresado no es válido.'])->withInput();
         }
@@ -78,7 +63,6 @@ class EstudianteController extends Controller
             return back()->withErrors(['apoderado_rut' => 'El RUT del apoderado no es válido.'])->withInput();
         }
 
-        // Create or find apoderado
         $apoderado = Apoderado::firstOrCreate(
             ['rut' => $validated['apoderado_rut']],
             [
@@ -94,7 +78,6 @@ class EstudianteController extends Controller
             ]
         );
 
-        // Create student
         $estudiante = Estudiante::create([
             'rut' => $validated['rut'],
             'nombre' => $validated['nombre'],
@@ -111,7 +94,6 @@ class EstudianteController extends Controller
             'apoderado_id' => $apoderado->id,
         ]);
 
-        // Handle document uploads
         if ($request->has('documentos')) {
             foreach ($request->documentos as $documento) {
                 if (isset($documento['archivo'])) {
@@ -126,7 +108,6 @@ class EstudianteController extends Controller
             }
         }
 
-        // Enroll in course if selected
         if ($request->filled('curso_id')) {
             $estudiante->cursos()->attach($request->curso_id, [
                 'fecha_inscripcion' => now(),
@@ -136,9 +117,74 @@ class EstudianteController extends Controller
         return redirect()->route('students.index')->with('success', 'Estudiante creado exitosamente.');
     }
 
-    /**
-     * Display the specified student.
-     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt|max:2048',
+        ]);
+
+        $file = $request->file('csv_file');
+        
+        if (($handle = fopen($file->path(), 'r')) !== false) {
+            $count = 0;
+            $rowNumber = 0;
+
+            while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+                $rowNumber++;
+                
+                if ($rowNumber === 1 && stripos($data[0], 'rut') !== false) {
+                    continue;
+                }
+
+                if (count($data) < 7) continue;
+
+                $rutEstudiante = trim($data[0]);
+                $nombreEstudiante = trim($data[1]);
+                $apellidoEstudiante = trim($data[2]);
+                $rutApoderado = trim($data[3]);
+                $nombreApoderado = trim($data[4]);
+                $apellidoApoderado = trim($data[5]);
+                $relacionApoderado = trim($data[6]);
+
+                if (empty($rutEstudiante) || empty($nombreEstudiante) || empty($apellidoEstudiante) || empty($rutApoderado) || empty($nombreApoderado) || empty($apellidoApoderado) || empty($relacionApoderado)) {
+                    continue;
+                }
+
+                if (!$this->validarRut($rutEstudiante) || !$this->validarRut($rutApoderado)) {
+                    continue;
+                }
+
+                $exists = Estudiante::where('rut', $rutEstudiante)->exists();
+
+                if (!$exists) {
+                    $apoderado = Apoderado::firstOrCreate(
+                        ['rut' => $rutApoderado],
+                        [
+                            'nombre' => $nombreApoderado,
+                            'apellido' => $apellidoApoderado,
+                            'relacion' => $relacionApoderado,
+                        ]
+                    );
+
+                    Estudiante::create([
+                        'rut' => $rutEstudiante,
+                        'nombre' => $nombreEstudiante,
+                        'apellido' => $apellidoEstudiante,
+                        'nacionalidad' => 'Chilena',
+                        'estado' => 'activo',
+                        'apoderado_id' => $apoderado->id,
+                    ]);
+                    $count++;
+                }
+            }
+            fclose($handle);
+
+            return redirect()->route('students.index')->with('success', "Se han importado $count estudiantes exitosamente.");
+        }
+
+        return back()->withErrors(['csv_file' => 'Error']);
+    }
+
     public function show($id)
     {
         $estudiante = Estudiante::with([
@@ -149,10 +195,8 @@ class EstudianteController extends Controller
             'notas.asignatura',
         ])->findOrFail($id);
 
-        // Get unique asignaturas from all courses
         $asignaturas = $estudiante->cursos->flatMap->asignaturas->unique('id');
 
-        // Calculate average per subject
         $promediosPorAsignatura = [];
         foreach ($asignaturas as $asignatura) {
             $promediosPorAsignatura[$asignatura->id] = [
@@ -164,9 +208,6 @@ class EstudianteController extends Controller
         return view('estudiantes.show', compact('estudiante', 'promediosPorAsignatura'));
     }
 
-    /**
-     * Show the form for editing the specified student.
-     */
     public function edit($id)
     {
         $estudiante = Estudiante::with(['apoderado', 'documentos', 'cursos'])->findOrFail($id);
@@ -175,15 +216,11 @@ class EstudianteController extends Controller
         return view('estudiantes.edit', compact('estudiante', 'cursos'));
     }
 
-    /**
-     * Update the specified student in storage.
-     */
     public function update(Request $request, $id)
     {
         $estudiante = Estudiante::findOrFail($id);
 
         $validated = $request->validate([
-            // Student information
             'rut' => 'required|string|max:12|unique:estudiantes,rut,' . $estudiante->id,
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
@@ -197,7 +234,6 @@ class EstudianteController extends Controller
             'region' => 'nullable|string|max:255',
             'estado' => 'required|in:activo,inactivo,retirado',
 
-            // Guardian information
             'apoderado_rut' => 'required|string|max:12',
             'apoderado_nombre' => 'required|string|max:255',
             'apoderado_apellido' => 'required|string|max:255',
@@ -209,18 +245,14 @@ class EstudianteController extends Controller
             'apoderado_ocupacion' => 'nullable|string|max:255',
             'apoderado_lugar_trabajo' => 'nullable|string|max:255',
 
-            // New documents
             'nuevos_documentos' => 'nullable|array',
             'nuevos_documentos.*.tipo' => 'required|string',
             'nuevos_documentos.*.archivo' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
-        // Validate RUT
         if (!$this->validarRut($validated['rut'])) {
             return back()->withErrors(['rut' => 'El RUT ingresado no es válido.'])->withInput();
         }
-
-        // Update or create apoderado
         if ($estudiante->apoderado && $estudiante->apoderado->rut === $validated['apoderado_rut']) {
             $estudiante->apoderado->update([
                 'nombre' => $validated['apoderado_nombre'],
@@ -251,7 +283,6 @@ class EstudianteController extends Controller
             $estudiante->apoderado_id = $apoderado->id;
         }
 
-        // Update student
         $estudiante->update([
             'rut' => $validated['rut'],
             'nombre' => $validated['nombre'],
@@ -267,7 +298,6 @@ class EstudianteController extends Controller
             'estado' => $validated['estado'],
         ]);
 
-        // Handle new document uploads
         if ($request->has('nuevos_documentos')) {
             foreach ($request->nuevos_documentos as $documento) {
                 if (isset($documento['archivo'])) {
@@ -285,9 +315,6 @@ class EstudianteController extends Controller
         return redirect()->route('students.show', $estudiante->id)->with('success', 'Estudiante actualizado exitosamente.');
     }
 
-    /**
-     * Remove the specified student from storage.
-     */
     public function destroy($id)
     {
         $estudiante = Estudiante::findOrFail($id);
@@ -296,9 +323,6 @@ class EstudianteController extends Controller
         return redirect()->route('students.index')->with('success', 'Estudiante eliminado exitosamente.');
     }
 
-    /**
-     * Update student status only (for quick status changes).
-     */
     public function updateStatus(Request $request, $id)
     {
         $estudiante = Estudiante::findOrFail($id);
@@ -318,23 +342,17 @@ class EstudianteController extends Controller
         ]);
     }
 
-    /**
-     * Validate Chilean RUT.
-     */
     private function validarRut($rut)
     {
-        // Remove dots and hyphens
         $rut = preg_replace('/[^0-9kK]/', '', $rut);
 
         if (strlen($rut) < 2) {
             return false;
         }
 
-        // Separate number and verification digit
         $rutNum = substr($rut, 0, -1);
         $dv = strtoupper(substr($rut, -1));
 
-        // Calculate verification digit
         $suma = 0;
         $multiplo = 2;
 

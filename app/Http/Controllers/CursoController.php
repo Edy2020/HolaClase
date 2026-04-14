@@ -10,9 +10,6 @@ use Illuminate\Http\Request;
 
 class CursoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $cursos = Curso::withCount('estudiantes')
@@ -24,17 +21,11 @@ class CursoController extends Controller
         return view('cursos.index', compact('cursos'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('cursos.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -43,7 +34,6 @@ class CursoController extends Controller
             'letra' => 'required|string|max:5',
         ]);
 
-        // Check for duplicate curso
         $exists = Curso::where('nivel', $request->nivel)
             ->where('grado', $request->grado)
             ->where('letra', $request->letra)
@@ -59,7 +49,6 @@ class CursoController extends Controller
         $grado = $request->grado;
         $letra = $request->letra;
 
-        // Nombres completos de grados
         $nombresGrados = [
             '1°' => 'Primero',
             '2°' => 'Segundo',
@@ -73,10 +62,9 @@ class CursoController extends Controller
 
         $nombre = '';
 
-        // Generate Name Logic
         if ($nivel === 'Pre-Kinder' || $nivel === 'Kinder') {
             $nombre = "{$nivel} {$letra}";
-            $grado = null; // Ensure grade is null for these levels
+            $grado = null; 
         } elseif ($nivel === 'Basica') {
             $nombreGrado = $nombresGrados[$grado] ?? $grado;
             $nombre = "{$grado}{$nombreGrado} Básico {$letra}";
@@ -95,12 +83,99 @@ class CursoController extends Controller
         return redirect()->route('courses.index')->with('success', 'Curso creado correctamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt|max:2048',
+        ]);
+
+        $file = $request->file('csv_file');
+        
+        if (($handle = fopen($file->path(), 'r')) !== false) {
+            $count = 0;
+            $rowNumber = 0;
+
+            $nombresGrados = [
+                '1°' => 'Primero',
+                '2°' => 'Segundo',
+                '3°' => 'Tercero',
+                '4°' => 'Cuarto',
+                '5°' => 'Quinto',
+                '6°' => 'Sexto',
+                '7°' => 'Séptimo',
+                '8°' => 'Octavo',
+            ];
+
+            while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+                $rowNumber++;
+                
+                if ($rowNumber === 1 && (stripos($data[0], 'nivel') !== false)) {
+                    continue;
+                }
+
+                if (count($data) < 3) continue;
+
+                $nivelRaw = trim($data[0]);
+                $gradoRaw = trim($data[1]);
+                $letraRaw = trim($data[2]);
+
+                if (empty($nivelRaw) || empty($letraRaw)) continue;
+
+                $grado = $gradoRaw === '' ? null : $gradoRaw;
+                $nivelLower = strtolower($nivelRaw);
+                if (in_array($nivelLower, ['pre-kinder', 'prekinder', 'pre kinder'])) {
+                    $nivel = 'Pre-Kinder';
+                } elseif ($nivelLower === 'kinder') {
+                    $nivel = 'Kinder';
+                } elseif (in_array($nivelLower, ['basica', 'básica', 'basico', 'básico'])) {
+                    $nivel = 'Basica';
+                } elseif (in_array($nivelLower, ['media', 'medio'])) {
+                    $nivel = 'Media';
+                } else {
+                    $nivel = ucfirst($nivelLower);
+                }
+
+                $letra = strtoupper($letraRaw);
+                $nombre = '';
+
+                if ($nivel === 'Pre-Kinder' || $nivel === 'Kinder') {
+                    $nombre = "{$nivel} {$letra}";
+                    $grado = null; 
+                } elseif ($nivel === 'Basica') {
+                    $nombreGrado = $nombresGrados[$grado] ?? $grado;
+                    $nombre = "{$grado}{$nombreGrado} Básico {$letra}";
+                } elseif ($nivel === 'Media') {
+                    $nombreGrado = $nombresGrados[$grado] ?? $grado;
+                    $nombre = "{$grado}{$nombreGrado} Medio {$letra}";
+                }
+
+                if (empty($nombre)) continue;
+
+                $exists = Curso::where('nivel', $nivel)
+                    ->where('grado', $grado)
+                    ->where('letra', $letra)
+                    ->exists();
+
+                if (!$exists) {
+                    Curso::create([
+                        'nivel' => $nivel,
+                        'grado' => $grado,
+                        'letra' => $letra,
+                        'nombre' => $nombre,
+                    ]);
+                    $count++;
+                }
+            }
+            fclose($handle);
+
+            return redirect()->route('courses.index')->with('success', "Se han importado $count cursos exitosamente.");
+        }
+
+        return back()->withErrors(['csv_file' => 'Error al leer el archivo CSV.']);
+    }
+
     public function show(Curso $curso)
     {
-        // Load all relationships
         $curso->load([
             'profesor',
             'estudiantes',
@@ -114,15 +189,12 @@ class CursoController extends Controller
             }
         ]);
 
-        // Get all profesores for the dropdown
         $profesores = Profesor::orderBy('nombre')->get();
 
-        // Get all estudiantes not enrolled in this course
         $estudiantesDisponibles = Estudiante::whereDoesntHave('cursos', function ($query) use ($curso) {
             $query->where('curso_id', $curso->id);
         })->orderBy('nombre')->get();
 
-        // Get all asignaturas not assigned to this course
         $asignaturasDisponibles = Asignatura::whereDoesntHave('cursos', function ($query) use ($curso) {
             $query->where('curso_id', $curso->id);
         })->orderBy('nombre')->get();
@@ -130,17 +202,11 @@ class CursoController extends Controller
         return view('cursos.show', compact('curso', 'profesores', 'estudiantesDisponibles', 'asignaturasDisponibles'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Curso $curso)
     {
         return view('cursos.edit', compact('curso'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Curso $curso)
     {
         $validated = $request->validate([
@@ -149,7 +215,6 @@ class CursoController extends Controller
             'letra' => 'required|string|max:5',
         ]);
 
-        // Check for duplicate curso (excluding current record)
         $exists = Curso::where('nivel', $request->nivel)
             ->where('grado', $request->grado)
             ->where('letra', $request->letra)
@@ -166,7 +231,6 @@ class CursoController extends Controller
         $grado = $request->grado;
         $letra = $request->letra;
 
-        // Nombres completos de grados
         $nombresGrados = [
             '1°' => 'Primero',
             '2°' => 'Segundo',
@@ -180,10 +244,9 @@ class CursoController extends Controller
 
         $nombre = '';
 
-        // Generate Name Logic
         if ($nivel === 'Pre-Kinder' || $nivel === 'Kinder') {
             $nombre = "{$nivel} {$letra}";
-            $grado = null; // Ensure grade is null for these levels
+            $grado = null; 
         } elseif ($nivel === 'Basica') {
             $nombreGrado = $nombresGrados[$grado] ?? $grado;
             $nombre = "{$grado}{$nombreGrado} Básico {$letra}";
@@ -202,18 +265,12 @@ class CursoController extends Controller
         return redirect()->route('courses.index')->with('success', 'Curso actualizado correctamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Curso $curso)
     {
         $curso->delete();
         return redirect()->route('courses.index')->with('success', 'Curso eliminado correctamente.');
     }
 
-    /**
-     * Assign a teacher to the course.
-     */
     public function assignTeacher(Request $request, Curso $curso)
     {
         $request->validate([
@@ -225,9 +282,6 @@ class CursoController extends Controller
         return redirect()->route('courses.show', $curso)->with('success', 'Profesor asignado correctamente.');
     }
 
-    /**
-     * Add a student to the course.
-     */
     public function addStudent(Request $request, Curso $curso)
     {
         $request->validate([
@@ -242,9 +296,6 @@ class CursoController extends Controller
         return redirect()->route('courses.show', $curso)->with('success', 'Estudiante agregado correctamente.');
     }
 
-    /**
-     * Remove a student from the course.
-     */
     public function removeStudent(Curso $curso, $estudianteId)
     {
         $curso->estudiantes()->detach($estudianteId);
@@ -252,9 +303,6 @@ class CursoController extends Controller
         return redirect()->route('courses.show', $curso)->with('success', 'Estudiante removido correctamente.');
     }
 
-    /**
-     * Add a subject to the course.
-     */
     public function addSubject(Request $request, Curso $curso)
     {
         $request->validate([
@@ -269,9 +317,6 @@ class CursoController extends Controller
         return redirect()->route('courses.show', $curso)->with('success', 'Asignatura agregada correctamente.');
     }
 
-    /**
-     * Remove a subject from the course.
-     */
     public function removeSubject(Curso $curso, $asignaturaId)
     {
         $curso->asignaturas()->detach($asignaturaId);
@@ -279,9 +324,6 @@ class CursoController extends Controller
         return redirect()->route('courses.show', $curso)->with('success', 'Asignatura removida correctamente.');
     }
 
-    /**
-     * Store a new academic event.
-     */
     public function storeEvent(Request $request, Curso $curso)
     {
         $request->validate([
@@ -297,9 +339,6 @@ class CursoController extends Controller
         return redirect()->route('courses.show', $curso)->with('success', 'Evento creado correctamente.');
     }
 
-    /**
-     * Delete an academic event.
-     */
     public function destroyEvent(Curso $curso, $eventoId)
     {
         $evento = $curso->eventos()->findOrFail($eventoId);
@@ -308,9 +347,6 @@ class CursoController extends Controller
         return redirect()->route('courses.show', $curso)->with('success', 'Evento eliminado correctamente.');
     }
 
-    /**
-     * Store a new test.
-     */
     public function storeTest(Request $request, Curso $curso)
     {
         $request->validate([
@@ -327,9 +363,6 @@ class CursoController extends Controller
         return redirect()->route('courses.show', $curso)->with('success', 'Prueba creada correctamente.');
     }
 
-    /**
-     * Delete a test.
-     */
     public function destroyTest(Curso $curso, $pruebaId)
     {
         $prueba = $curso->pruebas()->findOrFail($pruebaId);

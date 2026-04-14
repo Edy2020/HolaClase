@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
     //     return view('cursos.index');
     // })->name('courses.index');
 
+    Route::post('/cursos/import', [App\Http\Controllers\CursoController::class, 'import'])->name('courses.import');
     Route::resource('cursos', App\Http\Controllers\CursoController::class)->names([
         'index' => 'courses.index',
         'create' => 'courses.create',
@@ -43,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/cursos/{curso}/tests', [App\Http\Controllers\CursoController::class, 'storeTest'])->name('courses.store-test');
     Route::delete('/cursos/{curso}/tests/{prueba}', [App\Http\Controllers\CursoController::class, 'destroyTest'])->name('courses.destroy-test');
 
+    Route::post('/estudiantes/import', [App\Http\Controllers\EstudianteController::class, 'import'])->name('students.import');
     Route::resource('estudiantes', App\Http\Controllers\EstudianteController::class)->names([
         'index' => 'students.index',
         'create' => 'students.create',
@@ -58,6 +60,7 @@ Route::middleware('auth')->group(function () {
 
 
 
+    Route::post('/asignaturas/import', [App\Http\Controllers\AsignaturaController::class, 'import'])->name('subjects.import');
     Route::resource('asignaturas', App\Http\Controllers\AsignaturaController::class)->names([
         'index' => 'subjects.index',
         'create' => 'subjects.create',
@@ -72,6 +75,7 @@ Route::middleware('auth')->group(function () {
     //    return view('profesores.index');
     // })->name('teachers.index');
 
+    Route::post('/profesores/import', [ProfesorController::class, 'import'])->name('teachers.import');
     Route::resource('profesores', ProfesorController::class)->names([
         'index' => 'teachers.index',
         'create' => 'teachers.create',

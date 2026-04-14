@@ -15,7 +15,15 @@
                 Administra todos los cursos de enseñanza básica y media
             </p>
         </div>
-        <div class="header-actions">
+        <div class="header-actions" style="display: flex; gap: var(--spacing-sm);">
+            <button onclick="openImportModal()" class="btn btn-outline"
+                style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--info); color: var(--info); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                onmouseover="this.style.background='rgba(59, 130, 246, 0.1)';"
+                onmouseout="this.style.background='transparent';">
+                <i class="fas fa-file-csv"></i>
+                <span class="btn-text">Importar CSV</span>
+            </button>
+
             <a href="{{ route('courses.create') }}" class="btn btn-outline"
                 style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--gray-300); color: var(--gray-700); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
                 onmouseover="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'"
@@ -352,6 +360,60 @@
         </div>
     </div>
 
+    <!-- Import CSV Modal -->
+    <div id="importModal" class="filters-modal" onclick="closeImportModal()">
+        <div class="filters-modal-content" onclick="event.stopPropagation()">
+            <div class="filters-modal-header">
+                <h3 style="margin: 0; font-size: 1.125rem; font-weight: 600; color: var(--gray-900);">
+                    <i class="fas fa-file-import" style="color: var(--gray-400); margin-right: var(--spacing-sm);"></i>
+                    Importar Cursos desde CSV
+                </h3>
+                <button type="button" onclick="closeImportModal()" class="filters-modal-close" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form action="{{ route('courses.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="filters-modal-body">
+                    <p style="color: var(--gray-600); margin-bottom: var(--spacing-md); font-size: 0.9375rem;">
+                        Sube un archivo CSV con tus cursos. Asegúrate de incluir las columnas en este orden (con encabezado):
+                    </p>
+                    <ul style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--spacing-lg); padding-left: var(--spacing-md);">
+                        <li><strong>Nivel</strong> (Ej: Basica, Media, Pre-Kinder, Kinder)</li>
+                        <li><strong>Grado</strong> (Ej: 1°, 2°. Opcional. Dejar en blanco si es Kinder)</li>
+                        <li><strong>Letra</strong> (Ej: A, B, C...)</li>
+                    </ul>
+                    <div class="form-group mb-0">
+                        <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700); margin-bottom: var(--spacing-xs); display: block;">Archivo CSV</label>
+                        <input type="file" name="csv_file" accept=".csv" required style="width: 100%; padding: var(--spacing-sm); border: 2px dashed var(--gray-300); border-radius: var(--radius-md); font-size: 0.9375rem; cursor: pointer; color: var(--gray-700);">
+                    </div>
+                </div>
+                <div class="filters-modal-footer">
+                    <button type="button" onclick="closeImportModal()" class="btn btn-outline" style="flex: 1; border: 1px solid var(--gray-300); background: transparent; color: var(--gray-700);">
+                        Cancelar
+                    </button>
+                    <button type="submit" style="flex: 1; background: #84cc16; color: white; border: none; border-radius: var(--radius-md); font-weight: 600; padding: 0.625rem; transition: background 0.2s; cursor: pointer;" onmouseover="this.style.background='#65a30d'" onmouseout="this.style.background='#84cc16'">
+                        Importar Cursos
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <style>
+        /* Override desktop hiding for the import modal */
+        @media (min-width: 769px) {
+            #importModal.active {
+                display: flex !important;
+                align-items: center; /* Center on desktop instead of bottom sheet */
+            }
+            #importModal .filters-modal-content {
+                max-width: 500px;
+                border-radius: var(--radius-xl);
+            }
+        }
+    </style>
+
     <script>
         // Real-time search and filter functionality
         const searchInput = document.getElementById('searchInput');
@@ -456,6 +518,22 @@
                 document.body.style.overflow = '';
             }
         }
+
+        function openImportModal() {
+            const modal = document.getElementById('importModal');
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeImportModal() {
+            const modal = document.getElementById('importModal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
         
         function applyFilters() {
             // Sync mobile filters to desktop
@@ -498,6 +576,7 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeFiltersModal();
+                closeImportModal();
             }
         });
         

@@ -90,11 +90,29 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-nav-item" style="margin-top: auto; border-top: 1px solid var(--gray-200); padding-top: 1rem;">
-                        <a href="#" onclick="toggleDarkMode(); return false;" class="sidebar-nav-link">
-                            <span class="sidebar-nav-icon theme-toggle-icon"><i class="fas fa-moon"></i></span>
-                            <span class="theme-toggle-text">Modo Oscuro</span>
-                        </a>
+                    <li class="sidebar-nav-item" style="margin-top: auto; border-top: 1px solid var(--gray-200); padding: 1rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <a href="{{ route('profile.edit') }}" style="display: flex; align-items: center; text-decoration: none; color: inherit; flex: 1; overflow: hidden; gap: 0.75rem;">
+                                <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary-color, #4338ca); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div style="overflow: hidden;">
+                                    <div style="font-weight: 600; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-primary, inherit);">{{ Auth::user()->name }}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary, #6b7280); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ Auth::user()->email }}</div>
+                                </div>
+                            </a>
+                            <div style="display: flex; align-items: center; gap: 0.25rem; flex-shrink: 0; margin-left: 0.5rem;">
+                                <button onclick="toggleDarkMode(); return false;" style="background: none; border: none; cursor: pointer; color: var(--text-secondary, #6b7280); padding: 0.4rem; border-radius: 0.375rem;" title="Alternar tema">
+                                    <span class="theme-toggle-icon"><i class="fas fa-moon"></i></span>
+                                </button>
+                                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                                    @csrf
+                                    <button type="submit" style="background: none; border: none; cursor: pointer; color: #ef4444; padding: 0.4rem; border-radius: 0.375rem;" title="Cerrar Sesión">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </nav>
@@ -170,56 +188,36 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-nav-item" style="margin-top: auto; border-top: 1px solid var(--gray-200); padding-top: 1rem;">
-                        <a href="#" onclick="toggleDarkMode(); return false;" class="sidebar-nav-link">
-                            <span class="sidebar-nav-icon theme-toggle-icon"><i class="fas fa-moon"></i></span>
-                            <span class="theme-toggle-text">Modo Oscuro</span>
-                        </a>
+                    <li class="sidebar-nav-item" style="margin-top: auto; border-top: 1px solid var(--gray-200); padding: 1rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <a href="{{ route('profile.edit') }}" style="display: flex; align-items: center; text-decoration: none; color: inherit; flex: 1; overflow: hidden; gap: 0.75rem;">
+                                <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary-color, #4338ca); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div style="overflow: hidden;">
+                                    <div style="font-weight: 600; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-primary, inherit);">{{ Auth::user()->name }}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary, #6b7280); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ Auth::user()->email }}</div>
+                                </div>
+                            </a>
+                            <div style="display: flex; align-items: center; gap: 0.25rem; flex-shrink: 0; margin-left: 0.5rem;">
+                                <button onclick="toggleDarkMode(); return false;" style="background: none; border: none; cursor: pointer; color: var(--text-secondary, #6b7280); padding: 0.4rem; border-radius: 0.375rem;" title="Alternar tema">
+                                    <span class="theme-toggle-icon"><i class="fas fa-moon"></i></span>
+                                </button>
+                                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                                    @csrf
+                                    <button type="submit" style="background: none; border: none; cursor: pointer; color: #ef4444; padding: 0.4rem; border-radius: 0.375rem;" title="Cerrar Sesión">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </nav>
         </aside>
 
         
-        <div class="mobile-user-sidebar-overlay" id="mobile-user-overlay" onclick="closeMobileUserSidebar()"></div>
 
-        
-        <aside class="mobile-user-sidebar" id="mobile-user-sidebar">
-            <div class="mobile-user-sidebar-header">
-                <div class="mobile-user-sidebar-info">
-                    <div class="mobile-user-sidebar-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="mobile-user-sidebar-details">
-                        <div class="mobile-user-sidebar-name">{{ Auth::user()->name }}</div>
-                        <div class="mobile-user-sidebar-email">{{ Auth::user()->email }}</div>
-                    </div>
-                </div>
-                <button class="sidebar-toggle-btn" onclick="closeMobileUserSidebar()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <nav class="mobile-user-nav">
-                <ul>
-                    <li>
-                        <a href="{{ route('profile.edit') }}" class="mobile-user-nav-link">
-                            <span class="mobile-user-nav-icon"><i class="fas fa-user-cog"></i></span>
-                            <span>Editar Perfil</span>
-                        </a>
-                    </li>
-                    <li>
-                        <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-                            @csrf
-                            <button type="submit" class="mobile-user-nav-link logout-btn">
-                                <span class="mobile-user-nav-icon"><i class="fas fa-sign-out-alt"></i></span>
-                                <span>Cerrar Sesión</span>
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
 
         
         <nav class="app-navbar">
@@ -231,41 +229,6 @@
             </div>
 
             <div class="navbar-right">
-                
-                <button class="user-icon-btn" onclick="toggleUserMenu()" id="user-icon-btn">
-                    <i class="fas fa-user"></i>
-                </button>
-
-                
-                <div id="user-menu" class="user-dropdown-menu">
-                    <div class="user-dropdown-header">
-                        <div class="user-dropdown-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="user-dropdown-info">
-                            <div class="user-dropdown-name">{{ Auth::user()->name }}</div>
-                            <div class="user-dropdown-email">{{ Auth::user()->email }}</div>
-                        </div>
-                    </div>
-                    <div class="user-dropdown-divider"></div>
-                    <nav class="user-dropdown-nav">
-                        <a href="{{ route('profile.edit') }}" class="user-dropdown-link">
-                            <span class="user-dropdown-link-icon">
-                                <i class="fas fa-user-cog"></i>
-                            </span>
-                            <span class="user-dropdown-link-text">Perfil</span>
-                        </a>
-                        <form method="POST" action="{{ route('logout') }}" class="user-dropdown-form">
-                            @csrf
-                            <button type="submit" class="user-dropdown-link user-dropdown-logout">
-                                <span class="user-dropdown-link-icon">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                </span>
-                                <span class="user-dropdown-link-text">Cerrar Sesión</span>
-                            </button>
-                        </form>
-                    </nav>
-                </div>
             </div>
         </nav>
 
@@ -322,43 +285,7 @@
         window.addEventListener('resize', checkMobile);
         checkMobile();
 
-        // User menu toggle
-        function toggleUserMenu() {
-            // Check if mobile
-            if (window.innerWidth <= 768) {
-                openMobileUserSidebar();
-            } else {
-                const menu = document.getElementById('user-menu');
-                menu.classList.toggle('show');
-            }
-        }
 
-        // Close menu when clicking outside
-        document.addEventListener('click', function (event) {
-            const menu = document.getElementById('user-menu');
-            const button = document.getElementById('user-icon-btn');
-
-            // Check if click is outside both menu and button
-            if (!menu.contains(event.target) && !button.contains(event.target)) {
-                menu.classList.remove('show');
-            }
-        });
-
-        // Mobile User Sidebar functionality
-        const mobileUserSidebar = document.getElementById('mobile-user-sidebar');
-        const mobileUserOverlay = document.getElementById('mobile-user-overlay');
-
-        function openMobileUserSidebar() {
-            mobileUserSidebar.classList.add('open');
-            mobileUserOverlay.classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeMobileUserSidebar() {
-            mobileUserSidebar.classList.remove('open');
-            mobileUserOverlay.classList.remove('show');
-            document.body.style.overflow = '';
-        }
 
         // --- Dark Mode Logic ---
         function applyDarkModeUI(isDark) {

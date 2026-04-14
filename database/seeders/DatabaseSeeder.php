@@ -23,8 +23,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Clear existing data (SQLite compatible)
-        DB::statement('PRAGMA foreign_keys = OFF;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Prueba::truncate();
         EventoAcademico::truncate();
         DB::table('curso_asignatura')->truncate();
@@ -35,13 +34,12 @@ class DatabaseSeeder extends Seeder
         Curso::truncate();
         Profesor::truncate();
         User::truncate();
-        DB::statement('PRAGMA foreign_keys = ON;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // Create admin user
         User::create([
             'name' => 'Administrador',
-            'email' => 'admin@admin.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('admin'),
+            'email' => 'admin@holaclase.cl',
+            'password' => \Illuminate\Support\Facades\Hash::make('admin1234'),
             'email_verified_at' => now(),
         ]);
 

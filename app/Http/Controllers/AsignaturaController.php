@@ -7,26 +7,17 @@ use Illuminate\Http\Request;
 
 class AsignaturaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $asignaturas = Asignatura::orderBy('nombre')->get();
         return view('asignaturas.index', compact('asignaturas'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('asignaturas.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -40,9 +31,51 @@ class AsignaturaController extends Controller
         return redirect()->route('subjects.index')->with('success', 'Asignatura creada correctamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt|max:2048',
+        ]);
+
+        $file = $request->file('csv_file');
+        
+        if (($handle = fopen($file->path(), 'r')) !== false) {
+            $count = 0;
+            $rowNumber = 0;
+
+            while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+                $rowNumber++;
+                
+                if ($rowNumber === 1 && (stripos($data[0], 'nombre') !== false)) {
+                    continue;
+                }
+                if (count($data) < 2) continue;
+
+                $nombre = trim($data[0]);
+                $codigo = trim($data[1]);
+                $descripcion = isset($data[2]) ? trim($data[2]) : null;
+
+                if (empty($nombre) || empty($codigo)) continue;
+
+                $exists = Asignatura::where('codigo', $codigo)->exists();
+
+                if (!$exists) {
+                    Asignatura::create([
+                        'nombre' => $nombre,
+                        'codigo' => $codigo,
+                        'descripcion' => $descripcion,
+                    ]);
+                    $count++;
+                }
+            }
+            fclose($handle);
+
+            return redirect()->route('subjects.index')->with('success', "Se han importado $count asignaturas exitosamente.");
+        }
+
+        return back()->withErrors(['csv_file' => 'Error al leer el archivo CSV.']);
+    }
+
     public function show(Asignatura $asignatura)
     {
         $asignatura->load(['cursos.estudiantes', 'notas']);
@@ -50,17 +83,11 @@ class AsignaturaController extends Controller
         return view('asignaturas.show', compact('asignatura'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Asignatura $asignatura)
     {
         return view('asignaturas.edit', compact('asignatura'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Asignatura $asignatura)
     {
         $validated = $request->validate([
@@ -74,9 +101,6 @@ class AsignaturaController extends Controller
         return redirect()->route('subjects.index')->with('success', 'Asignatura actualizada correctamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Asignatura $asignatura)
     {
         $asignatura->delete();

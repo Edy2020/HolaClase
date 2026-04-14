@@ -55,6 +55,58 @@ class ProfesorController extends Controller
         return redirect()->route('teachers.index')->with('success', 'Profesor creado exitosamente.');
     }
 
+    public function import(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt|max:2048',
+        ]);
+
+        $file = $request->file('csv_file');
+        
+        if (($handle = fopen($file->path(), 'r')) !== false) {
+            $count = 0;
+            $rowNumber = 0;
+
+            while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+                $rowNumber++;
+                
+                if ($rowNumber === 1 && (stripos($data[0], 'rut') !== false || stripos($data[0], 'nombre') !== false)) {
+                    continue;
+                }
+
+                if (count($data) < 4) continue;
+
+                $rut = trim($data[0]);
+                $nombre = trim($data[1]);
+                $apellido = trim($data[2]);
+                $email = trim($data[3]);
+
+                if (empty($rut) || empty($nombre) || empty($apellido) || empty($email)) continue;
+
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    continue;
+                }
+
+                $exists = Profesor::where('rut', $rut)->orWhere('email', $email)->exists();
+
+                if (!$exists) {
+                    Profesor::create([
+                        'rut' => $rut,
+                        'nombre' => $nombre,
+                        'apellido' => $apellido,
+                        'email' => $email,
+                    ]);
+                    $count++;
+                }
+            }
+            fclose($handle);
+
+            return redirect()->route('teachers.index')->with('success', "Se han importado $count profesores exitosamente.");
+        }
+
+        return back()->withErrors(['csv_file' => 'Error al leer el archivo CSV.']);
+    }
+
     public function show($id)
     {
         $profesor = Profesor::with(['cursos.asignaturas', 'documentos'])->findOrFail($id);
