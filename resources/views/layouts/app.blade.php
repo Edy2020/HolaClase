@@ -102,7 +102,16 @@
                         <div style="display: flex; align-items: center; justify-content: space-between;">
                             <a href="{{ route('profile.edit') }}" style="display: flex; align-items: center; text-decoration: none; color: inherit; flex: 1; overflow: hidden; gap: 0.75rem;">
                                 <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary-color, #4338ca); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                    <i class="fas fa-user"></i>
+                                    @php
+                                        $nameParts = explode(' ', trim(Auth::user()->name));
+                                        $initials = strtoupper(substr($nameParts[0], 0, 1));
+                                        if (count($nameParts) > 1) {
+                                            $initials .= strtoupper(substr(end($nameParts), 0, 1));
+                                        } elseif (strlen($nameParts[0]) > 1) {
+                                            $initials .= strtoupper(substr($nameParts[0], 1, 1));
+                                        }
+                                    @endphp
+                                    <span style="font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px;">{{ $initials }}</span>
                                 </div>
                                 <div style="overflow: hidden;">
                                     <div style="font-weight: 600; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-primary, inherit);">{{ Auth::user()->name }}</div>
@@ -200,7 +209,16 @@
                         <div style="display: flex; align-items: center; justify-content: space-between;">
                             <a href="{{ route('profile.edit') }}" style="display: flex; align-items: center; text-decoration: none; color: inherit; flex: 1; overflow: hidden; gap: 0.75rem;">
                                 <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary-color, #4338ca); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                    <i class="fas fa-user"></i>
+                                    @php
+                                        $nameParts = explode(' ', trim(Auth::user()->name));
+                                        $initials = strtoupper(substr($nameParts[0], 0, 1));
+                                        if (count($nameParts) > 1) {
+                                            $initials .= strtoupper(substr(end($nameParts), 0, 1));
+                                        } elseif (strlen($nameParts[0]) > 1) {
+                                            $initials .= strtoupper(substr($nameParts[0], 1, 1));
+                                        }
+                                    @endphp
+                                    <span style="font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px;">{{ $initials }}</span>
                                 </div>
                                 <div style="overflow: hidden;">
                                     <div style="font-weight: 600; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-primary, inherit);">{{ Auth::user()->name }}</div>
