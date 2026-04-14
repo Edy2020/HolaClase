@@ -24,7 +24,7 @@
     <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
         <div>
             <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900); margin: 0;">
-                Control de Asistencia
+                Asistencia
             </h2>
             <p style="color: var(--gray-500); margin: var(--spacing-xs) 0 0 0; font-size: 0.9375rem;">
                 Gestiona y monitorea la asistencia de los estudiantes

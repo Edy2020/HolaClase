@@ -1,4 +1,4 @@
-﻿<x-guest-layout>
+<x-guest-layout>
     <!-- Session Status -->
     @if (session('status'))
         <div style="padding: var(--spacing-md); background: var(--success); color: white; border-radius: var(--radius-md); margin-bottom: var(--spacing-lg); text-align: center; font-weight: 600;">
@@ -46,9 +46,9 @@
                 <button 
                     type="button" 
                     onclick="togglePassword()" 
-                    style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--gray-500); cursor: pointer; padding: 8px; font-size: 1.125rem; transition: color 0.2s;"
-                    onmouseover="this.style.color='var(--theme-color)'" 
-                    onmouseout="this.style.color='var(--gray-500)'"
+                    style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: #cbd5e1; cursor: pointer; padding: 8px; font-size: 1.125rem; transition: color 0.2s;"
+                    onmouseover="this.style.color='#84cc16'" 
+                    onmouseout="this.style.color='#cbd5e1'"
                 >
                     <i class="fas fa-eye" id="toggleIcon"></i>
                 </button>
@@ -66,7 +66,7 @@
                 name="remember"
                 style="width: auto; cursor: pointer;"
             >
-            <label for="remember_me" style="margin: 0; font-weight: 500; cursor: pointer; color: var(--gray-700);">
+            <label for="remember_me" style="margin: 0; font-weight: 500; cursor: pointer; color: #e2e8f0;">
                 Recordarme
             </label>
         </div>
@@ -77,15 +77,15 @@
             </button>
 
             @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}" style="text-align: center; color: var(--theme-color); text-decoration: none; font-size: 0.875rem; font-weight: 600;">
+                <a href="{{ route('password.request') }}" style="text-align: center; color: #84cc16; text-decoration: none; font-size: 0.875rem; font-weight: 600;">
                     ¿Olvidaste tu contraseña?
                 </a>
             @endif
 
             @if (Route::has('register'))
-                <div style="text-align: center; padding-top: var(--spacing-md); border-top: 1px solid var(--gray-200); color: var(--gray-600); font-size: 0.875rem;">
+                <div style="text-align: center; padding-top: var(--spacing-md); border-top: 1px solid #334155; color: #cbd5e1; font-size: 0.875rem;">
                     ¿No tienes cuenta? 
-                    <a href="{{ route('register') }}" style="color: var(--theme-color); text-decoration: none; font-weight: 600;">
+                    <a href="{{ route('register') }}" style="color: #84cc16; text-decoration: none; font-weight: 600;">
                         Regístrate aquí
                     </a>
                 </div>

@@ -22,6 +22,14 @@
 
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        .sidebar-logo-text {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.7rem;
+            font-weight: 400;
+            margin-top: 5px; /* Adjust slight vertical offset for cursive fonts */
+        }
+    </style>
 </head>
 
 <body>

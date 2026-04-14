@@ -9,7 +9,7 @@
     <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
         <div>
             <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900); margin: 0;">
-                Gestión de Cursos
+                Cursos
             </h2>
             <p style="color: var(--gray-500); margin: var(--spacing-xs) 0 0 0; font-size: 0.9375rem;">
                 Administra todos los cursos de enseñanza básica y media
@@ -196,9 +196,7 @@
                     onclick="window.location='{{ route('courses.show', $curso->id) }}'" 
                     data-search="{{ strtolower($curso->nombre . ' ' . $curso->nivel) }}"
                     data-nivel="{{ $curso->nivel }}"
-                    data-profesor="{{ $curso->profesor_id ?? '' }}"
-                    onmouseover="this.style.background='var(--gray-50)'"
-                    onmouseout="this.style.background='white'">
+                    data-profesor="{{ $curso->profesor_id ?? '' }}">
                     
                     <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
                         <!-- Avatar -->
@@ -231,9 +229,9 @@
                         <!-- Actions -->
                         <div style="display: flex; gap: 4px; flex-shrink: 0;" onclick="event.stopPropagation();">
                             <a href="{{ route('courses.edit', $curso->id) }}" 
-                                style="width: 32px; height: 32px; border-radius: var(--radius-md); background: white; color: var(--gray-600); border: 1px solid var(--gray-300); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.75rem; transition: background 0.2s;"
+                                style="width: 32px; height: 32px; border-radius: var(--radius-md); background: transparent; color: var(--gray-600); border: 1px solid var(--gray-300); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.75rem; transition: background 0.2s;"
                                 onmouseover="this.style.background='var(--gray-100)';"
-                                onmouseout="this.style.background='white';"
+                                onmouseout="this.style.background='transparent';"
                                 title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
@@ -241,7 +239,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" 
-                                    style="width: 32px; height: 32px; border-radius: var(--radius-md); background: white; color: var(--error); border: 1px solid var(--error); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem;"
+                                    style="width: 32px; height: 32px; border-radius: var(--radius-md); background: transparent; color: var(--error); border: 1px solid var(--error); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem;"
                                     title="Eliminar">
                                     <i class="fas fa-trash"></i>
                                 </button>
