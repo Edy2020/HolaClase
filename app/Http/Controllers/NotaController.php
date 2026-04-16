@@ -18,6 +18,13 @@ class NotaController extends Controller
     {
         $query = Nota::with(['curso', 'asignatura', 'estudiante']);
 
+        $user = auth()->user();
+        $profesorCursoIds = null;
+        if (!$user->isAdmin() && $user->profesor_id) {
+            $profesorCursoIds = Curso::where('profesor_id', $user->profesor_id)->pluck('id');
+            $query->whereIn('curso_id', $profesorCursoIds);
+        }
+
         // Apply filters
         if ($request->filled('curso_id')) {
             $query->forCurso($request->curso_id);
@@ -44,18 +51,27 @@ class NotaController extends Controller
             ->paginate(20);
 
         // Get filter options
-        $cursos = Curso::orderBy('nombre')->get();
+        $cursosQuery = Curso::orderBy('nombre');
+        if ($profesorCursoIds !== null) {
+            $cursosQuery->whereIn('id', $profesorCursoIds);
+        }
+        $cursos = $cursosQuery->get();
         $asignaturas = Asignatura::orderBy('nombre')->get();
         $estudiantes = Estudiante::orderBy('nombre')->get();
 
         // Calculate statistics
+        $statsQuery = Nota::query();
+        if ($profesorCursoIds !== null) {
+            $statsQuery->whereIn('curso_id', $profesorCursoIds);
+        }
+
         $stats = [
-            'total' => Nota::count(),
-            'promedio' => round(Nota::avg('nota'), 1) ?? 0,
-            'aprobados' => Nota::where('nota', '>=', 4.0)->count(),
-            'reprobados' => Nota::where('nota', '<', 4.0)->count(),
-            'nota_maxima' => Nota::max('nota') ?? 0,
-            'nota_minima' => Nota::min('nota') ?? 0,
+            'total' => (clone $statsQuery)->count(),
+            'promedio' => round((clone $statsQuery)->avg('nota'), 1) ?? 0,
+            'aprobados' => (clone $statsQuery)->where('nota', '>=', 4.0)->count(),
+            'reprobados' => (clone $statsQuery)->where('nota', '<', 4.0)->count(),
+            'nota_maxima' => (clone $statsQuery)->max('nota') ?? 0,
+            'nota_minima' => (clone $statsQuery)->min('nota') ?? 0,
         ];
 
         return view('notas.index', compact('notas', 'cursos', 'asignaturas', 'estudiantes', 'stats'));
@@ -66,7 +82,12 @@ class NotaController extends Controller
      */
     public function create(Request $request)
     {
-        $cursos = Curso::with('asignaturas')->orderBy('nombre')->get();
+        $user = auth()->user();
+        $cursosQuery = Curso::with('asignaturas')->orderBy('nombre');
+        if (!$user->isAdmin() && $user->profesor_id) {
+            $cursosQuery->where('profesor_id', $user->profesor_id);
+        }
+        $cursos = $cursosQuery->get();
 
         $selectedCurso = null;
         $selectedAsignatura = null;
@@ -345,14 +366,29 @@ class NotaController extends Controller
         $filtroPeriodo = $request->get('periodo', '');
         $filtroNivel = $request->get('nivel', '');
 
+        $user = auth()->user();
+        $profesorCursoIds = null;
+        if (!$user->isAdmin() && $user->profesor_id) {
+            $profesorCursoIds = Curso::where('profesor_id', $user->profesor_id)->pluck('id');
+        }
+
         // Build base query for notas with filters
         $notasQuery = Nota::query();
+        if ($profesorCursoIds !== null) {
+            $notasQuery->whereIn('curso_id', $profesorCursoIds);
+        }
         if ($filtroPeriodo) {
             $notasQuery->where('periodo', $filtroPeriodo);
         }
 
         // General statistics
-        $totalEstudiantes = Estudiante::count();
+        $totalEstudiantesQuery = Estudiante::query();
+        if ($profesorCursoIds !== null) {
+            $totalEstudiantesQuery->whereHas('cursos', function($q) use ($profesorCursoIds) {
+                $q->whereIn('cursos.id', $profesorCursoIds);
+            });
+        }
+        $totalEstudiantes = $totalEstudiantesQuery->count();
         $totalNotas = (clone $notasQuery)->count();
         $promedioGeneral = round((clone $notasQuery)->avg('nota'), 1) ?? 0;
         $aprobados = (clone $notasQuery)->where('nota', '>=', 4.0)->count();
@@ -360,8 +396,17 @@ class NotaController extends Controller
         $porcentajeAprobacion = $totalNotas > 0 ? round(($aprobados / $totalNotas) * 100, 1) : 0;
 
         // Statistics by education level
-        $cursosBasica = Curso::where('nivel', 'basica')->pluck('id');
-        $cursosMedia = Curso::where('nivel', 'media')->pluck('id');
+        $cursosBasicaQuery = Curso::where('nivel', 'basica');
+        if ($profesorCursoIds !== null) {
+            $cursosBasicaQuery->whereIn('id', $profesorCursoIds);
+        }
+        $cursosBasica = $cursosBasicaQuery->pluck('id');
+
+        $cursosMediaQuery = Curso::where('nivel', 'media');
+        if ($profesorCursoIds !== null) {
+            $cursosMediaQuery->whereIn('id', $profesorCursoIds);
+        }
+        $cursosMedia = $cursosMediaQuery->pluck('id');
 
         $notasBasicaQuery = (clone $notasQuery)->whereIn('curso_id', $cursosBasica);
         $notasMediaQuery = (clone $notasQuery)->whereIn('curso_id', $cursosMedia);
@@ -390,7 +435,11 @@ class NotaController extends Controller
         ];
 
         // Course summary with statistics (apply nivel filter)
+        $user = auth()->user();
         $cursosQuery = Curso::with(['estudiantes', 'asignaturas']);
+        if (!$user->isAdmin() && $user->profesor_id) {
+            $cursosQuery->where('profesor_id', $user->profesor_id);
+        }
         if ($filtroNivel) {
             $cursosQuery->where('nivel', $filtroNivel);
         }
@@ -423,7 +472,11 @@ class NotaController extends Controller
         $chartPromedios = $cursos->take(10)->pluck('promedio')->toArray();
 
         // Data for filters and exports
-        $cursosSelect = Curso::orderBy('nombre')->get();
+        $cursosSelectQuery = Curso::orderBy('nombre');
+        if (!$user->isAdmin() && $user->profesor_id) {
+            $cursosSelectQuery->where('profesor_id', $user->profesor_id);
+        }
+        $cursosSelect = $cursosSelectQuery->get();
         $periodos = ['Semestre 1', 'Semestre 2', 'Anual'];
         $niveles = ['basica' => 'Básica', 'media' => 'Media'];
 
@@ -453,13 +506,21 @@ class NotaController extends Controller
     public function estadisticas(Request $request)
     {
         $nivel = $request->get('nivel');
+        $user = auth()->user();
 
         $query = Nota::query();
-
-        if ($nivel) {
-            $cursos = Curso::where('nivel', $nivel)->pluck('id');
-            $query->whereIn('curso_id', $cursos);
+        
+        $cursosQuery = Curso::query();
+        if (!$user->isAdmin() && $user->profesor_id) {
+            $cursosQuery->where('profesor_id', $user->profesor_id);
         }
+        
+        if ($nivel) {
+            $cursosQuery->where('nivel', $nivel);
+        }
+        
+        $cursosIds = $cursosQuery->pluck('id');
+        $query->whereIn('curso_id', $cursosIds);
 
         $notas = $query->get();
 

@@ -62,6 +62,7 @@
                             <span>Cursos</span>
                         </a>
                     </li>
+                    @if(auth()->user()->isAdmin())
                     <li class="sidebar-nav-item">
                         <a href="{{ route('subjects.index') }}"
                             class="sidebar-nav-link {{ request()->routeIs('subjects.*') ? 'active' : '' }}">
@@ -83,6 +84,7 @@
                             <span>Estudiantes</span>
                         </a>
                     </li>
+                    @endif
                     <li class="sidebar-nav-item">
                         <a href="{{ route('attendance.dashboard') }}"
                             class="sidebar-nav-link {{ request()->routeIs('attendance.*') ? 'active' : '' }}">
@@ -97,6 +99,15 @@
                             <span>Notas</span>
                         </a>
                     </li>
+                    @if(auth()->user()->role === 'admin')
+                    <li class="sidebar-nav-item">
+                        <a href="{{ route('users.index') }}"
+                            class="sidebar-nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                            <span class="sidebar-nav-icon"><i class="fas fa-users-cog"></i></span>
+                            <span>Usuarios</span>
+                        </a>
+                    </li>
+                    @endif
 
                     <li class="sidebar-nav-item" style="margin-top: auto; border-top: 1px solid var(--gray-200); padding: 1rem;">
                         <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -169,6 +180,7 @@
                             <span>Cursos</span>
                         </a>
                     </li>
+                    @if(auth()->user()->isAdmin())
                     <li class="sidebar-nav-item">
                         <a href="{{ route('subjects.index') }}"
                             class="sidebar-nav-link {{ request()->routeIs('subjects.*') ? 'active' : '' }}">
@@ -190,6 +202,7 @@
                             <span>Estudiantes</span>
                         </a>
                     </li>
+                    @endif
                     <li class="sidebar-nav-item">
                         <a href="{{ route('attendance.dashboard') }}"
                             class="sidebar-nav-link {{ request()->routeIs('attendance.*') ? 'active' : '' }}">
@@ -204,6 +217,15 @@
                             <span>Notas</span>
                         </a>
                     </li>
+                    @if(auth()->user()->role === 'admin')
+                    <li class="sidebar-nav-item">
+                        <a href="{{ route('users.index') }}"
+                            class="sidebar-nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                            <span class="sidebar-nav-icon"><i class="fas fa-users-cog"></i></span>
+                            <span>Usuarios</span>
+                        </a>
+                    </li>
+                    @endif
 
                     <li class="sidebar-nav-item" style="margin-top: auto; border-top: 1px solid var(--gray-200); padding: 1rem;">
                         <div style="display: flex; align-items: center; justify-content: space-between;">

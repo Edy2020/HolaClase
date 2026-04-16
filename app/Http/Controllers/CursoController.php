@@ -12,12 +12,18 @@ class CursoController extends Controller
 {
     public function index()
     {
-        $cursos = Curso::withCount('estudiantes')
+        $user = auth()->user();
+        $query = Curso::withCount('estudiantes')
             ->with('profesor')
             ->orderBy('nivel')
             ->orderBy('grado')
-            ->orderBy('letra')
-            ->paginate(12);
+            ->orderBy('letra');
+
+        if (!$user->isAdmin() && $user->profesor_id) {
+            $query->where('profesor_id', $user->profesor_id);
+        }
+
+        $cursos = $query->paginate(12);
         return view('cursos.index', compact('cursos'));
     }
 
@@ -64,7 +70,7 @@ class CursoController extends Controller
 
         if ($nivel === 'Pre-Kinder' || $nivel === 'Kinder') {
             $nombre = "{$nivel} {$letra}";
-            $grado = null; 
+            $grado = null;
         } elseif ($nivel === 'Basica') {
             $nombreGrado = $nombresGrados[$grado] ?? $grado;
             $nombre = "{$grado}{$nombreGrado} Básico {$letra}";
@@ -90,7 +96,7 @@ class CursoController extends Controller
         ]);
 
         $file = $request->file('csv_file');
-        
+
         if (($handle = fopen($file->path(), 'r')) !== false) {
             $count = 0;
             $rowNumber = 0;
@@ -108,18 +114,20 @@ class CursoController extends Controller
 
             while (($data = fgetcsv($handle, 1000, ',')) !== false) {
                 $rowNumber++;
-                
+
                 if ($rowNumber === 1 && (stripos($data[0], 'nivel') !== false)) {
                     continue;
                 }
 
-                if (count($data) < 3) continue;
+                if (count($data) < 3)
+                    continue;
 
                 $nivelRaw = trim($data[0]);
                 $gradoRaw = trim($data[1]);
                 $letraRaw = trim($data[2]);
 
-                if (empty($nivelRaw) || empty($letraRaw)) continue;
+                if (empty($nivelRaw) || empty($letraRaw))
+                    continue;
 
                 $grado = $gradoRaw === '' ? null : $gradoRaw;
                 $nivelLower = strtolower($nivelRaw);
@@ -140,7 +148,7 @@ class CursoController extends Controller
 
                 if ($nivel === 'Pre-Kinder' || $nivel === 'Kinder') {
                     $nombre = "{$nivel} {$letra}";
-                    $grado = null; 
+                    $grado = null;
                 } elseif ($nivel === 'Basica') {
                     $nombreGrado = $nombresGrados[$grado] ?? $grado;
                     $nombre = "{$grado}{$nombreGrado} Básico {$letra}";
@@ -149,7 +157,8 @@ class CursoController extends Controller
                     $nombre = "{$grado}{$nombreGrado} Medio {$letra}";
                 }
 
-                if (empty($nombre)) continue;
+                if (empty($nombre))
+                    continue;
 
                 $exists = Curso::where('nivel', $nivel)
                     ->where('grado', $grado)
@@ -176,6 +185,12 @@ class CursoController extends Controller
 
     public function show(Curso $curso)
     {
+        $user = auth()->user();
+
+        if (!$user->isAdmin() && $user->profesor_id && $curso->profesor_id !== $user->profesor_id) {
+            abort(403, 'No tienes acceso a este curso.');
+        }
+
         $curso->load([
             'profesor',
             'estudiantes',
@@ -199,7 +214,9 @@ class CursoController extends Controller
             $query->where('curso_id', $curso->id);
         })->orderBy('nombre')->get();
 
-        return view('cursos.show', compact('curso', 'profesores', 'estudiantesDisponibles', 'asignaturasDisponibles'));
+        $isAdmin = $user->isAdmin();
+
+        return view('cursos.show', compact('curso', 'profesores', 'estudiantesDisponibles', 'asignaturasDisponibles', 'isAdmin'));
     }
 
     public function edit(Curso $curso)
@@ -246,7 +263,7 @@ class CursoController extends Controller
 
         if ($nivel === 'Pre-Kinder' || $nivel === 'Kinder') {
             $nombre = "{$nivel} {$letra}";
-            $grado = null; 
+            $grado = null;
         } elseif ($nivel === 'Basica') {
             $nombreGrado = $nombresGrados[$grado] ?? $grado;
             $nombre = "{$grado}{$nombreGrado} Básico {$letra}";

@@ -369,20 +369,7 @@ html.dark-mode .system-tab.active-tab {
     border-bottom-color: #84cc16;
 }
 
-@media (min-width: 1025px) {
-    .system-tabs-container {
-        display: none !important;
-    }
 
-    .system-tab-section {
-        display: block !important;
-        margin-bottom: var(--spacing-lg);
-    }
-
-    .system-tab-section:last-of-type {
-        margin-bottom: 0;
-    }
-}
 
 @keyframes fadeIn {
     from {

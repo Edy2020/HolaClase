@@ -35,10 +35,12 @@
                 style="color: var(--text-color); border-color: var(--border-color);">
                 <i class="fas fa-check"></i> Asistencia
             </a>
+            @if($isAdmin)
             <a href="{{ route('courses.edit', $curso) }}" class="btn btn-outline"
                 style="color: var(--text-color); border-color: var(--border-color);">
                 <i class="fas fa-edit"></i> Editar
             </a>
+            @endif
             <a href="{{ route('courses.index') }}" class="btn btn-outline"
                 style="color: var(--text-muted); border-color: var(--border-color);">
                 <i class="fas fa-arrow-left"></i> Volver
@@ -67,8 +69,8 @@
                 </h3>
 
                 @if($curso->profesor)
-                    <div id="teacherCard" onclick="toggleTeacherForm()"
-                        style="padding: var(--spacing-md); border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: var(--spacing-md); cursor: pointer;">
+                    <div id="teacherCard" @if($isAdmin) onclick="toggleTeacherForm()" @endif
+                        style="padding: var(--spacing-md); border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: var(--spacing-md); {{ $isAdmin ? 'cursor: pointer;' : '' }}">
                         <div style="display: flex; align-items: center; gap: var(--spacing-sm); flex-wrap: wrap;">
                             <div
                                 style="width: 40px; height: 40px; border-radius: 50%; background: var(--gray-200); display: flex; align-items: center; justify-content: center; color: var(--text-color); font-size: 1rem; font-weight: 700; flex-shrink: 0;">
@@ -86,6 +88,7 @@
                                             class="fas fa-phone"></i> {{ $curso->profesor->telefono }}</p>
                                 @endif
                             </div>
+                            @if($isAdmin)
                             <form action="{{ route('courses.assign-teacher', $curso) }}" method="POST"
                                 onclick="event.stopPropagation();"
                                 onsubmit="return confirm('¿Quitar el profesor asignado?');" style="flex-shrink: 0;">
@@ -96,12 +99,16 @@
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
+                            @endif
                         </div>
+                        @if($isAdmin)
                         <p
                             style="text-align: center; color: var(--text-muted); font-size: 0.7rem; margin: var(--spacing-xs) 0 0;">
                             Click para cambiar profesor</p>
+                        @endif
                     </div>
                 @else
+                    @if($isAdmin)
                     <div onclick="toggleTeacherForm()" id="emptyTeacherCard"
                         style="text-align: center; padding: var(--spacing-2xl); border: 1px dashed var(--border-color); border-radius: var(--radius-md); margin-bottom: var(--spacing-md); cursor: pointer; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
                         <i class="fas fa-user-slash"
@@ -110,8 +117,16 @@
                         <p style="color: var(--text-muted); font-size: 0.8rem; margin: 4px 0 0;">Click para asignar un
                             profesor</p>
                     </div>
+                    @else
+                    <div style="text-align: center; padding: var(--spacing-2xl); border: 1px dashed var(--border-color); border-radius: var(--radius-md); margin-bottom: var(--spacing-md); min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <i class="fas fa-user-slash"
+                            style="font-size: 2.5rem; color: var(--text-muted); margin-bottom: var(--spacing-md); opacity: 0.6;"></i>
+                        <p style="color: var(--text-color); margin: 0; font-weight: 500;">No hay profesor asignado</p>
+                    </div>
+                    @endif
                 @endif
 
+                @if($isAdmin)
                 <form id="teacherForm" action="{{ route('courses.assign-teacher', $curso) }}" method="POST"
                     style="display: none;">
                     @csrf
@@ -137,6 +152,7 @@
                         @endif
                     </div>
                 </form>
+                @endif
             </div>
 
 
@@ -178,11 +194,13 @@
                     <i class="fas fa-users" style="color: var(--text-muted);"></i>
                     Estudiantes Inscritos ({{ $curso->estudiantes->count() }})
                 </h3>
+                @if($isAdmin)
                 <button onclick="document.getElementById('addStudentModal').style.display='flex'"
                     class="btn btn-outline section-button"
                     style="color: var(--text-color); border-color: var(--border-color);">
                     <i class="fas fa-user-plus"></i> Agregar
                 </button>
+                @endif
             </div>
 
             @if($curso->estudiantes->count() > 0)
@@ -212,6 +230,7 @@
                                         @endif
                                     </td>
                                     <td>
+                                        @if($isAdmin)
                                         <form action="{{ route('courses.remove-student', [$curso, $estudiante]) }}"
                                             method="POST" onsubmit="return confirm('¿Remover estudiante del curso?');"
                                             style="display: inline;">
@@ -221,6 +240,7 @@
                                                 <i class="fas fa-user-minus"></i>
                                             </button>
                                         </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -248,11 +268,13 @@
                     <i class="fas fa-book" style="color: var(--text-muted);"></i>
                     Asignaturas del Curso ({{ $curso->asignaturas->count() }})
                 </h3>
+                @if($isAdmin)
                 <button onclick="document.getElementById('addSubjectModal').style.display='flex'"
                     class="btn btn-outline section-button"
                     style="color: var(--text-color); border-color: var(--border-color);">
                     <i class="fas fa-plus"></i> Agregar
                 </button>
+                @endif
             </div>
 
             @if($curso->asignaturas->count() > 0)
@@ -269,6 +291,7 @@
                                     <p style="color: var(--text-muted); font-size: 0.875rem; margin: 0;">Código:
                                         {{ $asignatura->codigo }}</p>
                                 </div>
+                                @if($isAdmin)
                                 <form action="{{ route('courses.remove-subject', [$curso, $asignatura]) }}" method="POST"
                                     onsubmit="return confirm('¿Remover asignatura?');">
                                     @csrf @method('DELETE')
@@ -277,6 +300,7 @@
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
+                                @endif
                             </div>
                             @if($asignatura->descripcion)
                                 <p style="color: var(--text-muted); font-size: 0.875rem; margin: 0;">{{ $asignatura->descripcion }}
@@ -393,11 +417,13 @@
                         style="font-size: 1rem; font-weight: 700; color: var(--text-color); margin: 0; display: flex; align-items: center; gap: var(--spacing-sm);">
                         <i class="fas fa-calendar-alt" style="color: var(--text-muted);"></i> Calendario Académico
                     </h3>
+                    @if($isAdmin)
                     <button onclick="document.getElementById('addEventModal').style.display='flex'"
                         class="btn btn-outline section-button"
                         style="color: var(--text-color); border-color: var(--border-color);">
                         <i class="fas fa-plus"></i> Nuevo
                     </button>
+                    @endif
                 </div>
 
                 @if($curso->eventos->count() > 0)
@@ -420,6 +446,7 @@
                                                 style="color: var(--text-muted); font-size: 0.875rem; margin: var(--spacing-sm) 0 0;">
                                         {{ $evento->descripcion }}</p>@endif
                                     </div>
+                                    @if($isAdmin)
                                     <form action="{{ route('courses.destroy-event', [$curso, $evento]) }}" method="POST"
                                         onsubmit="return confirm('¿Eliminar evento?');">
                                         @csrf @method('DELETE')
@@ -428,6 +455,7 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
@@ -450,11 +478,13 @@
                         style="font-size: 1rem; font-weight: 700; color: var(--text-color); margin: 0; display: flex; align-items: center; gap: var(--spacing-sm);">
                         <i class="fas fa-file-alt" style="color: var(--text-muted);"></i> Próximas Pruebas
                     </h3>
+                    @if($isAdmin)
                     <button onclick="document.getElementById('addTestModal').style.display='flex'"
                         class="btn btn-outline section-button"
                         style="color: var(--text-color); border-color: var(--border-color);">
                         <i class="fas fa-plus"></i> Nueva
                     </button>
+                    @endif
                 </div>
 
                 @if($curso->pruebas->count() > 0)
@@ -477,6 +507,7 @@
                                                 style="display: inline-block; padding: 2px 8px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">{{ $prueba->ponderacion }}%</span>
                                         @endif
                                     </div>
+                                    @if($isAdmin)
                                     <form action="{{ route('courses.destroy-test', [$curso, $prueba]) }}" method="POST"
                                         onsubmit="return confirm('¿Eliminar prueba?');">
                                         @csrf @method('DELETE')
@@ -485,6 +516,7 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach

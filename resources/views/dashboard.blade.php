@@ -27,7 +27,7 @@
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-md);">
-            <div class="desktop-quick-actions" style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
+        <div class="desktop-quick-actions" style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
                 <a href="{{ route('courses.create') }}" class="action-pill">
                     <i class="fas fa-book"></i> Curso
                 </a>
@@ -39,9 +39,6 @@
                 </a>
                 <a href="{{ route('grades.dashboard') }}" class="action-pill">
                     <i class="fas fa-star"></i> Notas
-                </a>
-                <a href="{{ route('dashboard') }}" class="action-pill">
-                    <i class="fas fa-chart-line"></i> Reportes
                 </a>
             </div>
         </div>
