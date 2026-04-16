@@ -263,9 +263,9 @@ class AsistenciaController extends Controller
             : 0;
 
         $tendenciaDias = Asistencia::selectRaw(
-            'DATE(fecha) as dia,
+            "DATE(fecha) as dia,
              COUNT(*) as total,
-             SUM(CASE WHEN estado IN ("presente","tarde") THEN 1 ELSE 0 END) as asistio'
+             SUM(CASE WHEN estado IN ('presente','tarde') THEN 1 ELSE 0 END) as asistio"
         )
         ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
         ->when($profesorCursoIds !== null, fn($q) => $q->whereIn('curso_id', $profesorCursoIds))
@@ -280,9 +280,9 @@ class AsistenciaController extends Controller
         )->toArray();
 
         $estudiantesCriticos = Asistencia::selectRaw(
-            'estudiante_id,
+            "estudiante_id,
              COUNT(*) as total,
-             SUM(CASE WHEN estado IN ("presente","tarde") THEN 1 ELSE 0 END) as asistio'
+             SUM(CASE WHEN estado IN ('presente','tarde') THEN 1 ELSE 0 END) as asistio"
         )
         ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
         ->when($profesorCursoIds !== null, fn($q) => $q->whereIn('curso_id', $profesorCursoIds))
@@ -306,7 +306,7 @@ class AsistenciaController extends Controller
         }
         $resumenCursos = $resumenCursosQuery->get()->map(function ($curso) use ($startDate, $endDate) {
             $stats = Asistencia::selectRaw(
-                'COUNT(*) as total, SUM(CASE WHEN estado IN ("presente","tarde") THEN 1 ELSE 0 END) as asistio'
+                "COUNT(*) as total, SUM(CASE WHEN estado IN ('presente','tarde') THEN 1 ELSE 0 END) as asistio"
             )
             ->where('curso_id', $curso->id)
             ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
