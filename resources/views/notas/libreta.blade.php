@@ -3,11 +3,12 @@
         Libreta de Notas
     </x-slot>
 
-    <!-- Header -->
-    <div style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl);">
+    <div
+        style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <div style="display: flex; align-items: center; gap: var(--spacing-lg);">
-                <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem;">
+                <div
+                    style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem;">
                     {{ strtoupper(substr($estudiante->nombre, 0, 1) . substr($estudiante->apellido, 0, 1)) }}
                 </div>
                 <div>
@@ -23,8 +24,11 @@
                 @php
                     $finalColor = $promedioFinal >= 6 ? '#4ade80' : ($promedioFinal >= 5 ? '#38bdf8' : ($promedioFinal >= 4 ? '#fbbf24' : '#f87171'));
                 @endphp
-                <div style="text-align: center; background: rgba(255,255,255,0.1); padding: var(--spacing-md) var(--spacing-xl); border-radius: var(--radius-lg);">
-                    <div style="font-size: 2.5rem; font-weight: 900; color: {{ $finalColor }};">{{ $promedioFinal ?: '–' }}</div>
+                <div
+                    style="text-align: center; background: rgba(255,255,255,0.1); padding: var(--spacing-md) var(--spacing-xl); border-radius: var(--radius-lg);">
+                    <div style="font-size: 2.5rem; font-weight: 900; color: {{ $finalColor }};">
+                        {{ $promedioFinal ?: '–' }}
+                    </div>
                     <div style="font-size: 0.75rem; opacity: 0.8; margin-top: 2px;">Promedio Final</div>
                     @if($promedioFinal >= 4.0)
                         <div style="font-size: 0.7rem; color: #4ade80; margin-top: 2px; font-weight: 700;">✓ PROMOVIDO</div>
@@ -33,10 +37,13 @@
                     @endif
                 </div>
                 <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                    <a href="{{ route('grades.reporte.estudiante', $estudiante->id) }}" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.4);">
+                    <a href="{{ route('grades.reporte.estudiante', $estudiante->id) }}" class="btn btn-outline"
+                        style="color: white; border-color: rgba(255,255,255,0.4);">
                         <i class="fas fa-chart-bar"></i> Ver Reporte
                     </a>
-                    <a href="{{ route('grades.export.pdf', ['estudiante_id' => $estudiante->id]) }}" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.4);" target="_blank">
+                    <a href="{{ route('grades.export.pdf', ['estudiante_id' => $estudiante->id]) }}"
+                        class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.4);"
+                        target="_blank">
                         <i class="fas fa-file-pdf"></i> Exportar PDF
                     </a>
                 </div>
@@ -47,7 +54,6 @@
     @if($libreta->count() > 0)
         @foreach($libreta as $periodo => $asignaturas)
             <div style="margin-bottom: var(--spacing-2xl);">
-                <!-- Period Header -->
                 <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
                     <div style="height: 2px; flex: 0 0 40px; background: #84cc16;"></div>
                     <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--theme-dark); margin: 0; white-space: nowrap;">
@@ -95,14 +101,15 @@
                                             <div style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
                                                 @foreach($asignaturaData['notas'] as $nota)
                                                     @php
-                                                        $nc = (float)$nota->nota;
+                                                        $nc = (float) $nota->nota;
                                                         $nbg = $nc >= 4.0 ? '#d1fae5' : '#fee2e2';
                                                         $ntc = $nc >= 4.0 ? '#065f46' : '#991b1b';
                                                     @endphp
-                                                    <span title="{{ $nota->tipo_evaluacion }} ({{ round($nota->ponderacion*100) }}%)"
-                                                          style="background: {{ $nbg }}; color: {{ $ntc }}; padding: 3px 10px; border-radius: 9999px; font-size: 0.8rem; font-weight: 700; cursor: default;">
+                                                    <span title="{{ $nota->tipo_evaluacion }} ({{ round($nota->ponderacion * 100) }}%)"
+                                                        style="background: {{ $nbg }}; color: {{ $ntc }}; padding: 3px 10px; border-radius: 9999px; font-size: 0.8rem; font-weight: 700; cursor: default;">
                                                         {{ number_format($nota->nota, 1) }}
-                                                        <span style="font-size: 0.65rem; opacity: 0.7;">{{ round($nota->ponderacion*100) }}%</span>
+                                                        <span
+                                                            style="font-size: 0.65rem; opacity: 0.7;">{{ round($nota->ponderacion * 100) }}%</span>
                                                     </span>
                                                 @endforeach
                                             </div>
@@ -118,9 +125,11 @@
     @else
         <div class="card">
             <div style="text-align: center; padding: var(--spacing-3xl);">
-                <i class="fas fa-book-open" style="font-size: 3rem; color: var(--gray-200); margin-bottom: var(--spacing-md);"></i>
+                <i class="fas fa-book-open"
+                    style="font-size: 3rem; color: var(--gray-200); margin-bottom: var(--spacing-md);"></i>
                 <p style="color: var(--gray-500); font-size: 1.125rem;">Este estudiante no tiene notas registradas.</p>
-                <a href="{{ route('grades.create') }}" class="btn btn-primary" style="margin-top: var(--spacing-md); color: white;">
+                <a href="{{ route('grades.create') }}" class="btn btn-primary"
+                    style="margin-top: var(--spacing-md); color: white;">
                     <i class="fas fa-plus"></i> Registrar Notas
                 </a>
             </div>

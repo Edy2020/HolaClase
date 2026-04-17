@@ -3,7 +3,6 @@
         Editar Asistencia
     </x-slot>
 
-    <!-- Header -->
     <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-xl);">
         <a href="{{ route('attendance.index') }}" class="btn btn-ghost">
             <i class="fas fa-arrow-left"></i>
@@ -18,7 +17,6 @@
         </div>
     </div>
 
-    <!-- Context Banner -->
     <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: var(--spacing-lg); margin-bottom: var(--spacing-xl); display: flex; gap: var(--spacing-2xl);">
         <div>
             <div style="font-size: 0.7rem; font-weight: 700; color: var(--gray-400); text-transform: uppercase; margin-bottom: 2px;">CURSO</div>
@@ -46,7 +44,6 @@
         </div>
     @endif
 
-    <!-- Bulk actions bar -->
     <div class="card mb-xl">
         <div class="card-body" style="display: flex; align-items: center; gap: var(--spacing-md); flex-wrap: wrap;">
             <span style="font-size: 0.875rem; font-weight: 600; color: var(--gray-700);">Marcar todos como:</span>
@@ -64,7 +61,6 @@
         </div>
     </div>
 
-    <!-- Edit Form -->
     <div class="card">
         <div class="card-header">
             <h3 class="card-title"><i class="fas fa-users"></i> Estudiantes ({{ $estudiantes->count() }})</h3>
@@ -107,7 +103,6 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <!-- Toggle buttons for status -->
                                         <div class="status-group" style="display: flex; gap: 4px; justify-content: center;" data-index="{{ $index }}">
                                             @foreach(['presente' => ['color' => '#10b981', 'bg' => '#d1fae5', 'icon' => 'fa-check', 'label' => 'P'],
                                                        'tarde'    => ['color' => '#f59e0b', 'bg' => '#fef3c7', 'icon' => 'fa-clock', 'label' => 'T'],
@@ -159,13 +154,10 @@
 
     <script>
         function updateStatusButton(radio, bg, color) {
-            // Determine which student index this radio belongs to
-            const name = radio.name; // e.g. asistencias[3][estado]
+            const name = radio.name;
             const match = name.match(/asistencias\[(\d+)\]/);
             if (!match) return;
             const idx = match[1];
-
-            // Reset all buttons for this student
             const labels = radio.closest('.status-group').querySelectorAll('span[class*="status-btn"]');
             labels.forEach(span => {
                 span.style.borderColor = 'var(--gray-200)';
@@ -173,7 +165,6 @@
                 span.style.color = 'var(--gray-500)';
             });
 
-            // Highlight the selected button
             const selectedSpan = radio.nextElementSibling;
             if (selectedSpan) {
                 selectedSpan.style.borderColor = color;

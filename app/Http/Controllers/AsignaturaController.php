@@ -38,24 +38,26 @@ class AsignaturaController extends Controller
         ]);
 
         $file = $request->file('csv_file');
-        
+
         if (($handle = fopen($file->path(), 'r')) !== false) {
             $count = 0;
             $rowNumber = 0;
 
             while (($data = fgetcsv($handle, 1000, ',')) !== false) {
                 $rowNumber++;
-                
+
                 if ($rowNumber === 1 && (stripos($data[0], 'nombre') !== false)) {
                     continue;
                 }
-                if (count($data) < 2) continue;
+                if (count($data) < 2)
+                    continue;
 
                 $nombre = trim($data[0]);
                 $codigo = trim($data[1]);
                 $descripcion = isset($data[2]) ? trim($data[2]) : null;
 
-                if (empty($nombre) || empty($codigo)) continue;
+                if (empty($nombre) || empty($codigo))
+                    continue;
 
                 $exists = Asignatura::where('codigo', $codigo)->exists();
 

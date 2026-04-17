@@ -34,7 +34,6 @@
         </div>
     </div>
 
-    <!-- Filters -->
     <div class="mb-xl filters-card">
                         <form method="GET" action="{{ route('attendance.dashboard') }}" id="filterForm">
             <div style="display: flex; gap: var(--spacing-md); align-items: center; flex-wrap: wrap;">
@@ -76,13 +75,11 @@
                         <i class="fas fa-times"></i> Limpiar
                     </button>
                 @endif
-                <!-- Hidden to preserve periodo when changing curso -->
                 <input type="hidden" name="periodo" id="periodo_hidden" value="{{ $filtroPeriodo }}">
             </div>
         </form>
     </div>
 
-    <!-- TABS NAVIGATION -->
     <div class="system-tabs-container">
         <div id="tab-general" onclick="switchSystemTab('general')" class="system-tab active-tab">
             Visión General
@@ -95,9 +92,7 @@
         </div>
     </div>
 
-    <!-- TAB 1: VISION GENERAL -->
     <div id="section-general" class="system-tab-section active-section">
-        <!-- Stats Cards (compact row) -->
     @php $pctColor = $porcentajeAsistencia >= 85 ? 'var(--success)' : ($porcentajeAsistencia >= 75 ? 'var(--warning)' : 'var(--error)'); @endphp
     <div style="display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-xl); flex-wrap: wrap;">
         @foreach([
@@ -121,13 +116,9 @@
     </div>
 
     </div>
-    <!-- END TAB 1 -->
 
-    <!-- TAB 2: TENDENCIAS -->
     <div id="section-tendencias" class="system-tab-section">
-    <!-- Charts Row -->
     <div class="grid grid-cols-2 mb-lg" style="gap: var(--spacing-lg);">
-        <!-- Trend Chart -->
         <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); min-width: 0; overflow: hidden;">
             <div class="card-header" style="padding: var(--spacing-sm) var(--spacing-md); border-bottom: 1px solid var(--border-color);">
                 <h3 class="card-title" style="font-size: 0.95rem; margin: 0; color: var(--text-color);">
@@ -146,7 +137,6 @@
             </div>
         </div>
 
-        <!-- Donut Chart -->
         <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); min-width: 0; overflow: hidden;">
             <div class="card-header" style="padding: var(--spacing-sm) var(--spacing-md); border-bottom: 1px solid var(--border-color);">
                 <h3 class="card-title" style="font-size: 0.95rem; margin: 0; color: var(--text-color);">
@@ -185,13 +175,9 @@
         </div>
     </div>
     </div>
-    <!-- END TAB 2 -->
 
-    <!-- TAB 2: DETALLES -->
     <div id="section-detalles" class="system-tab-section">
-        <!-- Bottom Row: Critical Students + Course Summary -->
     <div class="grid grid-cols-2 mb-lg" style="gap: var(--spacing-lg);">
-        <!-- Critical Students -->
         <div class="card" style="min-width: 0; overflow: hidden;">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-sm) var(--spacing-md); border-bottom: 1px solid var(--border-color);">
                 <h3 class="card-title" style="font-size: 0.95rem; margin: 0; color: var(--text-color);">
@@ -255,7 +241,6 @@
             </div>
         </div>
 
-        <!-- Course Summary -->
         <div class="card" style="min-width: 0; overflow: hidden;">
             <div class="card-header" style="padding: var(--spacing-sm) var(--spacing-md); border-bottom: 1px solid var(--border-color);">
                 <h3 class="card-title" style="font-size: 0.95rem; margin: 0; color: var(--text-color);">
@@ -318,7 +303,6 @@
                     </div>
                 @endif
             </div>
-            <!-- Semaphore Legend -->
             <div style="padding: var(--spacing-md) var(--spacing-lg); border-top: 1px solid var(--gray-100); display: flex; gap: var(--spacing-lg);">
                 @foreach([['color' => 'var(--success)', 'label' => '≥ 85% Óptima'], ['color' => 'var(--warning)', 'label' => '75-84% Regular'], ['color' => 'var(--error)', 'label' => '< 75% Crítica']] as $s)
                     <div style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--gray-600);">
@@ -331,7 +315,6 @@
     </div>
 
     </div>
-    <!-- END TAB 2 -->
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
@@ -343,7 +326,6 @@
             document.getElementById('section-' + tabId).classList.add('active-section');
         }
 
-        // --- Client-side REAL TIME Filtering via AJAX DOM Replacement ---
         function bindAjaxFilters() {
             const form = document.getElementById('filterForm');
             if (!form) return;
@@ -382,20 +364,16 @@
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
 
-                    // Update filters-card visual state for buttons
                     const newFiltersCard = doc.querySelector('.filters-card');
                     const oldFiltersCard = document.querySelector('.filters-card');
                     if(newFiltersCard && oldFiltersCard) {
                         oldFiltersCard.innerHTML = newFiltersCard.innerHTML;
-                        bindAjaxFilters(); // rebind since we replaced HTML
+                        bindAjaxFilters();
                     }
                     
-                    // Update header title part
                     const newHeader = doc.querySelector('.page-header p');
                     const oldHeader = document.querySelector('.page-header p');
                     if (newHeader && oldHeader) oldHeader.innerHTML = newHeader.innerHTML;
-
-                    // Replace main sections
                     const sections = ['section-general', 'section-tendencias', 'section-detalles'];
                     sections.forEach(id => {
                         const newSection = doc.getElementById(id);
@@ -405,15 +383,12 @@
                         }
                     });
 
-                    // Destroy old charts to prevent overlapping hover logic
                     if (window.trendChart instanceof Chart) window.trendChart.destroy();
                     if (window.donutChart instanceof Chart) window.donutChart.destroy();
 
-                    // Re-run chart scripts
                     const scripts = doc.querySelectorAll('script');
                     scripts.forEach(script => {
                         if (script.innerText.includes('new Chart(')) {
-                            // Convert script block bindings to window bindings
                             let code = script.innerText
                                 .replace(/const\s+trendCtx/g, 'window.trendCtx')
                                 .replace(/new\s+Chart\(trendCtx/g, 'window.trendChart = new Chart(window.trendCtx')
@@ -428,7 +403,6 @@
         document.addEventListener('DOMContentLoaded', bindAjaxFilters);
     </script>
     <script>
-        // Trend line chart
         @if(count($chartDias) > 0)
         window.trendCtx = document.getElementById('trendChart');
         if (window.trendCtx) {
@@ -479,7 +453,6 @@
         }
         @endif
 
-        // Donut chart
         @if($totalRegistros > 0)
         window.donutCtx = document.getElementById('donutChart');
         if (window.donutCtx) {

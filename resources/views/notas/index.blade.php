@@ -5,7 +5,6 @@
 
     <link rel="stylesheet" href="{{ asset('css/shared-index.css') }}?v={{ time() }}">
 
-    <!-- Page Header -->
     <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
         <div>
             <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900); margin: 0;">
@@ -33,7 +32,6 @@
         </div>
     </div>
 
-    <!-- Flash Messages -->
     @if(session('success'))
         <div class="alert alert-success" style="background: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; padding: var(--spacing-md) var(--spacing-lg); border-radius: var(--radius-lg); margin-bottom: var(--spacing-xl); display: flex; align-items: center; gap: var(--spacing-sm);">
             <i class="fas fa-check-circle"></i> {{ session('success') }}
@@ -48,7 +46,6 @@
         </div>
     @endif
 
-    <!-- Statistics -->
     <div class="grid grid-cols-4 mb-xl">
         <div class="stat-card">
             <div class="stat-value" style="color: #84cc16;">{{ $stats['total'] }}</div>
@@ -70,12 +67,10 @@
         </div>
     </div>
 
-    <!-- Search and Filters -->
     <div class="mb-xl filters-card">
         <form method="GET" action="{{ route('grades.index') }}" id="filterForm">
             <div class="grid grid-cols-4" style="gap: var(--spacing-md); align-items: center;">
                 
-                <!-- Curso Filter -->
                 <div class="form-group mb-0" style="position: relative;">
                     <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
                         <i class="fas fa-graduation-cap"></i>
@@ -93,7 +88,6 @@
                     </select>
                 </div>
                 
-                <!-- Asignatura Filter -->
                 <div class="form-group mb-0" style="position: relative;">
                     <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
                         <i class="fas fa-book"></i>
@@ -111,7 +105,6 @@
                     </select>
                 </div>
                 
-                <!-- Período Filter -->
                 <div class="form-group mb-0" style="position: relative;">
                     <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
                         <i class="fas fa-calendar-alt"></i>
@@ -127,7 +120,6 @@
                     </select>
                 </div>
                 
-                <!-- Tipo Evaluación Filter -->
                 <div class="form-group mb-0" style="position: relative;">
                     <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
                         <i class="fas fa-tasks"></i>
@@ -157,7 +149,6 @@
         </form>
     </div>
 
-    <!-- Grades Table -->
     <div class="card">
         <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
             <h3 class="card-title"><i class="fas fa-list"></i> Registro de Notas
@@ -267,7 +258,6 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- Pagination -->
                 <div style="padding: var(--spacing-lg); border-top: 1px solid var(--gray-100);">
                     {{ $notas->withQueryString()->links() }}
                 </div>

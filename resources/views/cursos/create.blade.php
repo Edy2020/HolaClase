@@ -5,7 +5,8 @@
 
     <link rel="stylesheet" href="{{ asset('css/shared-index.css') }}?v={{ time() }}">
 
-    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+    <div class="page-header"
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
         <div>
             <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0;">
                 <i class="fas fa-graduation-cap" style="color: var(--text-muted); margin-right: 8px;"></i>
@@ -27,16 +28,19 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
 
-            {{-- Campos del formulario --}}
-            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
-                <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-color); margin: 0 0 var(--spacing-lg) 0; padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-color);">
+            <div
+                style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
+                <h3
+                    style="font-size: 1rem; font-weight: 700; color: var(--text-color); margin: 0 0 var(--spacing-lg) 0; padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-color);">
                     <i class="fas fa-book" style="color: var(--text-muted); margin-right: 6px;"></i>
                     Información del Curso
                 </h3>
 
                 <div class="form-group" style="position: relative;">
-                    <label class="form-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">NIVEL *</label>
-                    <div style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
+                    <label class="form-label"
+                        style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">NIVEL *</label>
+                    <div
+                        style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
                         <i class="fas fa-layer-group"></i>
                     </div>
                     <select name="nivel" id="nivel" class="form-select" required
@@ -50,13 +54,16 @@
                         <option value="Media">Educación Media</option>
                     </select>
                     @error('nivel')
-                        <span style="color: var(--error); font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
+                        <span
+                            style="color: var(--error); font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div class="form-group" id="gradoGroup" style="display: none; position: relative;">
-                    <label class="form-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">GRADO *</label>
-                    <div style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
+                    <label class="form-label"
+                        style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">GRADO *</label>
+                    <div
+                        style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
                         <i class="fas fa-sort-numeric-up"></i>
                     </div>
                     <select name="grado" id="grado" class="form-select"
@@ -66,13 +73,16 @@
                         <option value="">Seleccione un grado...</option>
                     </select>
                     @error('grado')
-                        <span style="color: var(--error); font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
+                        <span
+                            style="color: var(--error); font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div class="form-group mb-0" style="position: relative;">
-                    <label class="form-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">SECCIÓN *</label>
-                    <div style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
+                    <label class="form-label"
+                        style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">SECCIÓN *</label>
+                    <div
+                        style="position: absolute; left: 12px; bottom: 10px; color: var(--text-muted); font-size: 1rem; pointer-events: none; z-index: 1;">
                         <i class="fas fa-font"></i>
                     </div>
                     <select name="letra" id="letra" class="form-select" required
@@ -88,34 +98,47 @@
                         <option value="F">F</option>
                     </select>
                     @error('letra')
-                        <span style="color: var(--error); font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
+                        <span
+                            style="color: var(--error); font-size: 0.875rem; margin-top: 0.25rem; display: block;">{{ $message }}</span>
                     @enderror
                 </div>
             </div>
 
-            {{-- Vista Previa --}}
-            <div style="background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-                <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-color); margin: 0 0 var(--spacing-lg) 0; padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-color); width: 100%;">
+            <div
+                style="background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                <h3
+                    style="font-size: 1rem; font-weight: 700; color: var(--text-color); margin: 0 0 var(--spacing-lg) 0; padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-color); width: 100%;">
                     <i class="fas fa-eye" style="color: var(--text-muted); margin-right: 6px;"></i>
                     Vista Previa
                 </h3>
 
-                <div id="cursoBadge" style="width: 90px; height: 90px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-lg); background: var(--gray-200); display: flex; align-items: center; justify-content: center; color: var(--text-color); font-size: 1.75rem; font-weight: 700;">
+                <div id="cursoBadge"
+                    style="width: 90px; height: 90px; margin: 0 auto var(--spacing-md); border-radius: var(--radius-lg); background: var(--gray-200); display: flex; align-items: center; justify-content: center; color: var(--text-color); font-size: 1.75rem; font-weight: 700;">
                     <span id="badgeText">?</span>
                 </div>
 
-                <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 600; margin-bottom: 4px;">Nombre Corto</div>
-                <div id="nombreCorto" style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin-bottom: var(--spacing-md);">-</div>
+                <div
+                    style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 600; margin-bottom: 4px;">
+                    Nombre Corto</div>
+                <div id="nombreCorto"
+                    style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin-bottom: var(--spacing-md);">
+                    -</div>
 
-                <div style="width: 40px; height: 1px; background: var(--border-color); margin: 0 auto var(--spacing-md);"></div>
+                <div
+                    style="width: 40px; height: 1px; background: var(--border-color); margin: 0 auto var(--spacing-md);">
+                </div>
 
-                <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 600; margin-bottom: 4px;">Nombre Completo</div>
+                <div
+                    style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 600; margin-bottom: 4px;">
+                    Nombre Completo</div>
                 <div id="nombreCompleto" style="font-size: 1rem; font-weight: 600; color: var(--text-color);">-</div>
             </div>
         </div>
 
-        <div style="margin-top: var(--spacing-lg); padding-top: var(--spacing-lg); border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end;">
-            <button type="submit" class="btn btn-outline" style="color: var(--text-color); border-color: var(--border-color);">
+        <div
+            style="margin-top: var(--spacing-lg); padding-top: var(--spacing-lg); border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end;">
+            <button type="submit" class="btn btn-outline"
+                style="color: var(--text-color); border-color: var(--border-color);">
                 <i class="fas fa-save"></i> Crear Curso
             </button>
         </div>
@@ -135,7 +158,7 @@
             'Basica': [
                 { value: '1°', text: '1° Primero' }, { value: '2°', text: '2° Segundo' },
                 { value: '3°', text: '3° Tercero' }, { value: '4°', text: '4° Cuarto' },
-                { value: '5°', text: '5° Quinto' },  { value: '6°', text: '6° Sexto' },
+                { value: '5°', text: '5° Quinto' }, { value: '6°', text: '6° Sexto' },
                 { value: '7°', text: '7° Séptimo' }, { value: '8°', text: '8° Octavo' }
             ],
             'Media': [
@@ -199,7 +222,9 @@
 
     <style>
         @media (max-width: 768px) {
-            form > div:first-of-type { grid-template-columns: 1fr !important; }
+            form>div:first-of-type {
+                grid-template-columns: 1fr !important;
+            }
         }
     </style>
 </x-app-layout>

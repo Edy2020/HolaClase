@@ -12,9 +12,6 @@ use Carbon\Carbon;
 
 class AsistenciaController extends Controller
 {
-    /**
-     * Display a listing of attendance records.
-     */
     public function index(Request $request)
     {
         $query = Asistencia::with(['curso', 'asignatura', 'estudiante']);
@@ -78,10 +75,6 @@ class AsistenciaController extends Controller
 
         return view('asistencia.index', compact('asistencias', 'cursos', 'asignaturas', 'estudiantes', 'stats'));
     }
-
-    /**
-     * Show the form for creating new attendance records.
-     */
     public function create(Request $request)
     {
         $user = auth()->user();
@@ -104,7 +97,6 @@ class AsistenciaController extends Controller
             if ($request->filled('asignatura_id')) {
                 $selectedAsignatura = Asignatura::findOrFail($request->asignatura_id);
 
-                // Check if attendance already exists for this date
                 $existingAttendance = Asistencia::where('curso_id', $selectedCurso->id)
                     ->where('asignatura_id', $selectedAsignatura->id)
                     ->whereDate('fecha', $fecha)
@@ -123,10 +115,6 @@ class AsistenciaController extends Controller
             'existingAttendance'
         ));
     }
-
-    /**
-     * Store newly created attendance records in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -165,19 +153,11 @@ class AsistenciaController extends Controller
                 ->withInput();
         }
     }
-
-    /**
-     * Display the specified attendance record.
-     */
     public function show(Asistencia $asistencia)
     {
         $asistencia->load(['curso', 'asignatura', 'estudiante']);
         return view('asistencia.show', compact('asistencia'));
     }
-
-    /**
-     * Show the form for editing attendance records.
-     */
     public function edit(Request $request)
     {
         $curso = Curso::findOrFail($request->curso_id);
@@ -195,10 +175,6 @@ class AsistenciaController extends Controller
 
         return view('asistencia.edit', compact('curso', 'asignatura', 'fecha', 'asistencias', 'estudiantes'));
     }
-
-    /**
-     * Update the specified attendance records in storage.
-     */
     public function update(Request $request, Asistencia $asistencia)
     {
         $validated = $request->validate([
@@ -211,10 +187,6 @@ class AsistenciaController extends Controller
         return redirect()->route('attendance.index')
             ->with('success', 'Asistencia actualizada exitosamente.');
     }
-
-    /**
-     * Remove the specified attendance record from storage.
-     */
     public function destroy(Asistencia $asistencia)
     {
         $asistencia->delete();
@@ -222,21 +194,16 @@ class AsistenciaController extends Controller
         return redirect()->route('attendance.index')
             ->with('success', 'Registro de asistencia eliminado exitosamente.');
     }
-
-    /**
-     * Display the attendance dashboard with statistics.
-     */
     public function dashboard(Request $request)
     {
         $filtroCurso = $request->get('curso_id', '');
-        $filtroPeriodo = $request->get('periodo', 'mes'); // mes, trimestre, anio
+        $filtroPeriodo = $request->get('periodo', 'mes');
 
-        // Date range based on filter
         $endDate = Carbon::today();
-        $startDate = match($filtroPeriodo) {
+        $startDate = match ($filtroPeriodo) {
             'trimestre' => Carbon::today()->subDays(90),
-            'anio'      => Carbon::today()->startOfYear(),
-            default     => Carbon::today()->startOfMonth(),
+            'anio' => Carbon::today()->startOfYear(),
+            default => Carbon::today()->startOfMonth(),
         };
 
         $user = auth()->user();
@@ -253,10 +220,10 @@ class AsistenciaController extends Controller
             $baseQuery->where('curso_id', $filtroCurso);
         }
 
-        $totalRegistros  = (clone $baseQuery)->count();
-        $totalPresente   = (clone $baseQuery)->where('estado', 'presente')->count();
-        $totalAusente    = (clone $baseQuery)->where('estado', 'ausente')->count();
-        $totalTarde      = (clone $baseQuery)->where('estado', 'tarde')->count();
+        $totalRegistros = (clone $baseQuery)->count();
+        $totalPresente = (clone $baseQuery)->where('estado', 'presente')->count();
+        $totalAusente = (clone $baseQuery)->where('estado', 'ausente')->count();
+        $totalTarde = (clone $baseQuery)->where('estado', 'tarde')->count();
         $totalJustificado = (clone $baseQuery)->where('estado', 'justificado')->count();
         $porcentajeAsistencia = $totalRegistros > 0
             ? round(($totalPresente + $totalTarde) / $totalRegistros * 100, 1)
@@ -267,14 +234,14 @@ class AsistenciaController extends Controller
              COUNT(*) as total,
              SUM(CASE WHEN estado IN ('presente','tarde') THEN 1 ELSE 0 END) as asistio"
         )
-        ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
-        ->when($profesorCursoIds !== null, fn($q) => $q->whereIn('curso_id', $profesorCursoIds))
-        ->when($filtroCurso, fn($q) => $q->where('curso_id', $filtroCurso))
-        ->groupBy(DB::raw('DATE(fecha)'))
-        ->orderBy(DB::raw('DATE(fecha)'))
-        ->get();
+            ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->when($profesorCursoIds !== null, fn($q) => $q->whereIn('curso_id', $profesorCursoIds))
+            ->when($filtroCurso, fn($q) => $q->where('curso_id', $filtroCurso))
+            ->groupBy(DB::raw('DATE(fecha)'))
+            ->orderBy(DB::raw('DATE(fecha)'))
+            ->get();
 
-        $chartDias      = $tendenciaDias->pluck('dia')->map(fn($d) => Carbon::parse($d)->format('d/m'))->toArray();
+        $chartDias = $tendenciaDias->pluck('dia')->map(fn($d) => Carbon::parse($d)->format('d/m'))->toArray();
         $chartPorcentajes = $tendenciaDias->map(
             fn($r) => $r->total > 0 ? round($r->asistio / $r->total * 100, 1) : 0
         )->toArray();
@@ -284,21 +251,21 @@ class AsistenciaController extends Controller
              COUNT(*) as total,
              SUM(CASE WHEN estado IN ('presente','tarde') THEN 1 ELSE 0 END) as asistio"
         )
-        ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
-        ->when($profesorCursoIds !== null, fn($q) => $q->whereIn('curso_id', $profesorCursoIds))
-        ->when($filtroCurso, fn($q) => $q->where('curso_id', $filtroCurso))
-        ->groupBy('estudiante_id')
-        ->with('estudiante')
-        ->get()
-        ->filter(fn($r) => $r->total > 0 && ($r->asistio / $r->total * 100) < 75)
-        ->map(fn($r) => [
-            'estudiante' => $r->estudiante,
-            'total'      => (int) $r->total,
-            'asistio'    => (int) $r->asistio,
-            'porcentaje' => round($r->asistio / $r->total * 100, 1),
-        ])
-        ->sortBy('porcentaje')
-        ->take(10);
+            ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->when($profesorCursoIds !== null, fn($q) => $q->whereIn('curso_id', $profesorCursoIds))
+            ->when($filtroCurso, fn($q) => $q->where('curso_id', $filtroCurso))
+            ->groupBy('estudiante_id')
+            ->with('estudiante')
+            ->get()
+            ->filter(fn($r) => $r->total > 0 && ($r->asistio / $r->total * 100) < 75)
+            ->map(fn($r) => [
+                'estudiante' => $r->estudiante,
+                'total' => (int) $r->total,
+                'asistio' => (int) $r->asistio,
+                'porcentaje' => round($r->asistio / $r->total * 100, 1),
+            ])
+            ->sortBy('porcentaje')
+            ->take(10);
 
         $resumenCursosQuery = Curso::with('estudiantes');
         if ($profesorCursoIds !== null) {
@@ -308,19 +275,19 @@ class AsistenciaController extends Controller
             $stats = Asistencia::selectRaw(
                 "COUNT(*) as total, SUM(CASE WHEN estado IN ('presente','tarde') THEN 1 ELSE 0 END) as asistio"
             )
-            ->where('curso_id', $curso->id)
-            ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
-            ->first();
+                ->where('curso_id', $curso->id)
+                ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+                ->first();
 
             $pct = ($stats->total ?? 0) > 0 ? round($stats->asistio / $stats->total * 100, 1) : null;
             return [
-                'id'         => $curso->id,
-                'nombre'     => $curso->nombre,
-                'nivel'      => $curso->nivel,
-                'estudiantes'=> $curso->estudiantes->count(),
-                'total'      => $stats->total ?? 0,
+                'id' => $curso->id,
+                'nombre' => $curso->nombre,
+                'nivel' => $curso->nivel,
+                'estudiantes' => $curso->estudiantes->count(),
+                'total' => $stats->total ?? 0,
                 'porcentaje' => $pct,
-                'semaforo'   => is_null($pct) ? 'gray' : ($pct >= 85 ? 'green' : ($pct >= 75 ? 'yellow' : 'red')),
+                'semaforo' => is_null($pct) ? 'gray' : ($pct >= 85 ? 'green' : ($pct >= 75 ? 'yellow' : 'red')),
             ];
         })->sortByDesc('total');
 
@@ -332,18 +299,24 @@ class AsistenciaController extends Controller
         $periodos = ['mes' => 'Este Mes', 'trimestre' => 'Últimos 90 días', 'anio' => 'Este Año'];
 
         return view('asistencia.dashboard', compact(
-            'totalRegistros', 'totalPresente', 'totalAusente', 'totalTarde',
-            'totalJustificado', 'porcentajeAsistencia',
-            'chartDias', 'chartPorcentajes',
-            'estudiantesCriticos', 'resumenCursos',
-            'cursos', 'periodos', 'filtroCurso', 'filtroPeriodo',
-            'startDate', 'endDate'
+            'totalRegistros',
+            'totalPresente',
+            'totalAusente',
+            'totalTarde',
+            'totalJustificado',
+            'porcentajeAsistencia',
+            'chartDias',
+            'chartPorcentajes',
+            'estudiantesCriticos',
+            'resumenCursos',
+            'cursos',
+            'periodos',
+            'filtroCurso',
+            'filtroPeriodo',
+            'startDate',
+            'endDate'
         ));
     }
-
-    /**
-     * Generate attendance report for a course.
-     */
     public function reportePorCurso(Request $request, Curso $curso)
     {
         $startDate = $request->get('start_date', now()->startOfMonth()->format('Y-m-d'));
@@ -380,10 +353,6 @@ class AsistenciaController extends Controller
 
         return view('asistencia.reporte_curso', compact('curso', 'reporteEstudiantes', 'startDate', 'endDate', 'asignaturas', 'asignaturaId'));
     }
-
-    /**
-     * Generate attendance report for a student.
-     */
     public function reportePorEstudiante(Request $request, Estudiante $estudiante)
     {
         $startDate = $request->get('start_date', now()->startOfMonth()->format('Y-m-d'));
@@ -395,7 +364,6 @@ class AsistenciaController extends Controller
             ->orderBy('fecha', 'desc')
             ->get();
 
-        // Group by subject
         $reporteAsignaturas = $asistencias->groupBy('asignatura_id')->map(function ($group) {
             $asignatura = $group->first()->asignatura;
             return [

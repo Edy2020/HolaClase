@@ -3,7 +3,6 @@
         Reporte de Asistencia - {{ $estudiante->nombre }} {{ $estudiante->apellido }}
     </x-slot>
 
-    <!-- Student Info Card -->
     <div class="card mb-xl">
         <div class="card-body">
             <div style="display: flex; align-items: center; gap: var(--spacing-lg);">
@@ -28,7 +27,6 @@
         </div>
     </div>
 
-    <!-- Filters -->
     <div class="card mb-xl">
         <div class="card-header">
             <h3 class="card-title">Filtros del Reporte</h3>
@@ -54,7 +52,6 @@
         </div>
     </div>
 
-    <!-- Statistics -->
     <div class="grid grid-cols-5 mb-xl">
         <div class="stat-card">
             <div class="stat-value" style="color: var(--theme-color);">{{ $stats['total'] }}</div>
@@ -81,7 +78,6 @@
         </div>
     </div>
 
-    <!-- By Subject Report -->
     @if($reporteAsignaturas->count() > 0)
         <div class="card mb-xl">
             <div class="card-header">
@@ -130,7 +126,6 @@
         </div>
     @endif
 
-    <!-- Attendance History -->
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Historial de Asistencia</h3>

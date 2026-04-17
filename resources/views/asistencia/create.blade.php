@@ -13,11 +13,11 @@
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
-    </div>
+        </div>
     @endif
 
-    <!-- Page Header -->
-    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+    <div class="page-header"
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
         <div>
             <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900); margin: 0;">
                 <i class="fas fa-plus-circle" style="color: var(--gray-400); margin-right: 8px;"></i> Tomar Asistencia
@@ -37,16 +37,19 @@
         </div>
     </div>
 
-    <!-- Filters Container -->
-    <div class="mb-xl" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
-        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--gray-900); margin-top: 0; margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--border-color); padding-bottom: var(--spacing-sm);">
+    <div class="mb-xl"
+        style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
+        <h3
+            style="font-size: 1.1rem; font-weight: 700; color: var(--gray-900); margin-top: 0; margin-bottom: var(--spacing-md); border-bottom: 1px solid var(--border-color); padding-bottom: var(--spacing-sm);">
             <i class="fas fa-filter" style="color: var(--gray-400); margin-right: 6px;"></i> Selección de Formulario
         </h3>
         <form method="GET" action="{{ route('attendance.create') }}" id="filterForm">
             <div class="grid grid-cols-1 md:grid-cols-3" style="gap: var(--spacing-lg);">
                 <div class="form-group mb-0" style="position: relative;">
-                    <label class="form-label" style="font-size: 0.85rem; color: var(--gray-500); font-weight: 600;">Curso *</label>
-                    <div style="position: absolute; left: 12px; bottom: 10px; color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                    <label class="form-label"
+                        style="font-size: 0.85rem; color: var(--gray-500); font-weight: 600;">Curso *</label>
+                    <div
+                        style="position: absolute; left: 12px; bottom: 10px; color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
                         <i class="fas fa-graduation-cap"></i>
                     </div>
                     <select name="curso_id" class="form-select" required
@@ -63,12 +66,14 @@
                     </select>
                 </div>
                 <div class="form-group mb-0" style="position: relative;">
-                    <label class="form-label" style="font-size: 0.85rem; color: var(--gray-500); font-weight: 600;">Asignatura *</label>
-                    <div style="position: absolute; left: 12px; bottom: 10px; color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                    <label class="form-label"
+                        style="font-size: 0.85rem; color: var(--gray-500); font-weight: 600;">Asignatura *</label>
+                    <div
+                        style="position: absolute; left: 12px; bottom: 10px; color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
                         <i class="fas fa-book"></i>
                     </div>
-                    <select name="asignatura_id" class="form-select" {{ !$selectedCurso ? 'disabled' : '' }}
-                        required onchange="document.getElementById('filterForm').submit()"
+                    <select name="asignatura_id" class="form-select" {{ !$selectedCurso ? 'disabled' : '' }} required
+                        onchange="document.getElementById('filterForm').submit()"
                         style="padding-left: 40px; border: 2px solid var(--border-color); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer; background-color: transparent;"
                         onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
                         onblur="this.style.borderColor='var(--border-color)'; this.style.boxShadow='none'">
@@ -83,8 +88,10 @@
                     </select>
                 </div>
                 <div class="form-group mb-0" style="position: relative;">
-                    <label class="form-label" style="font-size: 0.85rem; color: var(--gray-500); font-weight: 600;">Fecha *</label>
-                    <div style="position: absolute; left: 12px; bottom: 10px; color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
+                    <label class="form-label"
+                        style="font-size: 0.85rem; color: var(--gray-500); font-weight: 600;">Fecha *</label>
+                    <div
+                        style="position: absolute; left: 12px; bottom: 10px; color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
                         <i class="fas fa-calendar"></i>
                     </div>
                     <input type="date" name="fecha" class="form-input" value="{{ $fecha }}"
@@ -99,7 +106,6 @@
     </div>
 
     @if($selectedCurso && $selectedAsignatura && $estudiantes->count() > 0)
-        <!-- Attendance Form -->
         <form method="POST" action="{{ route('attendance.store') }}" id="attendanceForm">
             @csrf
             <input type="hidden" name="curso_id" value="{{ $selectedCurso->id }}">
@@ -139,8 +145,7 @@
                                         {{ substr($estudiante->nombre, 0, 1) }}{{ substr($estudiante->apellido, 0, 1) }}
                                     </div>
                                     <div style="flex: 1;">
-                                        <div
-                                            style="font-weight: 600; margin-bottom: var(--spacing-xs);">
+                                        <div style="font-weight: 600; margin-bottom: var(--spacing-xs);">
                                             {{ $estudiante->nombre }} {{ $estudiante->apellido }}
                                         </div>
                                         <div style="font-size: 0.875rem; color: var(--gray-600);">
@@ -198,23 +203,19 @@
                 const buttons = row.querySelectorAll('.estado-btn');
                 const input = row.querySelector('.estado-input');
 
-                // Remove active class from all buttons
                 buttons.forEach(btn => {
                     btn.classList.remove('btn-success', 'btn-warning', 'btn-danger', 'btn-info');
                     btn.classList.add('btn-ghost');
                 });
 
-                // Add active class to clicked button
                 button.classList.remove('btn-ghost');
                 if (estado === 'presente') button.classList.add('btn-success');
                 else if (estado === 'tarde') button.classList.add('btn-warning');
                 else if (estado === 'ausente') button.classList.add('btn-danger');
                 else if (estado === 'justificado') button.classList.add('btn-info');
 
-                // Update hidden input
                 input.value = estado;
 
-                // Update border color
                 const colors = {
                     'presente': 'var(--success)',
                     'tarde': 'var(--warning)',
@@ -265,7 +266,8 @@
             <div style="text-align: center; padding: var(--spacing-2xl);">
                 <i class="fas fa-users-slash"
                     style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
-                <p style="color: var(--gray-600); margin: 0; font-weight: 500;">No hay estudiantes inscritos en este curso para esta asignatura</p>
+                <p style="color: var(--gray-600); margin: 0; font-weight: 500;">No hay estudiantes inscritos en este curso
+                    para esta asignatura</p>
             </div>
         </div>
     @else
@@ -273,7 +275,8 @@
             <div style="text-align: center; padding: var(--spacing-2xl);">
                 <i class="fas fa-hand-pointer"
                     style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--spacing-md);"></i>
-                <p style="color: var(--gray-600); margin: 0; font-weight: 500;">Selecciona un curso y una asignatura para comenzar a tomar asistencia</p>
+                <p style="color: var(--gray-600); margin: 0; font-weight: 500;">Selecciona un curso y una asignatura para
+                    comenzar a tomar asistencia</p>
             </div>
         </div>
     @endif

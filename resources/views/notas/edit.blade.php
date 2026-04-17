@@ -3,7 +3,6 @@
         Editar Nota
     </x-slot>
 
-    <!-- Header -->
     <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-xl);">
         <a href="{{ route('grades.index') }}" class="btn btn-ghost">
             <i class="fas fa-arrow-left"></i>
@@ -19,7 +18,6 @@
         </div>
     </div>
 
-    <!-- Context Info -->
     <div class="card mb-xl" style="background: var(--gray-50); border: 1px solid var(--gray-200);">
         <div class="card-body">
             <div class="grid grid-cols-3">
@@ -42,7 +40,6 @@
         </div>
     </div>
 
-    <!-- Edit Form -->
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Modificar Nota</h3>
@@ -61,7 +58,6 @@
                 @endif
 
                 <div class="grid grid-cols-2" style="gap: var(--spacing-lg);">
-                    <!-- Nota -->
                     <div class="form-group">
                         <label class="form-label">Nota * <span style="color: var(--gray-500); font-weight: 400;">(1.0 – 7.0)</span></label>
                         <input type="number"
@@ -73,14 +69,12 @@
                                value="{{ old('nota', number_format($nota->nota, 1)) }}"
                                required
                                oninput="updatePreview(this.value)">
-                        <!-- Live preview -->
                         <div id="notaPreview" style="margin-top: var(--spacing-sm); padding: var(--spacing-sm) var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md); display: flex; align-items: center; gap: var(--spacing-sm);">
                             <span id="notaColor" style="font-size: 1.5rem; font-weight: 800;">{{ number_format($nota->nota, 1) }}</span>
                             <span id="notaEstado" class="badge">—</span>
                         </div>
                     </div>
 
-                    <!-- Tipo Evaluacion -->
                     <div class="form-group">
                         <label class="form-label">Tipo de Evaluación *</label>
                         <select name="tipo_evaluacion" class="form-select" required>
@@ -92,7 +86,6 @@
                         </select>
                     </div>
 
-                    <!-- Período -->
                     <div class="form-group">
                         <label class="form-label">Período *</label>
                         <select name="periodo" class="form-select" required>
@@ -104,7 +97,6 @@
                         </select>
                     </div>
 
-                    <!-- Fecha -->
                     <div class="form-group">
                         <label class="form-label">Fecha *</label>
                         <input type="date"
@@ -115,7 +107,6 @@
                                required>
                     </div>
 
-                    <!-- Ponderación -->
                     <div class="form-group">
                         <label class="form-label">Ponderación * <span style="color: var(--gray-500); font-weight: 400;">(0.01 – 1.00, ej: 0.30 = 30%)</span></label>
                         <input type="number"
@@ -129,7 +120,6 @@
                         <small style="color: var(--gray-500); font-size: 0.75rem;">Valor decimal: 0.30 equivale al 30%</small>
                     </div>
 
-                    <!-- Observaciones -->
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label class="form-label">Observaciones <span style="color: var(--gray-500); font-weight: 400;">(opcional)</span></label>
                         <textarea name="observaciones" class="form-input" rows="3"
@@ -187,7 +177,6 @@
             }
         }
 
-        // Initialize preview on load
         document.addEventListener('DOMContentLoaded', function() {
             const input = document.querySelector('input[name="nota"]');
             if (input) updatePreview(input.value);

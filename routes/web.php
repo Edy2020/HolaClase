@@ -80,7 +80,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/cursos/{curso}', [App\Http\Controllers\CursoController::class, 'show'])->name('courses.show');
 
-    // Attendance Routes — specific routes BEFORE resource to avoid shadowing by {asistencia}
     Route::get('asistencia/dashboard', [App\Http\Controllers\AsistenciaController::class, 'dashboard'])->name('attendance.dashboard');
     Route::get('asistencia/reporte/curso/{curso}', [App\Http\Controllers\AsistenciaController::class, 'reportePorCurso'])->name('attendance.reporte.curso');
     Route::get('asistencia/reporte/estudiante/{estudiante}', [App\Http\Controllers\AsistenciaController::class, 'reportePorEstudiante'])->name('attendance.reporte.estudiante');
@@ -95,7 +94,6 @@ Route::middleware('auth')->group(function () {
         'destroy' => 'attendance.destroy',
     ])->parameters(['asistencia' => 'asistencia']);
 
-    // Grades Routes
     Route::get('notas/dashboard', [App\Http\Controllers\NotaController::class, 'dashboard'])->name('grades.dashboard');
     Route::get('notas/estadisticas', [App\Http\Controllers\NotaController::class, 'estadisticas'])->name('grades.estadisticas');
     Route::get('notas/export/pdf', [App\Http\Controllers\NotaController::class, 'exportPDF'])->name('grades.export.pdf');
@@ -114,11 +112,6 @@ Route::middleware('auth')->group(function () {
     Route::get('notas/reporte/curso/{curso}', [App\Http\Controllers\NotaController::class, 'reportePorCurso'])->name('grades.reporte.curso');
     Route::get('notas/reporte/estudiante/{estudiante}', [App\Http\Controllers\NotaController::class, 'reportePorEstudiante'])->name('grades.reporte.estudiante');
     Route::get('notas/libreta/{estudiante}', [App\Http\Controllers\NotaController::class, 'libreta'])->name('grades.libreta');
-
-
-    // Settings Routes - Completely Removed as per new UI
-    // Route::get('/configuracion', [ConfiguracionController::class, 'index'])->name('settings.index');
-    // Route::post('/configuracion/tema', [ConfiguracionController::class, 'updateTheme'])->name('settings.theme');
 
     Route::middleware('admin')->prefix('usuarios')->group(function () {
         Route::get('/', [App\Http\Controllers\UsuarioController::class, 'index'])->name('users.index');

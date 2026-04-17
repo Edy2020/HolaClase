@@ -11,9 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class NotaController extends Controller
 {
-    /**
-     * Display a listing of grades.
-     */
     public function index(Request $request)
     {
         $query = Nota::with(['curso', 'asignatura', 'estudiante']);
@@ -25,7 +22,6 @@ class NotaController extends Controller
             $query->whereIn('curso_id', $profesorCursoIds);
         }
 
-        // Apply filters
         if ($request->filled('curso_id')) {
             $query->forCurso($request->curso_id);
         }
@@ -50,7 +46,6 @@ class NotaController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
-        // Get filter options
         $cursosQuery = Curso::orderBy('nombre');
         if ($profesorCursoIds !== null) {
             $cursosQuery->whereIn('id', $profesorCursoIds);
@@ -59,7 +54,6 @@ class NotaController extends Controller
         $asignaturas = Asignatura::orderBy('nombre')->get();
         $estudiantes = Estudiante::orderBy('nombre')->get();
 
-        // Calculate statistics
         $statsQuery = Nota::query();
         if ($profesorCursoIds !== null) {
             $statsQuery->whereIn('curso_id', $profesorCursoIds);
@@ -77,9 +71,6 @@ class NotaController extends Controller
         return view('notas.index', compact('notas', 'cursos', 'asignaturas', 'estudiantes', 'stats'));
     }
 
-    /**
-     * Show the form for creating new grades.
-     */
     public function create(Request $request)
     {
         $user = auth()->user();
@@ -115,9 +106,6 @@ class NotaController extends Controller
         ));
     }
 
-    /**
-     * Store newly created grades in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -133,7 +121,6 @@ class NotaController extends Controller
             'notas.*.observaciones' => 'nullable|string|max:500',
         ]);
 
-        // Convert percentage to decimal (30% -> 0.3)
         $ponderacionDecimal = $validated['ponderacion'] / 100;
 
         DB::beginTransaction();
@@ -163,18 +150,12 @@ class NotaController extends Controller
         }
     }
 
-    /**
-     * Display the specified grade.
-     */
     public function show(Nota $nota)
     {
         $nota->load(['curso', 'asignatura', 'estudiante']);
         return view('notas.show', compact('nota'));
     }
 
-    /**
-     * Show the form for editing the specified grade.
-     */
     public function edit(Nota $nota)
     {
         $nota->load(['curso', 'asignatura', 'estudiante']);
@@ -184,9 +165,6 @@ class NotaController extends Controller
         return view('notas.edit', compact('nota', 'tiposEvaluacion', 'periodos'));
     }
 
-    /**
-     * Update the specified grade in storage.
-     */
     public function update(Request $request, Nota $nota)
     {
         $validated = $request->validate([
@@ -204,9 +182,6 @@ class NotaController extends Controller
             ->with('success', 'Nota actualizada exitosamente.');
     }
 
-    /**
-     * Remove the specified grade from storage.
-     */
     public function destroy(Nota $nota)
     {
         $nota->delete();
@@ -215,9 +190,6 @@ class NotaController extends Controller
             ->with('success', 'Nota eliminada exitosamente.');
     }
 
-    /**
-     * Generate grade report for a course.
-     */
     public function reportePorCurso(Request $request, Curso $curso)
     {
         $periodo = $request->get('periodo');
@@ -235,11 +207,9 @@ class NotaController extends Controller
 
         $notas = $query->with(['estudiante', 'asignatura'])->get();
 
-        // Group by student and subject
         $reporteEstudiantes = $curso->estudiantes->map(function ($estudiante) use ($notas) {
             $estudianteNotas = $notas->where('estudiante_id', $estudiante->id);
 
-            // Group by subject
             $notasPorAsignatura = $estudianteNotas->groupBy('asignatura_id')->map(function ($group) {
                 $totalPonderacion = $group->sum('ponderacion');
                 $notaPonderada = $group->sum(function ($nota) {
@@ -249,7 +219,6 @@ class NotaController extends Controller
                 return $totalPonderacion > 0 ? round($notaPonderada / $totalPonderacion, 1) : 0;
             });
 
-            // Calculate overall average
             $promedio = $notasPorAsignatura->count() > 0 ? round($notasPorAsignatura->avg(), 1) : 0;
 
             return [
@@ -266,9 +235,6 @@ class NotaController extends Controller
         return view('notas.reporte_curso', compact('curso', 'reporteEstudiantes', 'asignaturas', 'periodo', 'asignaturaId', 'periodos'));
     }
 
-    /**
-     * Generate grade report for a student.
-     */
     public function reportePorEstudiante(Request $request, Estudiante $estudiante)
     {
         $periodo = $request->get('periodo');
@@ -283,7 +249,6 @@ class NotaController extends Controller
             ->orderBy('fecha', 'desc')
             ->get();
 
-        // Group by subject
         $reporteAsignaturas = $notas->groupBy('asignatura_id')->map(function ($group) {
             $asignatura = $group->first()->asignatura;
             $totalPonderacion = $group->sum('ponderacion');
@@ -301,7 +266,6 @@ class NotaController extends Controller
             ];
         });
 
-        // Calculate overall average
         $promedioGeneral = $reporteAsignaturas->count() > 0
             ? round($reporteAsignaturas->pluck('promedio')->avg(), 1)
             : 0;
@@ -311,9 +275,6 @@ class NotaController extends Controller
         return view('notas.reporte_estudiante', compact('estudiante', 'reporteAsignaturas', 'promedioGeneral', 'periodo', 'periodos'));
     }
 
-    /**
-     * Generate report card (libreta) for a student.
-     */
     public function libreta(Estudiante $estudiante)
     {
         $notas = Nota::where('estudiante_id', $estudiante->id)
@@ -322,7 +283,6 @@ class NotaController extends Controller
             ->orderBy('asignatura_id')
             ->get();
 
-        // Group by period and subject
         $libreta = $notas->groupBy('periodo')->map(function ($periodoNotas, $periodo) {
             return $periodoNotas->groupBy('asignatura_id')->map(function ($group) {
                 $asignatura = $group->first()->asignatura;
@@ -341,7 +301,6 @@ class NotaController extends Controller
             });
         });
 
-        // Calculate final average
         $promedioFinal = 0;
         $totalAsignaturas = 0;
 
@@ -357,12 +316,8 @@ class NotaController extends Controller
         return view('notas.libreta', compact('estudiante', 'libreta', 'promedioFinal'));
     }
 
-    /**
-     * Display the grades dashboard with statistics.
-     */
     public function dashboard(Request $request)
     {
-        // Get filter parameters
         $filtroPeriodo = $request->get('periodo', '');
         $filtroNivel = $request->get('nivel', '');
 
@@ -372,7 +327,6 @@ class NotaController extends Controller
             $profesorCursoIds = Curso::where('profesor_id', $user->profesor_id)->pluck('id');
         }
 
-        // Build base query for notas with filters
         $notasQuery = Nota::query();
         if ($profesorCursoIds !== null) {
             $notasQuery->whereIn('curso_id', $profesorCursoIds);
@@ -381,10 +335,9 @@ class NotaController extends Controller
             $notasQuery->where('periodo', $filtroPeriodo);
         }
 
-        // General statistics
         $totalEstudiantesQuery = Estudiante::query();
         if ($profesorCursoIds !== null) {
-            $totalEstudiantesQuery->whereHas('cursos', function($q) use ($profesorCursoIds) {
+            $totalEstudiantesQuery->whereHas('cursos', function ($q) use ($profesorCursoIds) {
                 $q->whereIn('cursos.id', $profesorCursoIds);
             });
         }
@@ -395,7 +348,6 @@ class NotaController extends Controller
         $reprobados = (clone $notasQuery)->where('nota', '<', 4.0)->count();
         $porcentajeAprobacion = $totalNotas > 0 ? round(($aprobados / $totalNotas) * 100, 1) : 0;
 
-        // Statistics by education level
         $cursosBasicaQuery = Curso::where('nivel', 'basica');
         if ($profesorCursoIds !== null) {
             $cursosBasicaQuery->whereIn('id', $profesorCursoIds);
@@ -434,7 +386,6 @@ class NotaController extends Controller
                 : 0,
         ];
 
-        // Course summary with statistics (apply nivel filter)
         $user = auth()->user();
         $cursosQuery = Curso::with(['estudiantes', 'asignaturas']);
         if (!$user->isAdmin() && $user->profesor_id) {
@@ -467,11 +418,9 @@ class NotaController extends Controller
             ];
         });
 
-        // Data for charts
         $chartCursos = $cursos->take(10)->pluck('nombre')->toArray();
         $chartPromedios = $cursos->take(10)->pluck('promedio')->toArray();
 
-        // Data for filters and exports
         $cursosSelectQuery = Curso::orderBy('nombre');
         if (!$user->isAdmin() && $user->profesor_id) {
             $cursosSelectQuery->where('profesor_id', $user->profesor_id);
@@ -499,26 +448,22 @@ class NotaController extends Controller
             'chartPromedios'
         ));
     }
-
-    /**
-     * Get statistics for AJAX requests.
-     */
     public function estadisticas(Request $request)
     {
         $nivel = $request->get('nivel');
         $user = auth()->user();
 
         $query = Nota::query();
-        
+
         $cursosQuery = Curso::query();
         if (!$user->isAdmin() && $user->profesor_id) {
             $cursosQuery->where('profesor_id', $user->profesor_id);
         }
-        
+
         if ($nivel) {
             $cursosQuery->where('nivel', $nivel);
         }
-        
+
         $cursosIds = $cursosQuery->pluck('id');
         $query->whereIn('curso_id', $cursosIds);
 
@@ -535,9 +480,6 @@ class NotaController extends Controller
         ]);
     }
 
-    /**
-     * Export grades to PDF.
-     */
     public function exportPDF(Request $request)
     {
         $cursoId = $request->get('curso_id');
@@ -564,15 +506,8 @@ class NotaController extends Controller
             'aprobados' => $notas->where('nota', '>=', 4.0)->count(),
             'reprobados' => $notas->where('nota', '<', 4.0)->count(),
         ];
-
-        // For now, return a simple view that can be converted to PDF
-        // Once dompdf is installed, we'll use: $pdf = PDF::loadView('notas.pdf', compact('notas', 'stats'));
         return view('notas.pdf', compact('notas', 'stats'));
     }
-
-    /**
-     * Export grades to Excel.
-     */
     public function exportExcel(Request $request)
     {
         $cursoId = $request->get('curso_id');
@@ -593,8 +528,6 @@ class NotaController extends Controller
             ->orderBy('asignatura_id')
             ->get();
 
-        // For now, return CSV format
-        // Once maatwebsite/excel is installed, we'll use proper Excel export
         $filename = 'notas_' . date('Y-m-d_His') . '.csv';
 
         $headers = [
@@ -605,10 +538,8 @@ class NotaController extends Controller
         $callback = function () use ($notas) {
             $file = fopen('php://output', 'w');
 
-            // Header row
             fputcsv($file, ['ID', 'Estudiante', 'RUT', 'Curso', 'Asignatura', 'Nota', 'Tipo Evaluación', 'Período', 'Fecha', 'Estado']);
 
-            // Data rows
             foreach ($notas as $nota) {
                 fputcsv($file, [
                     $nota->id,

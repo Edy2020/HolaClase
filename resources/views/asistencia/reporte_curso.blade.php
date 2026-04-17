@@ -3,7 +3,6 @@
         Reporte de Asistencia - {{ $curso->nombre }}
     </x-slot>
 
-    <!-- Header -->
     <div class="card mb-xl">
         <div class="card-header">
             <h3 class="card-title">Filtros del Reporte</h3>
@@ -40,7 +39,6 @@
         </div>
     </div>
 
-    <!-- Report Table -->
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Reporte de Asistencia por Estudiante</h3>

@@ -3,8 +3,8 @@
         Reporte por Curso
     </x-slot>
 
-    <!-- Header -->
-    <div style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl);">
+    <div
+        style="background: var(--theme-dark); color: white; padding: var(--spacing-2xl); border-radius: var(--radius-xl); margin-bottom: var(--spacing-2xl);">
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div>
                 <h2 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: var(--spacing-sm);">
@@ -13,16 +13,17 @@
                 <p style="opacity: 0.85; margin: 0;">
                     {{ $reporteEstudiantes->count() }} estudiantes
                     @if($periodo) • Período: {{ $periodo }} @endif
-                    @if($asignaturaId && $asignaturas->find($asignaturaId)) • {{ $asignaturas->find($asignaturaId)->nombre }} @endif
+                    @if($asignaturaId && $asignaturas->find($asignaturaId)) •
+                    {{ $asignaturas->find($asignaturaId)->nombre }} @endif
                 </p>
             </div>
-            <a href="{{ route('grades.index') }}" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.4);">
+            <a href="{{ route('grades.index') }}" class="btn btn-outline"
+                style="color: white; border-color: rgba(255,255,255,0.4);">
                 <i class="fas fa-arrow-left"></i> Volver
             </a>
         </div>
     </div>
 
-    <!-- Filters -->
     <div class="card mb-xl">
         <div class="card-body">
             <form method="GET" action="{{ route('grades.reporte.curso', $curso->id) }}">
@@ -49,7 +50,7 @@
                     </div>
                     <div>
                         <a href="{{ route('grades.export-pdf', ['curso_id' => $curso->id, 'periodo' => $periodo]) }}"
-                           class="btn btn-outline" target="_blank" style="width: 100%; text-align: center;">
+                            class="btn btn-outline" target="_blank" style="width: 100%; text-align: center;">
                             <i class="fas fa-file-pdf"></i> Exportar PDF
                         </a>
                     </div>
@@ -58,7 +59,6 @@
         </div>
     </div>
 
-    <!-- Reporte Table -->
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Resultados por Estudiante</h3>
@@ -85,7 +85,8 @@
                                     <div style="font-weight: 600; color: var(--gray-900);">
                                         {{ $reporte['estudiante']->nombre }} {{ $reporte['estudiante']->apellido }}
                                     </div>
-                                    <div style="font-size: 0.75rem; color: var(--gray-500);">{{ $reporte['estudiante']->rut }}</div>
+                                    <div style="font-size: 0.75rem; color: var(--gray-500);">{{ $reporte['estudiante']->rut }}
+                                    </div>
                                 </td>
                                 @foreach($asignaturas as $asignatura)
                                     @if(!$asignaturaId || $asignaturaId == $asignatura->id)
@@ -125,7 +126,8 @@
                 </table>
             @else
                 <div style="text-align: center; padding: var(--spacing-3xl);">
-                    <i class="fas fa-clipboard-list" style="font-size: 3rem; color: var(--gray-200); margin-bottom: var(--spacing-md);"></i>
+                    <i class="fas fa-clipboard-list"
+                        style="font-size: 3rem; color: var(--gray-200); margin-bottom: var(--spacing-md);"></i>
                     <p style="color: var(--gray-500);">No hay datos para mostrar con los filtros seleccionados.</p>
                 </div>
             @endif

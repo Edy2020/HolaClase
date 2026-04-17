@@ -149,7 +149,7 @@ class UsuarioController extends Controller
                 "Saludos,\nAdministración HolaClase",
                 function ($message) use ($destinationEmail, $user) {
                     $message->to($destinationEmail)
-                            ->subject('Acceso al Sistema HolaClase - ' . $user->name);
+                        ->subject('Acceso al Sistema HolaClase - ' . $user->name);
                 }
             );
 
