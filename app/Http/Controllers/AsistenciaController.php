@@ -288,13 +288,13 @@ class AsistenciaController extends Controller
         ->when($profesorCursoIds !== null, fn($q) => $q->whereIn('curso_id', $profesorCursoIds))
         ->when($filtroCurso, fn($q) => $q->where('curso_id', $filtroCurso))
         ->groupBy('estudiante_id')
-        ->havingRaw("COUNT(*) > 0 AND (SUM(CASE WHEN estado IN ('presente','tarde') THEN 1 ELSE 0 END)::float / COUNT(*) * 100) < 75")
         ->with('estudiante')
         ->get()
+        ->filter(fn($r) => $r->total > 0 && ($r->asistio / $r->total * 100) < 75)
         ->map(fn($r) => [
             'estudiante' => $r->estudiante,
-            'total'      => $r->total,
-            'asistio'    => $r->asistio,
+            'total'      => (int) $r->total,
+            'asistio'    => (int) $r->asistio,
             'porcentaje' => round($r->asistio / $r->total * 100, 1),
         ])
         ->sortBy('porcentaje')
