@@ -263,15 +263,15 @@ class AsistenciaController extends Controller
             : 0;
 
         $tendenciaDias = Asistencia::selectRaw(
-            "DATE(fecha) as dia,
+            "fecha::date as dia,
              COUNT(*) as total,
              SUM(CASE WHEN estado IN ('presente','tarde') THEN 1 ELSE 0 END) as asistio"
         )
         ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
         ->when($profesorCursoIds !== null, fn($q) => $q->whereIn('curso_id', $profesorCursoIds))
         ->when($filtroCurso, fn($q) => $q->where('curso_id', $filtroCurso))
-        ->groupBy(DB::raw('DATE(fecha)'))
-        ->orderBy(DB::raw('DATE(fecha)'))
+        ->groupBy(DB::raw('fecha::date'))
+        ->orderBy(DB::raw('fecha::date'))
         ->get();
 
         $chartDias      = $tendenciaDias->pluck('dia')->map(fn($d) => Carbon::parse($d)->format('d/m'))->toArray();
