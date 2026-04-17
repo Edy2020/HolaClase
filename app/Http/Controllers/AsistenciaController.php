@@ -263,15 +263,15 @@ class AsistenciaController extends Controller
             : 0;
 
         $tendenciaDias = Asistencia::selectRaw(
-            'DATE(fecha) as dia,
+            "fecha::date as dia,
              COUNT(*) as total,
-             SUM(CASE WHEN estado IN ("presente","tarde") THEN 1 ELSE 0 END) as asistio'
+             SUM(CASE WHEN estado IN ('presente','tarde') THEN 1 ELSE 0 END) as asistio"
         )
         ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
         ->when($profesorCursoIds !== null, fn($q) => $q->whereIn('curso_id', $profesorCursoIds))
         ->when($filtroCurso, fn($q) => $q->where('curso_id', $filtroCurso))
-        ->groupBy('dia')
-        ->orderBy('dia')
+        ->groupBy(DB::raw('fecha::date'))
+        ->orderBy(DB::raw('fecha::date'))
         ->get();
 
         $chartDias      = $tendenciaDias->pluck('dia')->map(fn($d) => Carbon::parse($d)->format('d/m'))->toArray();
@@ -280,21 +280,21 @@ class AsistenciaController extends Controller
         )->toArray();
 
         $estudiantesCriticos = Asistencia::selectRaw(
-            'estudiante_id,
+            "estudiante_id,
              COUNT(*) as total,
-             SUM(CASE WHEN estado IN ("presente","tarde") THEN 1 ELSE 0 END) as asistio'
+             SUM(CASE WHEN estado IN ('presente','tarde') THEN 1 ELSE 0 END) as asistio"
         )
         ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
         ->when($profesorCursoIds !== null, fn($q) => $q->whereIn('curso_id', $profesorCursoIds))
         ->when($filtroCurso, fn($q) => $q->where('curso_id', $filtroCurso))
         ->groupBy('estudiante_id')
-        ->havingRaw('total > 0 AND (asistio / total * 100) < 75')
         ->with('estudiante')
         ->get()
+        ->filter(fn($r) => $r->total > 0 && ($r->asistio / $r->total * 100) < 75)
         ->map(fn($r) => [
             'estudiante' => $r->estudiante,
-            'total'      => $r->total,
-            'asistio'    => $r->asistio,
+            'total'      => (int) $r->total,
+            'asistio'    => (int) $r->asistio,
             'porcentaje' => round($r->asistio / $r->total * 100, 1),
         ])
         ->sortBy('porcentaje')
@@ -306,7 +306,7 @@ class AsistenciaController extends Controller
         }
         $resumenCursos = $resumenCursosQuery->get()->map(function ($curso) use ($startDate, $endDate) {
             $stats = Asistencia::selectRaw(
-                'COUNT(*) as total, SUM(CASE WHEN estado IN ("presente","tarde") THEN 1 ELSE 0 END) as asistio'
+                "COUNT(*) as total, SUM(CASE WHEN estado IN ('presente','tarde') THEN 1 ELSE 0 END) as asistio"
             )
             ->where('curso_id', $curso->id)
             ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
