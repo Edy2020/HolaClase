@@ -16,23 +16,23 @@
             </p>
         </div>
         @if(auth()->user()->isAdmin())
-        <div class="header-actions" style="display: flex; gap: var(--spacing-sm);">
-            <button onclick="openImportModal()" class="btn btn-outline"
-                style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--info); color: var(--info); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
-                onmouseover="this.style.background='rgba(59, 130, 246, 0.1)';"
-                onmouseout="this.style.background='transparent';">
-                <i class="fas fa-file-csv"></i>
-                <span class="btn-text">Importar CSV</span>
-            </button>
+            <div class="header-actions" style="display: flex; gap: var(--spacing-sm);">
+                <button onclick="openImportModal()" class="btn btn-outline"
+                    style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--info); color: var(--info); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                    onmouseover="this.style.background='rgba(59, 130, 246, 0.1)';"
+                    onmouseout="this.style.background='transparent';">
+                    <i class="fas fa-file-csv"></i>
+                    <span class="btn-text">Importar CSV</span>
+                </button>
 
-            <a href="{{ route('courses.create') }}" class="btn btn-outline"
-                style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--gray-300); color: var(--gray-700); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
-                onmouseover="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'"
-                onmouseout="this.style.background='transparent'; this.style.color='var(--gray-700)'">
-                <i class="fas fa-plus"></i>
-                <span class="btn-text">Nuevo Curso</span>
-            </a>
-        </div>
+                <a href="{{ route('courses.create') }}" class="btn btn-outline"
+                    style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--gray-300); color: var(--gray-700); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                    onmouseover="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'"
+                    onmouseout="this.style.background='transparent'; this.style.color='var(--gray-700)'">
+                    <i class="fas fa-plus"></i>
+                    <span class="btn-text">Nuevo Curso</span>
+                </a>
+            </div>
         @endif
     </div>
 
@@ -189,7 +189,7 @@
 
     <div class="mobile-table" style="display: none;">
         <div class="mobile-table-container"
-            style="background: white; border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            style="background: white; border-radius: var(--radius-lg); overflow: hidden;">
             @forelse($cursos as $curso)
                 <div class="curso-item mobile-table-row"
                     style="border-bottom: 1px solid var(--gray-200); padding: var(--spacing-sm) var(--spacing-md); cursor: pointer; transition: background 0.2s;"
@@ -228,24 +228,24 @@
                         </div>
 
                         @if(auth()->user()->isAdmin())
-                        <div style="display: flex; gap: 4px; flex-shrink: 0;" onclick="event.stopPropagation();">
-                            <a href="{{ route('courses.edit', $curso->id) }}"
-                                style="width: 32px; height: 32px; border-radius: var(--radius-md); background: transparent; color: var(--gray-600); border: 1px solid var(--gray-300); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.75rem; transition: background 0.2s;"
-                                onmouseover="this.style.background='var(--gray-100)';"
-                                onmouseout="this.style.background='transparent';" title="Editar">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <form action="{{ route('courses.destroy', $curso->id) }}" method="POST" style="margin: 0;"
-                                onsubmit="return confirm('¿Está seguro de eliminar este curso?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    style="width: 32px; height: 32px; border-radius: var(--radius-md); background: transparent; color: var(--error); border: 1px solid var(--error); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem;"
-                                    title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
-                        </div>
+                            <div style="display: flex; gap: 4px; flex-shrink: 0;" onclick="event.stopPropagation();">
+                                <a href="{{ route('courses.edit', $curso->id) }}"
+                                    style="width: 32px; height: 32px; border-radius: var(--radius-md); background: transparent; color: var(--gray-600); border: 1px solid var(--gray-300); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 0.75rem; transition: background 0.2s;"
+                                    onmouseover="this.style.background='var(--gray-100)';"
+                                    onmouseout="this.style.background='transparent';" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('courses.destroy', $curso->id) }}" method="POST" style="margin: 0;"
+                                    onsubmit="return confirm('¿Está seguro de eliminar este curso?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        style="width: 32px; height: 32px; border-radius: var(--radius-md); background: transparent; color: var(--error); border: 1px solid var(--error); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem;"
+                                        title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -269,7 +269,7 @@
                     <th style="text-align: left;">Estudiantes</th>
                     <th style="text-align: left;">Asignaturas</th>
                     @if(auth()->user()->isAdmin())
-                    <th style="text-align: left;">Acciones</th>
+                        <th style="text-align: left;">Acciones</th>
                     @endif
                 </tr>
             </thead>
@@ -326,24 +326,24 @@
                             </div>
                         </td>
                         @if(auth()->user()->isAdmin())
-                        <td>
-                            <div style="display: flex; gap: var(--spacing-sm);" onclick="event.stopPropagation();">
-                                <a href="{{ route('courses.edit', $curso->id) }}" class="btn btn-ghost btn-sm"
-                                    title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('courses.destroy', $curso->id) }}" method="POST"
-                                    style="display: inline;"
-                                    onsubmit="return confirm('¿Está seguro de eliminar este curso?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-ghost btn-sm" style="color: var(--error);"
-                                        title="Eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+                            <td>
+                                <div style="display: flex; gap: var(--spacing-sm);" onclick="event.stopPropagation();">
+                                    <a href="{{ route('courses.edit', $curso->id) }}" class="btn btn-ghost btn-sm"
+                                        title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('courses.destroy', $curso->id) }}" method="POST"
+                                        style="display: inline;"
+                                        onsubmit="return confirm('¿Está seguro de eliminar este curso?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-ghost btn-sm" style="color: var(--error);"
+                                            title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
                         @endif
                     </tr>
                 @empty

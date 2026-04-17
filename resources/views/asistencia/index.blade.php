@@ -273,7 +273,7 @@
         <div class="card-body">
             @if($asistencias->count() > 0)
                 <div class="mobile-attendance-table" style="display: none;">
-                    <div class="mobile-table-container" style="background: white; border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div class="mobile-table-container" style="background: white; border-radius: var(--radius-lg); overflow: hidden;">
                         @foreach($asistencias as $asistencia)
                             <div class="asistencia-item mobile-table-row" 
                                 style="border-bottom: 1px solid var(--gray-200); padding: var(--spacing-sm) var(--spacing-md); transition: background 0.2s;"

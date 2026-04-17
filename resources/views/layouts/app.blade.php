@@ -29,6 +29,42 @@
             font-weight: 400;
             margin-top: 5px; /* Adjust slight vertical offset for cursive fonts */
         }
+
+        /* Modern Theme Toggle Switch */
+        .theme-toggle-track {
+            width: 34px; height: 18px; background: var(--gray-300, #cbd5e1); border-radius: 18px; position: relative; transition: background 0.3s ease;
+        }
+        .theme-toggle-thumb {
+            width: 14px; height: 14px; background: white; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .dark-mode .theme-toggle-track {
+            background: #84cc16; /* Brand Lime */
+        }
+        .dark-mode .theme-toggle-thumb {
+            transform: translateX(16px);
+        }
+
+        /* Modern Logout Button */
+        .logout-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary, #94a3b8);
+            padding: 6px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+        }
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444; /* Red color on hover */
+        }
+        .dark-mode .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.2); /* Slightly stronger bg in dark mode */
+        }
     </style>
 </head>
 
@@ -130,12 +166,9 @@
                                 </div>
                             </a>
                             <div style="display: flex; align-items: center; gap: 0.25rem; flex-shrink: 0; margin-left: 0.5rem;">
-                                <button onclick="toggleDarkMode(); return false;" style="background: none; border: none; cursor: pointer; color: var(--text-secondary, #6b7280); padding: 0.4rem; border-radius: 0.375rem;" title="Alternar tema">
-                                    <span class="theme-toggle-icon"><i class="fas fa-moon"></i></span>
-                                </button>
-                                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                                <form method="POST" action="{{ route('logout') }}" style="margin: 0; display: flex;">
                                     @csrf
-                                    <button type="submit" style="background: none; border: none; cursor: pointer; color: #ef4444; padding: 0.4rem; border-radius: 0.375rem;" title="Cerrar Sesión">
+                                    <button type="submit" class="logout-btn" title="Cerrar Sesión">
                                         <i class="fas fa-sign-out-alt"></i>
                                     </button>
                                 </form>
@@ -150,7 +183,7 @@
         <div class="mobile-sidebar-overlay" id="mobile-overlay" onclick="closeMobileSidebar()"></div>
 
         
-        <aside class="mobile-sidebar" id="mobile-sidebar">
+        <aside class="mobile-sidebar" id="mobile-sidebar" style="display: flex; flex-direction: column; height: 100%;">
             <div class="sidebar-header">
                 <a href="{{ route('dashboard') }}" class="sidebar-logo">
                     <div class="sidebar-logo-icon">
@@ -248,12 +281,9 @@
                                 </div>
                             </a>
                             <div style="display: flex; align-items: center; gap: 0.25rem; flex-shrink: 0; margin-left: 0.5rem;">
-                                <button onclick="toggleDarkMode(); return false;" style="background: none; border: none; cursor: pointer; color: var(--text-secondary, #6b7280); padding: 0.4rem; border-radius: 0.375rem;" title="Alternar tema">
-                                    <span class="theme-toggle-icon"><i class="fas fa-moon"></i></span>
-                                </button>
-                                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                                <form method="POST" action="{{ route('logout') }}" style="margin: 0; display: flex;">
                                     @csrf
-                                    <button type="submit" style="background: none; border: none; cursor: pointer; color: #ef4444; padding: 0.4rem; border-radius: 0.375rem;" title="Cerrar Sesión">
+                                    <button type="submit" class="logout-btn" title="Cerrar Sesión">
                                         <i class="fas fa-sign-out-alt"></i>
                                     </button>
                                 </form>
@@ -276,7 +306,15 @@
                 <h1 class="navbar-title">{{ $header ?? 'Dashboard' }}</h1>
             </div>
 
-            <div class="navbar-right">
+            <div class="navbar-right" style="display: flex; align-items: center; gap: var(--spacing-md); padding-right: var(--spacing-sm);">
+                <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                    <div class="theme-toggle-switch" onclick="toggleDarkMode();" style="cursor: pointer; display: flex; align-items: center;" title="Cambiar a Modo Oscuro/Claro">
+                        <div class="theme-toggle-track">
+                            <div class="theme-toggle-thumb"></div>
+                        </div>
+                    </div>
+                    <i class="fas fa-moon" style="color: var(--text-muted); font-size: 0.875rem;"></i>
+                </div>
             </div>
         </nav>
 
@@ -337,9 +375,7 @@
 
         // --- Dark Mode Logic ---
         function applyDarkModeUI(isDark) {
-            document.querySelectorAll('.theme-toggle-icon i').forEach(icon => {
-                icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-            });
+            // CSS handles the toggle switch animation automatically via the .dark-mode class
             document.querySelectorAll('.theme-toggle-text').forEach(text => {
                 text.textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
             });

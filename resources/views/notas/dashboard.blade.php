@@ -42,7 +42,7 @@
                     <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
                         <i class="fas fa-calendar-alt"></i>
                     </div>
-                    <select name="periodo" class="form-select" onchange="document.getElementById('filterForm').submit()"
+                    <select name="periodo" class="form-select" id="periodo_filter_main"
                         style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
                         onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
                         onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
@@ -59,7 +59,7 @@
                     <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
                         <i class="fas fa-layer-group"></i>
                     </div>
-                    <select name="nivel" class="form-select" onchange="document.getElementById('filterForm').submit()"
+                    <select name="nivel" class="form-select" id="nivel_filter"
                         style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
                         onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
                         onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
@@ -75,12 +75,12 @@
 
             @if($filtroPeriodo || $filtroNivel)
                 <div style="margin-top: var(--spacing-sm); display: flex; justify-content: flex-end;">
-                    <a href="{{ route('grades.dashboard') }}" class="btn btn-sm btn-outline"
+                    <button type="button" id="limpiarFiltrosBtn" class="btn btn-sm btn-outline"
                         style="background: var(--gray-100); border: 1px solid var(--gray-300); color: var(--gray-600); cursor: pointer; transition: all 0.2s;"
                         onmouseover="this.style.background='var(--gray-200)'; this.style.borderColor='var(--gray-400)'"
                         onmouseout="this.style.background='var(--gray-100)'; this.style.borderColor='var(--gray-300)'">
                         <i class="fas fa-times"></i> Limpiar Filtros
-                    </a>
+                    </button>
                 </div>
             @endif
         </form>
@@ -97,19 +97,19 @@
     <div id="section-general" class="system-tab-section active-section">
         <!-- General Statistics -->
         <div class="grid grid-cols-4 mb-lg" style="gap: var(--spacing-md);">
-            <div class="card" style="padding: 12px; text-align: center; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); background: var(--bg-card);">
+            <div class="card" style="padding: 12px; text-align: center; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-card);">
                 <div style="font-size: 1.5rem; font-weight: 800; color: #3b82f6; line-height: 1;">{{ $totalEstudiantes }}</div>
                 <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-top: 4px;">Total Estudiantes</div>
             </div>
-            <div class="card" style="padding: 12px; text-align: center; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); background: var(--bg-card);">
+            <div class="card" style="padding: 12px; text-align: center; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-card);">
                 <div style="font-size: 1.5rem; font-weight: 800; color: #10b981; line-height: 1;">{{ $totalNotas }}</div>
                 <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-top: 4px;">Notas Registradas</div>
             </div>
-            <div class="card" style="padding: 12px; text-align: center; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); background: var(--bg-card);">
+            <div class="card" style="padding: 12px; text-align: center; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-card);">
                 <div style="font-size: 1.5rem; font-weight: 800; color: #84cc16; line-height: 1;">{{ $promedioGeneral }}</div>
                 <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-top: 4px;">Promedio General</div>
             </div>
-            <div class="card" style="padding: 12px; text-align: center; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); background: var(--bg-card);">
+            <div class="card" style="padding: 12px; text-align: center; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-card);">
                 <div style="font-size: 1.5rem; font-weight: 800; color: {{ $porcentajeAprobacion >= 60 ? 'var(--success)' : 'var(--warning)' }}; line-height: 1;">{{ $porcentajeAprobacion }}%</div>
                 <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-top: 4px;">Aprobación</div>
             </div>
@@ -408,8 +408,8 @@
 
     <script>
         // Chart.js - Bar Chart for Course Averages
-        const ctxPromedios = document.getElementById('chartPromedios').getContext('2d');
-        const chartPromedios = new Chart(ctxPromedios, {
+        window.ctxPromedios = document.getElementById('chartPromedios').getContext('2d');
+        window.chartPromedios = new Chart(window.ctxPromedios, {
             type: 'bar',
             data: {
                 labels: {!! json_encode($chartCursos) !!},
@@ -449,8 +449,8 @@
         });
 
         // Chart.js - Doughnut Chart for Pass/Fail Distribution
-        const ctxDistribucion = document.getElementById('chartDistribucion').getContext('2d');
-        const chartDistribucion = new Chart(ctxDistribucion, {
+        window.ctxDistribucion = document.getElementById('chartDistribucion').getContext('2d');
+        window.chartDistribucion = new Chart(window.ctxDistribucion, {
             type: 'doughnut',
             data: {
                 labels: ['Aprobados', 'Reprobados'],
@@ -489,78 +489,7 @@
             }
         });
 
-        // Sortable Table Functionality
-        let sortDirection = {};
-        const table = document.getElementById('cursosTable');
-        const headers = table.querySelectorAll('th.sortable');
-
-        headers.forEach(header => {
-            header.addEventListener('click', function() {
-                const column = this.getAttribute('data-column');
-                const tbody = table.querySelector('tbody');
-                const rows = Array.from(tbody.querySelectorAll('tr')).filter(row => !row.querySelector('td[colspan]'));
-
-                // Toggle sort direction
-                if (!sortDirection[column]) {
-                    sortDirection[column] = 'asc';
-                } else {
-                    sortDirection[column] = sortDirection[column] === 'asc' ? 'desc' : 'asc';
-                }
-
-                // Sort rows
-                rows.sort((a, b) => {
-                    const aValue = a.querySelector(`td[data-value]`)?.getAttribute('data-value') || '';
-                    const bValue = b.querySelector(`td[data-value]`)?.getAttribute('data-value') || '';
-                    
-                    // Find the correct cell index
-                    const columnIndex = Array.from(header.parentElement.children).indexOf(header);
-                    const aCellValue = a.children[columnIndex]?.getAttribute('data-value') || '';
-                    const bCellValue = b.children[columnIndex]?.getAttribute('data-value') || '';
-
-                    let comparison = 0;
-                    
-                    // Try to parse as number
-                    const aNum = parseFloat(aCellValue);
-                    const bNum = parseFloat(bCellValue);
-                    
-                    if (!isNaN(aNum) && !isNaN(bNum)) {
-                        comparison = aNum - bNum;
-                    } else {
-                        comparison = aCellValue.localeCompare(bCellValue);
-                    }
-
-                    return sortDirection[column] === 'asc' ? comparison : -comparison;
-                });
-
-                // Clear tbody and append sorted rows
-                tbody.innerHTML = '';
-                rows.forEach(row => tbody.appendChild(row));
-
-                // Update sort icons
-                headers.forEach(h => {
-                    const icon = h.querySelector('.sort-icon');
-                    if (h === header) {
-                        icon.className = sortDirection[column] === 'asc' ? 'fas fa-sort-up sort-icon' : 'fas fa-sort-down sort-icon';
-                    } else {
-                        icon.className = 'fas fa-sort sort-icon';
-                    }
-                });
-
-                // Save sort preference
-                localStorage.setItem('tableSort', JSON.stringify({column, direction: sortDirection[column]}));
-            });
-        });
-
-        // Load saved sort preference
-        const savedSort = localStorage.getItem('tableSort');
-        if (savedSort) {
-            const {column, direction} = JSON.parse(savedSort);
-            const header = table.querySelector(`th[data-column="${column}"]`);
-            if (header) {
-                sortDirection[column] = direction === 'asc' ? 'desc' : 'asc'; // Toggle will flip it back
-                header.click();
-            }
-        }
+        // Deprecated raw binding, moved to bindSortableTable()
 
         // --- System Tabs Logic ---
         function switchSystemTab(tabId) {
@@ -582,5 +511,128 @@
                 targetSection.classList.add('active-section');
             }
         }
+
+        // --- Client-side REAL TIME Filtering via AJAX DOM Replacement ---
+        function bindAjaxFilters() {
+            const form = document.getElementById('filterForm');
+            if (!form) return;
+
+            const selects = form.querySelectorAll('select');
+            selects.forEach(select => {
+                select.addEventListener('change', function() {
+                    fetchDashboardData();
+                });
+            });
+
+            const clearBtn = document.getElementById('limpiarFiltrosBtn');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function() {
+                    selects.forEach(s => s.value = '');
+                    fetchDashboardData();
+                });
+            }
+        }
+
+        function fetchDashboardData() {
+            const form = document.getElementById('filterForm');
+            const url = new URL(form.action);
+            url.search = new URLSearchParams(new FormData(form)).toString();
+
+            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(res => res.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+
+                    // Replace main sections
+                    const sections = ['section-general', 'section-rendimiento', 'section-detalles'];
+                    sections.forEach(id => {
+                        const newSection = doc.getElementById(id);
+                        const oldSection = document.getElementById(id);
+                        if(newSection && oldSection) {
+                            oldSection.innerHTML = newSection.innerHTML;
+                        }
+                    });
+                    
+                    // Replace Limpiar button visibility dynamically
+                    const newClearBtn = doc.getElementById('limpiarFiltrosBtn');
+                    const oldClearBtn = document.getElementById('limpiarFiltrosBtn');
+                    if(newClearBtn && !oldClearBtn) {
+                        form.querySelector('.grid').insertAdjacentHTML('afterend', `
+                        <div style="margin-top: var(--spacing-sm); display: flex; justify-content: flex-end;">
+                            ${newClearBtn.outerHTML}
+                        </div>`);
+                        bindAjaxFilters(); // rebind since we added new node
+                    } else if(!newClearBtn && oldClearBtn) {
+                        oldClearBtn.parentElement.remove();
+                    }
+
+                    // Destroy old charts to prevent overlapping hover logic
+                    if (window.chartPromedios instanceof Chart) window.chartPromedios.destroy();
+                    if (window.chartDistribucion instanceof Chart) window.chartDistribucion.destroy();
+
+                    // Re-run chart scripts
+                    const scripts = doc.querySelectorAll('script');
+                    scripts.forEach(script => {
+                        if (script.innerText.includes('new Chart(')) {
+                            // Convert script block to executable code without causing redeclarations
+                            let code = script.innerText.replace(/const\s+(ctxPromedios|chartPromedios|ctxDistribucion|chartDistribucion)/g, 'window.$1');
+                            try { eval(code); } catch(e) {}
+                        }
+                    });
+
+                    // Re-bind sortable table logic
+                    bindSortableTable();
+                });
+        }
+
+        function bindSortableTable() {
+            let sortDirection = {};
+            const table = document.getElementById('cursosTable');
+            if(!table) return;
+            const headers = table.querySelectorAll('th.sortable');
+
+            headers.forEach(header => {
+                // remove existing listener to avoid duplicates
+                const newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
+
+                newHeader.addEventListener('click', function() {
+                    const column = this.getAttribute('data-column');
+                    const tbody = table.querySelector('tbody');
+                    const rows = Array.from(tbody.querySelectorAll('tr')).filter(row => !row.querySelector('td[colspan]'));
+
+                    if (!sortDirection[column]) sortDirection[column] = 'asc';
+                    else sortDirection[column] = sortDirection[column] === 'asc' ? 'desc' : 'asc';
+
+                    rows.sort((a, b) => {
+                        const columnIndex = Array.from(newHeader.parentElement.children).indexOf(newHeader);
+                        const aCellValue = a.children[columnIndex]?.getAttribute('data-value') || '';
+                        const bCellValue = b.children[columnIndex]?.getAttribute('data-value') || '';
+                        let comparison = 0;
+                        const aNum = parseFloat(aCellValue);
+                        const bNum = parseFloat(bCellValue);
+                        if (!isNaN(aNum) && !isNaN(bNum)) comparison = aNum - bNum;
+                        else comparison = aCellValue.localeCompare(bCellValue);
+                        return sortDirection[column] === 'asc' ? comparison : -comparison;
+                    });
+
+                    tbody.innerHTML = '';
+                    rows.forEach(row => tbody.appendChild(row));
+
+                    table.querySelectorAll('th.sortable').forEach(h => {
+                        const icon = h.querySelector('.sort-icon');
+                        if (h === newHeader) icon.className = sortDirection[column] === 'asc' ? 'fas fa-sort-up sort-icon' : 'fas fa-sort-down sort-icon';
+                        else icon.className = 'fas fa-sort sort-icon';
+                    });
+                });
+            });
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            bindAjaxFilters();
+            bindSortableTable();
+        });
     </script>
 </x-app-layout>

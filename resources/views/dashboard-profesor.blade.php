@@ -53,7 +53,7 @@
             </div>
         </div>
 
-        <div style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap; margin-bottom: var(--spacing-xl);">
+        <div class="desktop-quick-actions" style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap; margin-bottom: var(--spacing-xl);">
             <a href="{{ route('attendance.create') }}" class="action-pill" style="text-decoration: none;">
                 <i class="fas fa-clipboard-check"></i> Tomar Asistencia
             </a>

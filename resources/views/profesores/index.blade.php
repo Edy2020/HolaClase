@@ -132,7 +132,7 @@
 
     <!-- Mobile Table View (hidden on desktop) -->
     <div class="mobile-table" style="display: none;">
-        <div class="mobile-table-container" style="background: white; border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+        <div class="mobile-table-container" style="background: white; border-radius: var(--radius-lg); overflow: hidden;">
             @forelse($profesores as $profesor)
                 <div class="profesor-item mobile-table-row" 
                     style="border-bottom: 1px solid var(--gray-200); padding: var(--spacing-sm) var(--spacing-md); cursor: pointer; transition: background 0.2s;"

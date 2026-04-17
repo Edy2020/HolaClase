@@ -82,14 +82,6 @@
                 </a>
             @endif
 
-            @if (Route::has('register'))
-                <div style="text-align: center; padding-top: var(--spacing-md); border-top: 1px solid #334155; color: #cbd5e1; font-size: 0.875rem;">
-                    ¿No tienes cuenta? 
-                    <a href="{{ route('register') }}" style="color: #84cc16; text-decoration: none; font-weight: 600;">
-                        Regístrate aquí
-                    </a>
-                </div>
-            @endif
         </div>
     </form>
 

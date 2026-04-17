@@ -19,11 +19,6 @@
             <div id="tab-tasks" onclick="switchDashboardTab('tasks')" class="dash-tab">
                 Próximas Tareas
             </div>
-            <!--
-            <div id="tab-saved" onclick="switchDashboardTab('saved')" class="dash-tab">
-                Guardado
-            </div>
-            -->
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-md);">
@@ -212,15 +207,6 @@
                 @endif
             </div>
         </div>
-
-        <!--
-        <div id="section-saved" class="tab-section">
-            <div style="background: var(--bg-card, white); border: 1px solid var(--gray-200); border-radius: 8px; padding: var(--spacing-2xl); text-align: center; color: var(--gray-500);">
-                <i class="far fa-bookmark" style="font-size: 2rem; margin-bottom: var(--spacing-md); color: var(--gray-300);"></i>
-                <p style="margin: 0;">No hay elementos guardados aún.</p>
-            </div>
-        </div>
-        -->
     </div>
 
     <script>

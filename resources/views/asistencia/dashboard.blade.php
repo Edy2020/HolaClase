@@ -36,12 +36,12 @@
 
     <!-- Filters -->
     <div class="mb-xl filters-card">
-        <form method="GET" action="{{ route('attendance.dashboard') }}">
+                        <form method="GET" action="{{ route('attendance.dashboard') }}" id="filterForm">
             <div style="display: flex; gap: var(--spacing-md); align-items: center; flex-wrap: wrap;">
                 <div>
-                    <div style="display: flex; gap: var(--spacing-xs);">
+                    <div style="display: flex; gap: var(--spacing-xs);" class="periodo-buttons">
                         @foreach($periodos as $key => $label)
-                            <button type="submit" name="periodo" value="{{ $key }}"
+                            <button type="button" data-periodo="{{ $key }}"
                                 style="padding: 6px 14px; border-radius: var(--radius-lg); font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid {{ $filtroPeriodo === $key ? '#84cc16' : 'var(--gray-300)' }}; background: {{ $filtroPeriodo === $key ? '#84cc16' : 'transparent' }}; color: {{ $filtroPeriodo === $key ? 'white' : 'var(--gray-600)' }}; transition: all 0.2s;">
                                 {{ $label }}
                             </button>
@@ -54,7 +54,7 @@
                         <div style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 1rem; pointer-events: none; z-index: 1;">
                             <i class="fas fa-graduation-cap"></i>
                         </div>
-                        <select name="curso_id" class="form-select" onchange="this.form.submit()"
+                        <select name="curso_id" class="form-select" id="curso_filter"
                             style="padding-left: 40px; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); transition: all 0.2s; font-size: 0.9375rem; cursor: pointer;"
                             onfocus="this.style.borderColor='#84cc16'; this.style.boxShadow='0 0 0 3px rgba(132, 204, 22, 0.1)'"
                             onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none'">
@@ -69,15 +69,15 @@
                 </div>
                 
                 @if($filtroCurso)
-                    <a href="{{ route('attendance.dashboard', ['periodo' => $filtroPeriodo]) }}" class="btn btn-outline" 
+                    <button type="button" id="limpiarFiltrosBtn" class="btn btn-outline" 
                         style="height: 48px; display: inline-flex; align-items: center; white-space: nowrap; border-radius: var(--radius-lg); background: var(--gray-100); border: 1px solid var(--gray-300); color: var(--gray-600); cursor: pointer; transition: all 0.2s;"
                         onmouseover="this.style.background='var(--gray-200)'; this.style.borderColor='var(--gray-400)'"
                         onmouseout="this.style.background='var(--gray-100)'; this.style.borderColor='var(--gray-300)'">
                         <i class="fas fa-times"></i> Limpiar
-                    </a>
+                    </button>
                 @endif
                 <!-- Hidden to preserve periodo when changing curso -->
-                <input type="hidden" name="periodo" value="{{ $filtroPeriodo }}">
+                <input type="hidden" name="periodo" id="periodo_hidden" value="{{ $filtroPeriodo }}">
             </div>
         </form>
     </div>
@@ -342,13 +342,97 @@
             document.getElementById('tab-' + tabId).classList.add('active-tab');
             document.getElementById('section-' + tabId).classList.add('active-section');
         }
+
+        // --- Client-side REAL TIME Filtering via AJAX DOM Replacement ---
+        function bindAjaxFilters() {
+            const form = document.getElementById('filterForm');
+            if (!form) return;
+
+            const cursoSelect = document.getElementById('curso_filter');
+            if(cursoSelect) {
+                cursoSelect.addEventListener('change', fetchDashboardData);
+            }
+
+            const periodoBtns = form.querySelectorAll('.periodo-buttons button[data-periodo]');
+            periodoBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    form.querySelector('input[name="periodo"]').value = this.dataset.periodo;
+                    fetchDashboardData();
+                });
+            });
+
+            const clearBtn = document.getElementById('limpiarFiltrosBtn');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function() {
+                    const s = document.getElementById('curso_filter');
+                    if(s) s.value = '';
+                    fetchDashboardData();
+                });
+            }
+        }
+
+        function fetchDashboardData() {
+            const form = document.getElementById('filterForm');
+            const url = new URL(form.action);
+            url.search = new URLSearchParams(new FormData(form)).toString();
+
+            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(res => res.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+
+                    // Update filters-card visual state for buttons
+                    const newFiltersCard = doc.querySelector('.filters-card');
+                    const oldFiltersCard = document.querySelector('.filters-card');
+                    if(newFiltersCard && oldFiltersCard) {
+                        oldFiltersCard.innerHTML = newFiltersCard.innerHTML;
+                        bindAjaxFilters(); // rebind since we replaced HTML
+                    }
+                    
+                    // Update header title part
+                    const newHeader = doc.querySelector('.page-header p');
+                    const oldHeader = document.querySelector('.page-header p');
+                    if (newHeader && oldHeader) oldHeader.innerHTML = newHeader.innerHTML;
+
+                    // Replace main sections
+                    const sections = ['section-general', 'section-tendencias', 'section-detalles'];
+                    sections.forEach(id => {
+                        const newSection = doc.getElementById(id);
+                        const oldSection = document.getElementById(id);
+                        if(newSection && oldSection) {
+                            oldSection.innerHTML = newSection.innerHTML;
+                        }
+                    });
+
+                    // Destroy old charts to prevent overlapping hover logic
+                    if (window.trendChart instanceof Chart) window.trendChart.destroy();
+                    if (window.donutChart instanceof Chart) window.donutChart.destroy();
+
+                    // Re-run chart scripts
+                    const scripts = doc.querySelectorAll('script');
+                    scripts.forEach(script => {
+                        if (script.innerText.includes('new Chart(')) {
+                            // Convert script block bindings to window bindings
+                            let code = script.innerText
+                                .replace(/const\s+trendCtx/g, 'window.trendCtx')
+                                .replace(/new\s+Chart\(trendCtx/g, 'window.trendChart = new Chart(window.trendCtx')
+                                .replace(/const\s+donutCtx/g, 'window.donutCtx')
+                                .replace(/new\s+Chart\(donutCtx/g, 'window.donutChart = new Chart(window.donutCtx');
+                            try { eval(code); } catch(e) { console.error('chart eval err', e)}
+                        }
+                    });
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', bindAjaxFilters);
     </script>
     <script>
         // Trend line chart
         @if(count($chartDias) > 0)
-        const trendCtx = document.getElementById('trendChart');
-        if (trendCtx) {
-            new Chart(trendCtx, {
+        window.trendCtx = document.getElementById('trendChart');
+        if (window.trendCtx) {
+            window.trendChart = new Chart(window.trendCtx, {
                 type: 'line',
                 data: {
                     labels: {!! json_encode($chartDias) !!},
@@ -397,9 +481,9 @@
 
         // Donut chart
         @if($totalRegistros > 0)
-        const donutCtx = document.getElementById('donutChart');
-        if (donutCtx) {
-            new Chart(donutCtx, {
+        window.donutCtx = document.getElementById('donutChart');
+        if (window.donutCtx) {
+            window.donutChart = new Chart(window.donutCtx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Presente', 'Ausente', 'Tardanza', 'Justificado'],
