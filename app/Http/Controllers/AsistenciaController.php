@@ -270,8 +270,8 @@ class AsistenciaController extends Controller
         ->whereBetween('fecha', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
         ->when($profesorCursoIds !== null, fn($q) => $q->whereIn('curso_id', $profesorCursoIds))
         ->when($filtroCurso, fn($q) => $q->where('curso_id', $filtroCurso))
-        ->groupBy('dia')
-        ->orderBy('dia')
+        ->groupBy(DB::raw('DATE(fecha)'))
+        ->orderBy(DB::raw('DATE(fecha)'))
         ->get();
 
         $chartDias      = $tendenciaDias->pluck('dia')->map(fn($d) => Carbon::parse($d)->format('d/m'))->toArray();
@@ -288,7 +288,7 @@ class AsistenciaController extends Controller
         ->when($profesorCursoIds !== null, fn($q) => $q->whereIn('curso_id', $profesorCursoIds))
         ->when($filtroCurso, fn($q) => $q->where('curso_id', $filtroCurso))
         ->groupBy('estudiante_id')
-        ->havingRaw('total > 0 AND (asistio / total * 100) < 75')
+        ->havingRaw("COUNT(*) > 0 AND (SUM(CASE WHEN estado IN ('presente','tarde') THEN 1 ELSE 0 END)::float / COUNT(*) * 100) < 75")
         ->with('estudiante')
         ->get()
         ->map(fn($r) => [
