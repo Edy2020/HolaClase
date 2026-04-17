@@ -61,6 +61,12 @@
     <div class="system-tabs-container">
         <div onclick="switchSystemTab('cursos')" class="system-tab active-tab" id="tab-cursos">Cursos</div>
         <div onclick="switchSystemTab('notas')" class="system-tab" id="tab-notas">Notas</div>
+        <div onclick="switchSystemTab('anotaciones')" class="system-tab" id="tab-anotaciones">
+            Anotaciones
+            @if($estudiante->anotaciones->count() > 0)
+                <span style="background: var(--gray-200); color: var(--gray-600); font-size: 0.6875rem; font-weight: 700; padding: 1px 6px; border-radius: 9999px; margin-left: 4px;">{{ $estudiante->anotaciones->count() }}</span>
+            @endif
+        </div>
         <div onclick="switchSystemTab('apoderado')" class="system-tab" id="tab-apoderado">Apoderado</div>
         <div onclick="switchSystemTab('info')" class="system-tab" id="tab-info">Información</div>
         <div onclick="switchSystemTab('documentos')" class="system-tab" id="tab-documentos">Documentos</div>
@@ -124,6 +130,92 @@
                 <div style="text-align: center; padding: var(--spacing-2xl); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
                     <i class="fas fa-book" style="font-size: 2.5rem; color: var(--text-muted); margin-bottom: var(--spacing-md); opacity: 0.6;"></i>
                     <p style="color: var(--text-color); margin: 0; font-weight: 500;">No hay asignaturas asignadas</p>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <div id="section-anotaciones" class="system-tab-section">
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: var(--spacing-sm);">
+                <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-color); margin: 0; display: flex; align-items: center; gap: var(--spacing-sm);">
+                    <i class="fas fa-clipboard-list" style="color: var(--text-muted);"></i> Hoja de Vida
+                </h3>
+                <button onclick="openAnotacionModal()" style="display: flex; align-items: center; gap: var(--spacing-xs); background: #84cc16; color: white; border: none; border-radius: var(--radius-md); padding: 0.5rem 1rem; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#65a30d'" onmouseout="this.style.background='#84cc16'">
+                    <i class="fas fa-plus" style="font-size: 0.75rem;"></i> Nueva Anotación
+                </button>
+            </div>
+
+            @if($estudiante->anotaciones->count() > 0)
+                <div style="display: flex; gap: var(--spacing-xs); margin-bottom: var(--spacing-lg); flex-wrap: wrap;">
+                    <button onclick="filterAnotaciones('todas')" class="anotacion-filter active" data-filter="todas" style="padding: 0.35rem 0.875rem; border-radius: 9999px; border: 1px solid var(--text-color); background: var(--text-color); color: var(--bg-card); font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        Todas ({{ $estudiante->anotaciones->count() }})
+                    </button>
+                    <button onclick="filterAnotaciones('positiva')" class="anotacion-filter" data-filter="positiva" style="padding: 0.35rem 0.875rem; border-radius: 9999px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        <span style="color: var(--success);">●</span> Positivas ({{ $estudiante->anotaciones->where('tipo', 'positiva')->count() }})
+                    </button>
+                    <button onclick="filterAnotaciones('negativa')" class="anotacion-filter" data-filter="negativa" style="padding: 0.35rem 0.875rem; border-radius: 9999px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        <span style="color: var(--error);">●</span> Negativas ({{ $estudiante->anotaciones->where('tipo', 'negativa')->count() }})
+                    </button>
+                    <button onclick="filterAnotaciones('neutra')" class="anotacion-filter" data-filter="neutra" style="padding: 0.35rem 0.875rem; border-radius: 9999px; border: 1px solid var(--border-color); background: transparent; color: var(--text-color); font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        <span style="color: var(--info);">●</span> Neutras ({{ $estudiante->anotaciones->where('tipo', 'neutra')->count() }})
+                    </button>
+                </div>
+
+                <div id="anotacionesTimeline" style="display: flex; flex-direction: column; gap: 0; position: relative;">
+                    @foreach($estudiante->anotaciones->sortByDesc('fecha') as $anotacion)
+                        <div class="anotacion-item" data-tipo="{{ $anotacion->tipo }}" style="display: flex; gap: var(--spacing-md); padding: var(--spacing-md) 0; {{ !$loop->last ? 'border-bottom: 1px solid var(--border-color);' : '' }}">
+                            <div style="flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                                <div style="width: 12px; height: 12px; border-radius: 50%; margin-top: 4px;
+                                    {{ $anotacion->tipo === 'positiva' ? 'background: var(--success);' : '' }}
+                                    {{ $anotacion->tipo === 'negativa' ? 'background: var(--error);' : '' }}
+                                    {{ $anotacion->tipo === 'neutra' ? 'background: var(--info);' : '' }}
+                                "></div>
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--spacing-sm); flex-wrap: wrap;">
+                                    <div style="flex: 1; min-width: 0;">
+                                        <div style="display: flex; align-items: center; gap: var(--spacing-sm); flex-wrap: wrap; margin-bottom: 4px;">
+                                            <span style="font-weight: 700; color: var(--text-color); font-size: 0.9375rem;">{{ $anotacion->titulo }}</span>
+                                            <span style="display: inline-block; padding: 1px 8px; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.03em; border-radius: 9999px;
+                                                {{ $anotacion->tipo === 'positiva' ? 'color: var(--success); background: rgba(34, 197, 94, 0.1);' : '' }}
+                                                {{ $anotacion->tipo === 'negativa' ? 'color: var(--error); background: rgba(239, 68, 68, 0.1);' : '' }}
+                                                {{ $anotacion->tipo === 'neutra' ? 'color: var(--info); background: rgba(59, 130, 246, 0.1);' : '' }}
+                                            ">{{ ucfirst($anotacion->tipo) }}</span>
+                                        </div>
+                                        @if($anotacion->descripcion)
+                                            <p style="color: var(--text-muted); font-size: 0.875rem; margin: 0 0 var(--spacing-sm) 0; line-height: 1.5; word-wrap: break-word;">{{ $anotacion->descripcion }}</p>
+                                        @endif
+                                        <div style="display: flex; align-items: center; gap: var(--spacing-md); flex-wrap: wrap;">
+                                            <span style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+                                                <i class="fas fa-calendar-alt" style="font-size: 0.625rem;"></i>
+                                                {{ $anotacion->fecha->format('d/m/Y') }}
+                                            </span>
+                                            @if($anotacion->user)
+                                                <span style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+                                                    <i class="fas fa-user" style="font-size: 0.625rem;"></i>
+                                                    {{ $anotacion->user->name }}
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <form action="{{ route('students.anotaciones.destroy', [$estudiante->id, $anotacion->id]) }}" method="POST" style="margin: 0; flex-shrink: 0;" onsubmit="return confirm('¿Eliminar esta anotación?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" style="width: 30px; height: 30px; border-radius: var(--radius-md); background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.6875rem; transition: all 0.2s;" onmouseover="this.style.color='var(--error)'; this.style.borderColor='var(--error)'" onmouseout="this.style.color='var(--text-muted)'; this.style.borderColor='var(--border-color)'" title="Eliminar anotación">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div style="text-align: center; padding: var(--spacing-2xl); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+                    <i class="fas fa-clipboard-list" style="font-size: 2.5rem; color: var(--text-muted); margin-bottom: var(--spacing-md); opacity: 0.6;"></i>
+                    <p style="color: var(--text-color); margin: 0 0 4px 0; font-weight: 500;">Sin anotaciones registradas</p>
+                    <p style="color: var(--text-muted); margin: 0; font-size: 0.875rem;">Haz clic en "Nueva Anotación" para comenzar</p>
                 </div>
             @endif
         </div>
@@ -220,6 +312,58 @@
         </div>
     </div>
 
+    <div id="anotacionModal" class="filters-modal" onclick="closeAnotacionModal()">
+        <div class="filters-modal-content" onclick="event.stopPropagation()">
+            <div class="filters-modal-header">
+                <h3 style="margin: 0; font-size: 1.125rem; font-weight: 600; color: var(--text-color);">
+                    <i class="fas fa-clipboard-list" style="color: var(--text-muted); margin-right: var(--spacing-sm);"></i>
+                    Nueva Anotación
+                </h3>
+                <button onclick="closeAnotacionModal()" class="filters-modal-close" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form action="{{ route('students.anotaciones.store', $estudiante->id) }}" method="POST">
+                @csrf
+                <div class="filters-modal-body">
+                    <div class="form-group">
+                        <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--text-muted); margin-bottom: var(--spacing-xs); display: block;">Tipo de Anotación</label>
+                        <div style="display: flex; gap: var(--spacing-sm);">
+                            <label style="flex: 1; display: flex; align-items: center; gap: var(--spacing-xs); padding: 0.625rem; border: 2px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; font-size: 0.875rem; font-weight: 600;" id="tipoLabel-positiva" onclick="selectTipo('positiva')">
+                                <input type="radio" name="tipo" value="positiva" style="display: none;">
+                                <span style="color: var(--success);">●</span> Positiva
+                            </label>
+                            <label style="flex: 1; display: flex; align-items: center; gap: var(--spacing-xs); padding: 0.625rem; border: 2px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; font-size: 0.875rem; font-weight: 600;" id="tipoLabel-negativa" onclick="selectTipo('negativa')">
+                                <input type="radio" name="tipo" value="negativa" style="display: none;">
+                                <span style="color: var(--error);">●</span> Negativa
+                            </label>
+                            <label style="flex: 1; display: flex; align-items: center; gap: var(--spacing-xs); padding: 0.625rem; border: 2px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; font-size: 0.875rem; font-weight: 600;" id="tipoLabel-neutra" onclick="selectTipo('neutra')">
+                                <input type="radio" name="tipo" value="neutra" style="display: none;">
+                                <span style="color: var(--info);">●</span> Neutra
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--text-muted); margin-bottom: var(--spacing-xs); display: block;">Título</label>
+                        <input type="text" name="titulo" class="form-input" placeholder="Ej: Destacado rendimiento, Falta disciplinaria..." required style="border: 2px solid var(--border-color); border-radius: var(--radius-lg); font-size: 0.9375rem;" onfocus="this.style.borderColor='#84cc16'" onblur="this.style.borderColor='var(--border-color)'">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--text-muted); margin-bottom: var(--spacing-xs); display: block;">Descripción</label>
+                        <textarea name="descripcion" class="form-input" rows="3" placeholder="Detalle de la anotación..." style="border: 2px solid var(--border-color); border-radius: var(--radius-lg); font-size: 0.9375rem; resize: vertical;" onfocus="this.style.borderColor='#84cc16'" onblur="this.style.borderColor='var(--border-color)'"></textarea>
+                    </div>
+                    <div class="form-group mb-0">
+                        <label class="form-label" style="font-size: 0.875rem; font-weight: 600; color: var(--text-muted); margin-bottom: var(--spacing-xs); display: block;">Fecha</label>
+                        <input type="date" name="fecha" class="form-input" required value="{{ date('Y-m-d') }}" style="border: 2px solid var(--border-color); border-radius: var(--radius-lg); font-size: 0.9375rem;" onfocus="this.style.borderColor='#84cc16'" onblur="this.style.borderColor='var(--border-color)'">
+                    </div>
+                </div>
+                <div class="filters-modal-footer">
+                    <button type="button" onclick="closeAnotacionModal()" class="btn btn-outline" style="flex: 1; border: 1px solid var(--border-color); background: transparent; color: var(--text-color);">Cancelar</button>
+                    <button type="submit" style="flex: 1; background: #84cc16; color: white; border: none; border-radius: var(--radius-md); font-weight: 600; padding: 0.625rem; transition: background 0.2s; cursor: pointer;" onmouseover="this.style.background='#65a30d'" onmouseout="this.style.background='#84cc16'">Guardar Anotación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         function switchSystemTab(name) {
             document.querySelectorAll('.system-tab').forEach(t => t.classList.remove('active-tab'));
@@ -243,6 +387,63 @@
             .catch(() => select.value = '{{ $estudiante->estado }}')
             .finally(() => select.disabled = false);
         });
+
+        function openAnotacionModal() {
+            const modal = document.getElementById('anotacionModal');
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeAnotacionModal() {
+            const modal = document.getElementById('anotacionModal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function selectTipo(tipo) {
+            ['positiva', 'negativa', 'neutra'].forEach(t => {
+                const label = document.getElementById('tipoLabel-' + t);
+                if (label) {
+                    label.style.borderColor = t === tipo ? '#84cc16' : 'var(--border-color)';
+                    label.style.background = t === tipo ? 'rgba(132, 204, 22, 0.05)' : 'transparent';
+                }
+                const radio = label.querySelector('input[type=radio]');
+                if (radio) radio.checked = (t === tipo);
+            });
+        }
+
+        function filterAnotaciones(tipo) {
+            const items = document.querySelectorAll('.anotacion-item');
+            const buttons = document.querySelectorAll('.anotacion-filter');
+
+            buttons.forEach(btn => {
+                if (btn.dataset.filter === tipo) {
+                    btn.style.background = 'var(--text-color)';
+                    btn.style.color = 'var(--bg-card)';
+                    btn.style.borderColor = 'var(--text-color)';
+                } else {
+                    btn.style.background = 'transparent';
+                    btn.style.color = 'var(--text-color)';
+                    btn.style.borderColor = 'var(--border-color)';
+                }
+            });
+
+            items.forEach(item => {
+                if (tipo === 'todas' || item.dataset.tipo === tipo) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeAnotacionModal();
+        });
     </script>
 
     <style>
@@ -252,5 +453,17 @@
             .page-header { flex-wrap: nowrap !important; align-items: flex-start !important; }
             .page-header > div:last-child { flex-wrap: wrap !important; }
         }
+
+        @media (min-width: 769px) {
+            #anotacionModal.active {
+                display: flex !important;
+                align-items: center;
+            }
+            #anotacionModal .filters-modal-content {
+                max-width: 540px;
+                border-radius: var(--radius-xl);
+            }
+        }
     </style>
 </x-app-layout>
+

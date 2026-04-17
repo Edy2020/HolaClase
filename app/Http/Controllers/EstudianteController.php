@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Estudiante;
 use App\Models\Apoderado;
+use App\Models\AnotacionEstudiante;
 use App\Models\Curso;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EstudianteController extends Controller
 {
@@ -193,6 +195,7 @@ class EstudianteController extends Controller
             'cursos.asignaturas',
             'documentos',
             'notas.asignatura',
+            'anotaciones.user',
         ])->findOrFail($id);
 
         $asignaturas = $estudiante->cursos->flatMap->asignaturas->unique('id');
@@ -340,6 +343,37 @@ class EstudianteController extends Controller
             'message' => 'Estado actualizado exitosamente',
             'estado' => $estudiante->estado,
         ]);
+    }
+
+    public function storeAnotacion(Request $request, $id)
+    {
+        $estudiante = Estudiante::findOrFail($id);
+
+        $validated = $request->validate([
+            'tipo' => 'required|in:positiva,negativa,neutra',
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'fecha' => 'required|date',
+        ]);
+
+        $estudiante->anotaciones()->create([
+            'user_id' => Auth::id(),
+            'tipo' => $validated['tipo'],
+            'titulo' => $validated['titulo'],
+            'descripcion' => $validated['descripcion'] ?? null,
+            'fecha' => $validated['fecha'],
+        ]);
+
+        return redirect()->route('students.show', $estudiante->id)->with('success', 'Anotación registrada exitosamente.');
+    }
+
+    public function destroyAnotacion($estudianteId, $anotacionId)
+    {
+        $estudiante = Estudiante::findOrFail($estudianteId);
+        $anotacion = $estudiante->anotaciones()->findOrFail($anotacionId);
+        $anotacion->delete();
+
+        return redirect()->route('students.show', $estudiante->id)->with('success', 'Anotación eliminada exitosamente.');
     }
 
     private function validarRut($rut)

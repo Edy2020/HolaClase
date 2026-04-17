@@ -43,6 +43,11 @@ class Estudiante extends Model
         return $this->hasMany(EstudianteDocumento::class);
     }
 
+    public function anotaciones()
+    {
+        return $this->hasMany(AnotacionEstudiante::class);
+    }
+
     /**
      * Get the notas for this student.
      */

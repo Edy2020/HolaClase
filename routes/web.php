@@ -54,6 +54,8 @@ Route::middleware('auth')->group(function () {
             'destroy' => 'students.destroy',
         ]);
         Route::patch('/estudiantes/{estudiante}/status', [App\Http\Controllers\EstudianteController::class, 'updateStatus'])->name('students.update-status');
+        Route::post('/estudiantes/{estudiante}/anotaciones', [App\Http\Controllers\EstudianteController::class, 'storeAnotacion'])->name('students.anotaciones.store');
+        Route::delete('/estudiantes/{estudiante}/anotaciones/{anotacion}', [App\Http\Controllers\EstudianteController::class, 'destroyAnotacion'])->name('students.anotaciones.destroy');
 
         Route::post('/asignaturas/import', [App\Http\Controllers\AsignaturaController::class, 'import'])->name('subjects.import');
         Route::resource('asignaturas', App\Http\Controllers\AsignaturaController::class)->names([
