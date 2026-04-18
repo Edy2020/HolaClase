@@ -79,7 +79,7 @@ Si quieres probar el proyecto localmente, sigue estos pasos:
 ## **👥 Equipo**
 
 * **Edy2020** - *Desarrollador Principal* - [@Edy2020](https://github.com/Edy2020)
-* **Nikitoons** - *Colaborador* - [@Nikitoons](https://github.com/Nikitoons)
+* **Nikitoons** - *Desarrollador Backend* - [@Nikitoons](https://github.com/Nikitoons)
 
 ---
 
