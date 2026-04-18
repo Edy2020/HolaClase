@@ -14,7 +14,15 @@
                 Selecciona el curso y la asignatura para registrar las notas de los estudiantes.
             </p>
         </div>
-        <div class="header-actions">
+        <div class="header-actions" style="display: flex; gap: var(--spacing-md);">
+            <a href="{{ route('grades.escala') }}" class="btn btn-outline"
+                style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--border-color); color: var(--text-color); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                onmouseover="this.style.background='var(--primary-light, rgba(132, 204, 22, 0.1))'; this.style.color='var(--primary, #84cc16)'; this.style.borderColor='var(--primary, #84cc16)'"
+                onmouseout="this.style.background='transparent'; this.style.color='var(--text-color)'; this.style.borderColor='var(--border-color)'"
+                title="Abrir Calculadora de Escala">
+                <i class="fas fa-percentage"></i>
+                <span class="btn-text">Escala</span>
+            </a>
             <a href="{{ route('grades.index') }}" class="btn btn-outline"
                 style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--border-color); color: var(--text-color); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
                 onmouseover="this.style.background='var(--bg-card)'; this.style.color='var(--text-color)'"

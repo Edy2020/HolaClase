@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Scopes\ProfesorScope;
+use Illuminate\Database\Eloquent\Builder;
+
 class Nota extends Model
 {
     protected $fillable = [
@@ -17,6 +20,24 @@ class Nota extends Model
         'observaciones',
         'ponderacion',
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ProfesorScope);
+    }
+
+    /**
+     * Custom scope application for ProfesorScope.
+     */
+    public function applyProfesorScope(Builder $builder, $profesorId)
+    {
+        $builder->whereHas('curso', function ($query) use ($profesorId) {
+            $query->where('profesor_id', $profesorId);
+        });
+    }
 
     protected $casts = [
         'fecha' => 'date',

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Scopes\ProfesorScope;
+
 class Curso extends Model
 {
     protected $fillable = [
@@ -13,6 +15,14 @@ class Curso extends Model
         'nombre',
         'profesor_id',
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ProfesorScope);
+    }
 
     /**
      * Get the profesor assigned to this curso.

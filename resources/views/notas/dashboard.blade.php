@@ -23,6 +23,13 @@
                 <i class="fas fa-list"></i>
                 <span class="btn-text">Ver Todas las Notas</span>
             </a>
+            <a href="{{ route('grades.escala') }}" class="btn btn-outline"
+                style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--gray-300); color: var(--gray-700); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                onmouseover="this.style.background='var(--primary-light)'; this.style.color='var(--primary-dark)'; this.style.borderColor='var(--primary)'"
+                onmouseout="this.style.background='transparent'; this.style.color='var(--gray-700)'; this.style.borderColor='var(--gray-300)'">
+                <i class="fas fa-percentage"></i>
+                <span class="btn-text">Escala</span>
+            </a>
             <a href="{{ route('grades.create') }}" class="btn btn-outline"
                 style="display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); border: 1px solid var(--gray-300); color: var(--gray-700); background: transparent; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; text-decoration: none; transition: all 0.2s;"
                 onmouseover="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'"

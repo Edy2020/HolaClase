@@ -97,6 +97,7 @@ Route::middleware('auth')->group(function () {
     ])->parameters(['asistencia' => 'asistencia']);
 
     Route::get('notas/dashboard', [App\Http\Controllers\NotaController::class, 'dashboard'])->name('grades.dashboard');
+    Route::get('notas/escala', [App\Http\Controllers\NotaController::class, 'escala'])->name('grades.escala');
     Route::get('notas/estadisticas', [App\Http\Controllers\NotaController::class, 'estadisticas'])->name('grades.estadisticas');
     Route::get('notas/export/pdf', [App\Http\Controllers\NotaController::class, 'exportPDF'])->name('grades.export.pdf');
     Route::get('notas/export/excel', [App\Http\Controllers\NotaController::class, 'exportExcel'])->name('grades.export.excel');

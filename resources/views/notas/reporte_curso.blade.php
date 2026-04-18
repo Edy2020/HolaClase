@@ -49,9 +49,13 @@
                         </select>
                     </div>
                     <div>
-                        <a href="{{ route('grades.export-pdf', ['curso_id' => $curso->id, 'periodo' => $periodo]) }}"
+                        <a href="{{ route('grades.export.pdf', ['curso_id' => $curso->id, 'periodo' => $periodo]) }}"
                             class="btn btn-outline" target="_blank" style="width: 100%; text-align: center;">
                             <i class="fas fa-file-pdf"></i> Exportar PDF
+                        </a>
+                        <a href="{{ route('grades.export.excel', ['curso_id' => $curso->id, 'periodo' => $periodo]) }}"
+                            class="btn btn-outline" target="_blank" style="width: 100%; text-align: center; margin-top: 5px;">
+                            <i class="fas fa-file-excel"></i> Exportar Excel
                         </a>
                     </div>
                 </div>

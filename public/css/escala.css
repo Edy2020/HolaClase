@@ -1,0 +1,89 @@
+.escala-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .escala-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.inputs-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-sm);
+}
+
+.scale-table-wrap {
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    width: 100%;
+    background: white;
+}
+
+.scale-table-wrap table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.scale-table-wrap th {
+    background: var(--gray-50);
+    padding: 8px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--gray-600);
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.scale-table-wrap td {
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.escala-controls .form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.escala-controls .form-control, .escala-controls .form-select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--gray-300);
+    background-color: white;
+    transition: all 0.2s;
+}
+
+.escala-controls .form-control:focus, .escala-controls .form-select:focus {
+    border-color: #84cc16;
+    box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.1);
+    outline: none;
+}
+
+.escala-controls .form-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    margin-bottom: 0.4rem;
+    display: block;
+    letter-spacing: 0.5px;
+}
+
+/* Print styles */
+@media print {
+    body { background: white; }
+    nav, header, .page-header, .card-header, form, .form-group { display: none !important; }
+    .escala-layout { display: block !important; }
+    .card { box-shadow: none !important; border: none !important; }
+    .card-body { max-height: none !important; overflow: visible !important; background: white !important; }
+    #scale_tables_container { gap: 10px !important; align-items: flex-start; }
+    .scale-table-wrap { font-size: 11px !important; break-inside: avoid; margin-bottom: 20px;}
+}
