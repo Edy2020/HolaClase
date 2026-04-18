@@ -2,7 +2,7 @@
 
 **Transformando la interacción educativa en un solo clic.**
 
-![HolaClase Banner](assets/banner.png)
+![HolaClase Banner](assets/banner1.png)
 
 ## **🌟 Sobre el Proyecto**
 
@@ -28,7 +28,7 @@ Este proyecto nace de la necesidad de simplificar procesos complejos: desde la e
 
 | Vista de Escritorio |
 | :---- |
-| ![Dashboard HolaClase](assets/mockup.png) |
+| ![Dashboard HolaClase](assets/mockup1.png) |
 
 ## **🚀 Instalación y Uso**
 
