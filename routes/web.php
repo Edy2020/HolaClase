@@ -116,6 +116,11 @@ Route::middleware('auth')->group(function () {
     Route::get('notas/reporte/estudiante/{estudiante}', [App\Http\Controllers\NotaController::class, 'reportePorEstudiante'])->name('grades.reporte.estudiante');
     Route::get('notas/libreta/{estudiante}', [App\Http\Controllers\NotaController::class, 'libreta'])->name('grades.libreta');
 
+    Route::get('recordatorios', [App\Http\Controllers\RecordatorioController::class, 'index'])->name('recordatorios.index');
+    Route::post('recordatorios', [App\Http\Controllers\RecordatorioController::class, 'store'])->name('recordatorios.store');
+    Route::patch('recordatorios/{recordatorio}/toggle', [App\Http\Controllers\RecordatorioController::class, 'toggle'])->name('recordatorios.toggle');
+    Route::delete('recordatorios/{recordatorio}', [App\Http\Controllers\RecordatorioController::class, 'destroy'])->name('recordatorios.destroy');
+
     Route::middleware('admin')->prefix('usuarios')->group(function () {
         Route::get('/', [App\Http\Controllers\UsuarioController::class, 'index'])->name('users.index');
         Route::get('/crear', [App\Http\Controllers\UsuarioController::class, 'crear'])->name('users.crear');

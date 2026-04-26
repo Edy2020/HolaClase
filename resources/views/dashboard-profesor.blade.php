@@ -19,9 +19,16 @@
         <div id="tab-resumen" onclick="switchProfesorTab('resumen')" class="dash-tab active-tab">Resumen</div>
         <div id="tab-cursos" onclick="switchProfesorTab('cursos')" class="dash-tab">Mis Cursos</div>
         <div id="tab-agenda" onclick="switchProfesorTab('agenda')" class="dash-tab">Agenda</div>
+        <div id="tab-calendario" onclick="switchProfesorTab('calendario')" class="dash-tab">Calendario</div>
         <div id="tab-asistencia" onclick="switchProfesorTab('asistencia')" class="dash-tab">Asistencia</div>
     </div>
 
+    <div class="desktop-tabs-container">
+        <div id="d-tab-general" onclick="switchDesktopProfesorTab('general')" class="dash-tab active-tab">Vista General</div>
+        <div id="d-tab-calendario" onclick="switchDesktopProfesorTab('calendario')" class="dash-tab">Calendario</div>
+    </div>
+
+    <div id="desktop-section-general" class="desktop-tab-section active-desktop-section">
     <div id="section-resumen" class="prof-section active-prof-section">
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacing-md); margin-bottom: var(--spacing-xl);">
             <div style="background: var(--bg-card, white); border: 1px solid var(--border-color, var(--gray-200)); border-radius: var(--radius-lg); padding: var(--spacing-lg); text-align: center;">
@@ -317,6 +324,11 @@
             </div>
         @endif
     </div>
+    </div>
+
+    <div id="desktop-section-calendario" class="desktop-tab-section">
+        @include('partials.calendario')
+    </div>
 
     <button id="fabButton" class="fab-button" onclick="toggleSpeedDial()" aria-label="Acciones Rápidas">
         <i id="fabIcon" class="fas fa-bolt"></i>
@@ -390,6 +402,16 @@
             document.getElementById('fabIcon').className = 'fas fa-bolt';
             document.getElementById('speedDialActions').classList.remove('active');
             document.getElementById('speedDialBackdrop').classList.remove('active');
+        }
+
+        function switchDesktopProfesorTab(tabId) {
+            document.getElementById('d-tab-general').classList.remove('active-tab');
+            document.getElementById('d-tab-calendario').classList.remove('active-tab');
+            document.getElementById('d-tab-' + tabId).classList.add('active-tab');
+
+            document.getElementById('desktop-section-general').classList.remove('active-desktop-section');
+            document.getElementById('desktop-section-calendario').classList.remove('active-desktop-section');
+            document.getElementById('desktop-section-' + tabId).classList.add('active-desktop-section');
         }
 
         function switchProfesorTab(tabId) {

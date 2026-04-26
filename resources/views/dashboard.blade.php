@@ -16,8 +16,20 @@
             <div id="tab-activity" onclick="switchDashboardTab('activity')" class="dash-tab">
                 Reciente
             </div>
+            <div id="tab-calendario" onclick="switchDashboardTab('calendario')" class="dash-tab">
+                Calendario
+            </div>
             <div id="tab-tasks" onclick="switchDashboardTab('tasks')" class="dash-tab">
                 Próximas Tareas
+            </div>
+        </div>
+
+        <div class="desktop-tabs-container">
+            <div id="d-tab-general" onclick="switchDesktopAdminTab('general')" class="dash-tab active-tab">
+                Vista General
+            </div>
+            <div id="d-tab-calendario" onclick="switchDesktopAdminTab('calendario')" class="dash-tab">
+                Calendario
             </div>
         </div>
 
@@ -39,7 +51,8 @@
         </div>
     </div>
 
-    <div id="section-summary" class="tab-section active-section" style="display: flex; flex-wrap: wrap; margin-bottom: var(--spacing-2xl); padding-top: var(--spacing-xl);">
+    <div id="desktop-section-general" class="desktop-tab-section active-desktop-section">
+        <div id="section-summary" class="tab-section active-section" style="display: flex; flex-wrap: wrap; margin-bottom: var(--spacing-2xl); padding-top: var(--spacing-xl);">
         @php
             $statsData = [
                 ['label' => 'Total Cursos',      'value' => str_pad($totalCursos, 2, '0', STR_PAD_LEFT),      'color' => '#84cc16', 'trend' => '+ 20%'],
@@ -208,8 +221,22 @@
             </div>
         </div>
     </div>
+    </div>
+
+    <div id="desktop-section-calendario" class="desktop-tab-section">
+        @include('partials.calendario')
+    </div>
 
     <script>
+        function switchDesktopAdminTab(tabId) {
+            document.getElementById('d-tab-general').classList.remove('active-tab');
+            document.getElementById('d-tab-calendario').classList.remove('active-tab');
+            document.getElementById('d-tab-' + tabId).classList.add('active-tab');
+
+            document.getElementById('desktop-section-general').classList.remove('active-desktop-section');
+            document.getElementById('desktop-section-calendario').classList.remove('active-desktop-section');
+            document.getElementById('desktop-section-' + tabId).classList.add('active-desktop-section');
+        }
         function switchDashboardTab(tabId) {
             // Update tabs visually
             document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active-tab'));
