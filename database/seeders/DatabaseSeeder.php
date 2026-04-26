@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::statement('SET session_replication_role = replica;');
         Prueba::truncate();
         EventoAcademico::truncate();
         DB::table('curso_asignatura')->truncate();
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
         Curso::truncate();
         Profesor::truncate();
         User::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET session_replication_role = origin;');
 
         User::create([
             'name' => 'Administrador',
