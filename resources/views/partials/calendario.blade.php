@@ -6,6 +6,7 @@
         <div class="cal-view-toggle">
             <button type="button" id="btnViewMonth" class="cal-view-btn active" onclick="setCalView('month')">Mes</button>
             <button type="button" id="btnViewWeek" class="cal-view-btn" onclick="setCalView('week')">Semana</button>
+            <button type="button" id="btnViewDay" class="cal-view-btn" onclick="setCalView('day')">Día</button>
         </div>
     </div>
 
@@ -20,7 +21,7 @@
             </button>
         </div>
 
-        <div class="calendario-dias-header">
+        <div id="calDaysHeader" class="calendario-dias-header">
             <div>Lu</div><div>Ma</div><div>Mi</div><div>Ju</div><div>Vi</div><div>Sa</div><div>Do</div>
         </div>
 
@@ -100,14 +101,17 @@
         currentView = view;
         document.getElementById('btnViewMonth').classList.toggle('active', view === 'month');
         document.getElementById('btnViewWeek').classList.toggle('active', view === 'week');
+        document.getElementById('btnViewDay').classList.toggle('active', view === 'day');
         loadData();
     };
 
     window.calNav = function(dir) {
         if (currentView === 'month') {
             baseDate.setMonth(baseDate.getMonth() + dir);
-        } else {
+        } else if (currentView === 'week') {
             baseDate.setDate(baseDate.getDate() + (dir * 7));
+        } else {
+            baseDate.setDate(baseDate.getDate() + dir);
         }
         loadData();
     };
@@ -132,7 +136,7 @@
             start = new Date(year, month, 1);
             end = new Date(year, month + 1, 0);
             label = MONTHS[month] + ' ' + year;
-        } else {
+        } else if (currentView === 'week') {
             start = getStartOfWeek(baseDate);
             end = new Date(start);
             end.setDate(end.getDate() + 6);
@@ -143,6 +147,10 @@
                 label = start.getDate() + ' ' + MONTHS[start.getMonth()].substring(0,3) + ' - ' + 
                         end.getDate() + ' ' + MONTHS[end.getMonth()].substring(0,3) + ' ' + end.getFullYear();
             }
+        } else {
+            start = new Date(baseDate);
+            end = new Date(baseDate);
+            label = baseDate.getDate() + ' de ' + MONTHS[baseDate.getMonth()] + ' ' + baseDate.getFullYear();
         }
 
         document.getElementById('calLabel').textContent = label;
@@ -160,6 +168,14 @@
     function renderGrid(start, end) {
         const grid = document.getElementById('calGrid');
         grid.innerHTML = '';
+        
+        if (currentView === 'day') {
+            grid.classList.add('calendario-grid-day');
+            document.getElementById('calDaysHeader').style.display = 'none';
+        } else {
+            grid.classList.remove('calendario-grid-day');
+            document.getElementById('calDaysHeader').style.display = 'grid';
+        }
 
         if (currentView === 'month') {
             const year = baseDate.getFullYear();
@@ -179,7 +195,7 @@
                 const dateStr = year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
                 renderCell(grid, dateStr, d);
             }
-        } else {
+        } else if (currentView === 'week') {
             // Week view
             let curr = new Date(start);
             for (let i = 0; i < 7; i++) {
@@ -187,6 +203,10 @@
                 renderCell(grid, dateStr, curr.getDate());
                 curr.setDate(curr.getDate() + 1);
             }
+        } else {
+            // Day view
+            const dateStr = formatDate(baseDate);
+            renderCell(grid, dateStr, baseDate.getDate());
         }
     }
 
@@ -209,21 +229,37 @@
 
         if (calData[dateStr] && calData[dateStr].length > 0) {
             const dayEvents = calData[dateStr];
-            let maxEvents = currentView === 'week' ? 5 : 2;
+            let maxEvents = currentView === 'week' ? 5 : (currentView === 'day' ? 50 : 2);
             
             for(let i=0; i < Math.min(dayEvents.length, maxEvents); i++) {
                 const r = dayEvents[i];
                 let impClass = r.importancia ? ' imp-' + r.importancia : ' imp-normal';
                 
-                if (currentView === 'week') {
+                if (currentView === 'week' || currentView === 'day') {
                     const evt = document.createElement('div');
                     evt.className = 'cal-event-card' + impClass + (r.completado ? ' done' : '');
                     
+                    let checkedStr = r.completado ? 'checked' : '';
+                    let checkHtml = currentView === 'day' ? `<div class="evt-check" onclick="event.stopPropagation();" style="margin-left: 8px;">
+                        <label class="cal-check-label" style="margin:0;">
+                            <input type="checkbox" ${checkedStr} onchange="toggleRecordatorio(${r.id}, this); if(this.checked){ this.closest('.cal-event-card').classList.add('done'); } else { this.closest('.cal-event-card').classList.remove('done'); }" class="cal-checkbox">
+                            <span class="cal-checkmark"></span>
+                        </label>
+                    </div>` : '';
+
                     let timeHtml = r.hora ? `<div class="evt-time"><i class="far fa-clock"></i> ${r.hora.substring(0,5)}</div>` : '';
                     let titleHtml = `<div class="evt-title">${escapeHtml(r.titulo)}</div>`;
-                    let descHtml = r.descripcion ? `<div class="evt-desc">${escapeHtml(r.descripcion)}</div>` : '';
+                    let descHtml = r.descripcion ? `<div class="evt-desc" style="margin-top: 4px;">${escapeHtml(r.descripcion)}</div>` : '';
                     
-                    evt.innerHTML = timeHtml + titleHtml + descHtml;
+                    let headerHtml = `<div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                        <div style="flex:1; min-width:0;">
+                                            ${titleHtml}
+                                            ${timeHtml}
+                                        </div>
+                                        ${checkHtml}
+                                      </div>`;
+                    
+                    evt.innerHTML = headerHtml + descHtml;
                     eventsContainer.appendChild(evt);
                 } else {
                     const evt = document.createElement('div');

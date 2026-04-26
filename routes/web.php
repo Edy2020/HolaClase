@@ -23,6 +23,10 @@ Route::middleware('auth')->group(function () {
     // })->name('courses.index');
 
     Route::get('/cursos', [App\Http\Controllers\CursoController::class, 'index'])->name('courses.index');
+    Route::post('/cursos/{curso}/events', [App\Http\Controllers\CursoController::class, 'storeEvent'])->name('courses.store-event');
+    Route::delete('/cursos/{curso}/events/{evento}', [App\Http\Controllers\CursoController::class, 'destroyEvent'])->name('courses.destroy-event');
+    Route::post('/cursos/{curso}/tests', [App\Http\Controllers\CursoController::class, 'storeTest'])->name('courses.store-test');
+    Route::delete('/cursos/{curso}/tests/{prueba}', [App\Http\Controllers\CursoController::class, 'destroyTest'])->name('courses.destroy-test');
 
     Route::middleware('admin')->group(function () {
         Route::post('/cursos/import', [App\Http\Controllers\CursoController::class, 'import'])->name('courses.import');
@@ -38,10 +42,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/cursos/{curso}/students/{estudiante}', [App\Http\Controllers\CursoController::class, 'removeStudent'])->name('courses.remove-student');
         Route::post('/cursos/{curso}/subjects', [App\Http\Controllers\CursoController::class, 'addSubject'])->name('courses.add-subject');
         Route::delete('/cursos/{curso}/subjects/{asignatura}', [App\Http\Controllers\CursoController::class, 'removeSubject'])->name('courses.remove-subject');
-        Route::post('/cursos/{curso}/events', [App\Http\Controllers\CursoController::class, 'storeEvent'])->name('courses.store-event');
-        Route::delete('/cursos/{curso}/events/{evento}', [App\Http\Controllers\CursoController::class, 'destroyEvent'])->name('courses.destroy-event');
-        Route::post('/cursos/{curso}/tests', [App\Http\Controllers\CursoController::class, 'storeTest'])->name('courses.store-test');
-        Route::delete('/cursos/{curso}/tests/{prueba}', [App\Http\Controllers\CursoController::class, 'destroyTest'])->name('courses.destroy-test');
+
 
         Route::post('/estudiantes/import', [App\Http\Controllers\EstudianteController::class, 'import'])->name('students.import');
         Route::resource('estudiantes', App\Http\Controllers\EstudianteController::class)->names([

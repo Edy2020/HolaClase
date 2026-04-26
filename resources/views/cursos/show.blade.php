@@ -417,7 +417,7 @@
                         style="font-size: 1rem; font-weight: 700; color: var(--text-color); margin: 0; display: flex; align-items: center; gap: var(--spacing-sm);">
                         <i class="fas fa-calendar-alt" style="color: var(--text-muted);"></i> Calendario Académico
                     </h3>
-                    @if($isAdmin)
+                    @if($isAdmin || $isProfesorEncargado)
                     <button onclick="document.getElementById('addEventModal').style.display='flex'"
                         class="btn btn-outline section-button"
                         style="color: var(--text-color); border-color: var(--border-color);">
@@ -446,7 +446,7 @@
                                                 style="color: var(--text-muted); font-size: 0.875rem; margin: var(--spacing-sm) 0 0;">
                                         {{ $evento->descripcion }}</p>@endif
                                     </div>
-                                    @if($isAdmin)
+                                    @if($isAdmin || $isProfesorEncargado)
                                     <form action="{{ route('courses.destroy-event', [$curso, $evento]) }}" method="POST"
                                         onsubmit="return confirm('¿Eliminar evento?');">
                                         @csrf @method('DELETE')
@@ -478,7 +478,7 @@
                         style="font-size: 1rem; font-weight: 700; color: var(--text-color); margin: 0; display: flex; align-items: center; gap: var(--spacing-sm);">
                         <i class="fas fa-file-alt" style="color: var(--text-muted);"></i> Próximas Pruebas
                     </h3>
-                    @if($isAdmin)
+                    @if($isAdmin || $isProfesorEncargado)
                     <button onclick="document.getElementById('addTestModal').style.display='flex'"
                         class="btn btn-outline section-button"
                         style="color: var(--text-color); border-color: var(--border-color);">
@@ -507,7 +507,7 @@
                                                 style="display: inline-block; padding: 2px 8px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">{{ $prueba->ponderacion }}%</span>
                                         @endif
                                     </div>
-                                    @if($isAdmin)
+                                    @if($isAdmin || $isProfesorEncargado)
                                     <form action="{{ route('courses.destroy-test', [$curso, $prueba]) }}" method="POST"
                                         onsubmit="return confirm('¿Eliminar prueba?');">
                                         @csrf @method('DELETE')

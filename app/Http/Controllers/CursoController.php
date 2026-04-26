@@ -215,8 +215,9 @@ class CursoController extends Controller
         })->orderBy('nombre')->get();
 
         $isAdmin = $user->isAdmin();
+        $isProfesorEncargado = !$isAdmin && $user->profesor_id && $curso->profesor_id === $user->profesor_id;
 
-        return view('cursos.show', compact('curso', 'profesores', 'estudiantesDisponibles', 'asignaturasDisponibles', 'isAdmin'));
+        return view('cursos.show', compact('curso', 'profesores', 'estudiantesDisponibles', 'asignaturasDisponibles', 'isAdmin', 'isProfesorEncargado'));
     }
 
     public function edit(Curso $curso)
@@ -343,7 +344,12 @@ class CursoController extends Controller
 
     public function storeEvent(Request $request, Curso $curso)
     {
-        $request->validate([
+        $user = auth()->user();
+        if (!$user->isAdmin() && (!$user->profesor_id || $curso->profesor_id !== $user->profesor_id)) {
+            abort(403, 'No tienes permiso para añadir eventos a este curso.');
+        }
+
+        $validated = $request->validate([
             'titulo' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'fecha_inicio' => 'required|date',
@@ -351,13 +357,18 @@ class CursoController extends Controller
             'tipo' => 'required|in:vacaciones,reunion,actividad,examen,otro',
         ]);
 
-        $curso->eventos()->create($request->all());
+        $curso->eventos()->create($validated);
 
         return redirect()->route('courses.show', $curso)->with('success', 'Evento creado correctamente.');
     }
 
     public function destroyEvent(Curso $curso, $eventoId)
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && (!$user->profesor_id || $curso->profesor_id !== $user->profesor_id)) {
+            abort(403, 'No tienes permiso para eliminar eventos de este curso.');
+        }
+
         $evento = $curso->eventos()->findOrFail($eventoId);
         $evento->delete();
 
@@ -366,7 +377,12 @@ class CursoController extends Controller
 
     public function storeTest(Request $request, Curso $curso)
     {
-        $request->validate([
+        $user = auth()->user();
+        if (!$user->isAdmin() && (!$user->profesor_id || $curso->profesor_id !== $user->profesor_id)) {
+            abort(403, 'No tienes permiso para añadir pruebas a este curso.');
+        }
+
+        $validated = $request->validate([
             'asignatura_id' => 'required|exists:asignaturas,id',
             'titulo' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
@@ -375,13 +391,18 @@ class CursoController extends Controller
             'ponderacion' => 'nullable|integer|min:0|max:100',
         ]);
 
-        $curso->pruebas()->create($request->all());
+        $curso->pruebas()->create($validated);
 
         return redirect()->route('courses.show', $curso)->with('success', 'Prueba creada correctamente.');
     }
 
     public function destroyTest(Curso $curso, $pruebaId)
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && (!$user->profesor_id || $curso->profesor_id !== $user->profesor_id)) {
+            abort(403, 'No tienes permiso para eliminar pruebas de este curso.');
+        }
+
         $prueba = $curso->pruebas()->findOrFail($pruebaId);
         $prueba->delete();
 

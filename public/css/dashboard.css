@@ -563,6 +563,10 @@ html.dark-mode .action-pill.primary:hover {
     padding: 6px;
 }
 
+.calendario-grid-day {
+    grid-template-columns: 1fr;
+}
+
 .cal-cell {
     min-height: 85px;
     display: flex;
