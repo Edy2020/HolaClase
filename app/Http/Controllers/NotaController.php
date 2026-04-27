@@ -57,13 +57,22 @@ class NotaController extends Controller
 
         $statsQuery = Nota::query();
 
+        $statsResult = $statsQuery->selectRaw('
+            COUNT(*) as total,
+            COALESCE(ROUND(AVG(nota), 1), 0) as promedio,
+            SUM(CASE WHEN nota >= 4.0 THEN 1 ELSE 0 END) as aprobados,
+            SUM(CASE WHEN nota < 4.0 THEN 1 ELSE 0 END) as reprobados,
+            COALESCE(MAX(nota), 0) as nota_maxima,
+            COALESCE(MIN(nota), 0) as nota_minima
+        ')->first();
+
         $stats = [
-            'total' => (clone $statsQuery)->count(),
-            'promedio' => round((clone $statsQuery)->avg('nota'), 1) ?? 0,
-            'aprobados' => (clone $statsQuery)->where('nota', '>=', 4.0)->count(),
-            'reprobados' => (clone $statsQuery)->where('nota', '<', 4.0)->count(),
-            'nota_maxima' => (clone $statsQuery)->max('nota') ?? 0,
-            'nota_minima' => (clone $statsQuery)->min('nota') ?? 0,
+            'total' => $statsResult->total ?? 0,
+            'promedio' => $statsResult->promedio ?? 0,
+            'aprobados' => (int) ($statsResult->aprobados ?? 0),
+            'reprobados' => (int) ($statsResult->reprobados ?? 0),
+            'nota_maxima' => $statsResult->nota_maxima ?? 0,
+            'nota_minima' => $statsResult->nota_minima ?? 0,
         ];
 
         return view('notas.index', compact('notas', 'cursos', 'asignaturas', 'estudiantes', 'stats'));
